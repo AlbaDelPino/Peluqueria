@@ -10,24 +10,12 @@ import java.util.Set;
 public interface ServicioService {
 
     Set<Servicio> findAll();
-
     Set<Servicio> findByNombre(String nombre);
-
-
-
     Optional<Servicio> findById(long id);
-
-
-
     Servicio addServicio(Servicio servicio);
-
-    Servicio modifyServico(long id, Servicio newServicio);
-
+    Servicio modifyServicio(long id, Servicio newServicio);
     void deleteServicio(long id);
-
     List<Servicio> buscarPorNombreODescripcion(String nombre, String descripcion);
-
     List<Servicio> buscarPorNombreYDuracion(String nombre, long duracion);
-
     List<Servicio> buscarPorNombreLikeYPrecio(String nombre, long precio);
 }
