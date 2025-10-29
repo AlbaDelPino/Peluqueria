@@ -27,13 +27,18 @@ public class ServicioServiceImpl implements ServicioService {
     }
 
     @Override
+    public List<Servicio> findByNombreODescripcion(String nombre, String descripcion) {
+        return servicioRepository.findByNombreODescripcion(nombre, descripcion);
+    }
+
+    @Override
     public List<Servicio> buscarPorNombreYDuracion(String nombre, long duracion) {
-        return servicioRepository.buscarPorNombreYDuracion(nombre, duracion);
+        return servicioRepository.findByNombreYDuracion(nombre, duracion);
     }
 
     @Override
     public List<Servicio> buscarPorNombreLikeYPrecio(String nombre, long precio) {
-        return servicioRepository.buscarPorNombreLikeYPrecio(nombre, precio);
+        return servicioRepository.findByNombreYPrecio(nombre, precio);
     }
 
     @Override
@@ -44,11 +49,6 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public Servicio addServicio(Servicio servicio) {
         return servicioRepository.save(servicio);
-    }
-
-    @Override
-    public Servicio modifyServico(long id, Servicio newServicio) {
-        return null;
     }
 
     @Override
@@ -66,9 +66,5 @@ public class ServicioServiceImpl implements ServicioService {
         servicioRepository.deleteById(id);
     }
 
-    @Override
-    public List<Servicio> buscarPorNombreODescripcion(String nombre, String descripcion) {
-        return servicioRepository.buscarPorNombreODescripcion(nombre, descripcion);
-    }
 }
 
