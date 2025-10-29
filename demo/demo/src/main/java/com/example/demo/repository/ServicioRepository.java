@@ -18,6 +18,6 @@ public interface ServicioRepository extends CrudRepository<Servicio, Long> {
     List<Servicio> findByNombreAndDuracion(String nombre, long duracion);
 
     // Query nativa: buscar por nombre LIKE y edad >
-    @Query(value = "SELECT * FROM alumno WHERE nombre LIKE %:nombre% AND edad > :edad", nativeQuery = true)
+    @Query(value = "SELECT * FROM alumno WHERE nombre LIKE %:nombre% AND edad > :precio", nativeQuery = true)
     List<Servicio> findByNombreLikeAndPrecioGreaterThan(@Param("nombre") String nombre, @Param("precio") int edad);
 }
