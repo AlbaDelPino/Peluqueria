@@ -19,11 +19,11 @@ public interface ServicioService {
 
 
 
-    Servicio addAlumno(Servicio servicio);
+    Servicio addServicio(Servicio servicio);
 
-    Servicio modifyAlumno(long id, Servicio newServicio);
+    Servicio modifyServico(long id, Servicio newServicio);
 
-    void deleteAlumno(long id);
+    void deleteServicio(long id);
 
     List<Servicio> buscarPorNombreODescripcion(String nombre, String descripcion);
 
