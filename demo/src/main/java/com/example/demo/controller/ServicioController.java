@@ -75,8 +75,8 @@ public class ServicioController {
     })
     @GetMapping("/serviciobynombreandprecio")
     public ResponseEntity<List<Servicio>> getServicioByNombreAndPrecio(
-            @RequestParam(value = "nombre", defaultValue = "")String nombre,
-            @RequestParam(value = "precio", defaultValue = "") long precio) {
+            @RequestParam(value = "nombre", defaultValue = "") String nombre,
+            @RequestParam(value = "precio", defaultValue = "0") long precio) {
 
         return ResponseEntity.ok(servicioService.findByNombreAndPrecio(nombre, precio));
     }
