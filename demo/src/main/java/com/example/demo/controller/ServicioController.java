@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,51 +60,39 @@ public class ServicioController {
     })
 
     @GetMapping("/serviciobynombreandduracion")
-    public ResponseEntity<Set<Servicio>> getServicioByNombreAndDuracion(
+    public ResponseEntity<List<Servicio>> getServicioByNombreAndDuracion(
             @RequestParam(value = "nombre", defaultValue = "")String nombre,
-            @RequestParam(value = "duracion", defaultValue = "") long duracion){
-        Set<Servicio> servicios = null;
-        servicios = (Set<Servicio>) servicioService.findByNombreAndDuracion(nombre,duracion);
-        return new ResponseEntity<>(servicios, HttpStatus.OK);
+            @RequestParam(value = "duracion", defaultValue = "") long duracion) {
+
+        return ResponseEntity.ok(servicioService.findByNombreAndDuracion(nombre, duracion));
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Existe el servicio", content = @Content(schema = @Schema(implementation =
+                    Servicio.class))),
+            @ApiResponse(responseCode = "404", description = "El servicio no existe", content = @Content(schema = @Schema(implementation =
+                    Response.class)))
+    })
     @GetMapping("/serviciobynombreandprecio")
-    public ResponseEntity<Set<Servicio>> getServicioByNombreAndPrecio(
+    public ResponseEntity<List<Servicio>> getServicioByNombreAndPrecio(
             @RequestParam(value = "nombre", defaultValue = "")String nombre,
-            @RequestParam(value = "precio", defaultValue = "") long precio){
-        Set<Servicio> servicios = null;
-        servicios = (Set<Servicio>) servicioService.findByNombreAndPrecio(nombre,precio);
-        return new ResponseEntity<>(servicios, HttpStatus.OK);
+            @RequestParam(value = "precio", defaultValue = "") long precio) {
+
+        return ResponseEntity.ok(servicioService.findByNombreAndPrecio(nombre, precio));
     }
 
 
 
     @GetMapping("/serviciobynombreordescripcion")
-    public ResponseEntity<Set<Servicio>> getServicioByNombreOrDescripcion(@RequestParam Map<String, String> allParams) {
-        Set<Servicio> servicios = null;
+    public ResponseEntity<List<Servicio>> getServicioByNombreOrDescripcion(
+        @RequestParam(value = "nombre", defaultValue = "")String nombre,
+        @RequestParam(value = "descripcion", defaultValue = "") String descripcion) {
 
-        if (allParams.containsKey("nombre")) {
-            String nombre = allParams.get("nombre");
-            if (nombre.equals("")) {
-                servicios = servicioService.findAll();
-            } else {
-                servicios = servicioService.findByNombre(nombre);
-            }
-        } else if (allParams.containsKey("descripcion")) {
-            String descripcion = allParams.get("descripcion");
-            if (descripcion == null) {
-                servicios = servicioService.findAll();
-            } else {
-                servicios = servicioService.findByDescripcion(descripcion);
-            }
-        } else {
-            servicios = servicioService.findAll();
-        }
+            return ResponseEntity.ok(servicioService.findByNombreOrDescripcion(nombre, descripcion));
 
-        return new ResponseEntity<>(servicios, HttpStatus.OK);
     }
 
-    @Operation(summary = "Obtiene un servicio determinado")
+        @Operation(summary = "Obtiene un servicio determinado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Existe el servicio", content = @Content(schema = @Schema(implementation =
                     Servicio.class))),
