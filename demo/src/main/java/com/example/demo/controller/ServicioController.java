@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
 import java.util.Set;
 
 import static com.example.demo.controller.Response.NOT_FOUND;
@@ -50,6 +51,51 @@ public class ServicioController {
         logger.info("fin getServicios");
         return new ResponseEntity<>(servicios, HttpStatus.OK);
     }
+
+    @GetMapping("/productoycategoryandprice")
+    public ResponseEntity<Set<Product>> getProductByCategoryAndPrice(
+            @RequestParam(value = "category", defaultValue = "")String category,
+            @RequestParam(value = "price", defaultValue = "") Float price){
+        Set<Product> products = null;
+        products = productService.findByCategoryAndPrice(category,price);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("/productbycategoryorprice")
+    public ResponseEntity<Set<Product>> getProductByCategoryOrPrice(@RequestParam Map<String, String> allParams) {
+        Set<Product> products = null;
+
+        if (allParams.containsKey("category")) {
+            String category = allParams.get("category");
+            if (category.equals("")) {
+                products = productService.findAll();
+            } else {
+                products = productService.findByCategory(category);
+            }
+        } else if (allParams.containsKey("price")) {
+            String price = allParams.get("price");
+            if (price == null) {
+                products = productService.findAll();
+            } else {
+                products = productService.findByPrice(Float.parseFloat(price));
+            }
+        } else {
+            products = productService.findAll();
+        }
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtiene un producto determinado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Existe el producto", content = @Content(schema = @Schema(implementation =
+                    Product.class))),
+            @ApiResponse(responseCode = "404", description = "El producto no existe", content = @Content(schema = @Schema(implementation =
+                    Response.class)))
+    })
+
 
 
     @ApiResponses(value = {
