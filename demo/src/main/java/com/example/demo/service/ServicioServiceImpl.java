@@ -27,17 +27,20 @@ public class ServicioServiceImpl implements ServicioService {
     }
 
     @Override
+    public Set<Servicio> findByDescripcion(String descripcion) { return servicioRepository.findByDescripcion(descripcion); }
+
+    @Override
     public List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion) {
         return servicioRepository.findByNombreOrDescripcion(nombre, descripcion);
     }
 
     @Override
-    public List<Servicio> buscarPorNombreAndDuracion(String nombre, long duracion) {
+    public List<Servicio> findByNombreAndDuracion(String nombre, long duracion) {
         return servicioRepository.findByNombreAndDuracion(nombre, duracion);
     }
 
     @Override
-    public List<Servicio> buscarPorNombreAndPrecio(String nombre, long precio) {
+    public List<Servicio> findByNombreAndPrecio(String nombre, long precio) {
         return servicioRepository.findByNombreAndPrecio(nombre, precio);
     }
 
