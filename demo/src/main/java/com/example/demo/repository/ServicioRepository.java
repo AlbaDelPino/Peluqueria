@@ -15,11 +15,11 @@ public interface ServicioRepository extends CrudRepository<Servicio, Long> {
     Set<Servicio> findByPrecio(long precio);
     Set<Servicio> findByDuracion(long duracion);
     List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion);
-    List<Servicio> findByNombreYDuracion(String nombre, long duracion);
-    List<Servicio> findByNombreYPrecio(String nombre, long precio);
-
-
     List<Servicio> findByNombreAndDuracion(String nombre, long duracion);
+    List<Servicio> findByNombreAndPrecio(String nombre, long precio);
+
+
+  //  List<Servicio> findByNombreAndDuracion(String nombre, long duracion);
 
     // Query nativa: buscar por nombre LIKE y edad >
     @Query(value = "SELECT * FROM alumno WHERE nombre LIKE %:nombre% AND edad > :precio", nativeQuery = true)

@@ -45,7 +45,7 @@ public class ServicioController {
         if (nombre.equals("")&&descripcion.equals(""))
             servicios = servicioService.findAll();
         else
-            servicios = (Set<Servicio>) servicioService.findByNombreODescripcion(nombre,descripcion);
+            servicios = (Set<Servicio>) servicioService.findByNombreOrDescripcion(nombre,descripcion);
 
         logger.info("fin getServicios");
         return new ResponseEntity<>(servicios, HttpStatus.OK);

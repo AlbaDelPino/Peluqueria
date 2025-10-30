@@ -18,7 +18,7 @@ public interface ServicioService {
     Servicio addServicio(Servicio servicio);
     Servicio modifyServicio(long id, Servicio newServicio);
     void deleteServicio(long id);
-    List<Servicio> findByNombreODescripcion(String nombre, String descripcion);
-    List<Servicio> buscarPorNombreYDuracion(String nombre, long duracion);
-    List<Servicio> buscarPorNombreLikeYPrecio(String nombre, long precio);
+    List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion);
+    List<Servicio> buscarPorNombreAndDuracion(String nombre, long duracion);
+    List<Servicio> buscarPorNombreAndPrecio(String nombre, long precio);
 }
