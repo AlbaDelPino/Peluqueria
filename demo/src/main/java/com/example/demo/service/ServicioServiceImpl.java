@@ -17,7 +17,7 @@ public class ServicioServiceImpl implements ServicioService {
     private ServicioRepository servicioRepository;
 
     @Override
-    public Set<Servicio> findAll() {
+    public List<Servicio> findAll() {
         return servicioRepository.findAll();
     }
 

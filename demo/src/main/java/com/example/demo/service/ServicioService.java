@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface ServicioService {
 
-    Set<Servicio> findAll();
+    List<Servicio> findAll();
     Set<Servicio> findByNombre(String nombre);
     Set<Servicio> findByDescripcion(String descripcion);
     Optional<Servicio> findById(long id);

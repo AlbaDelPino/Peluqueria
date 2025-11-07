@@ -39,15 +39,15 @@ public class ServicioController {
     })
 
     @GetMapping(value = "/servicio", produces = "application/json")
-    public ResponseEntity<Set<Servicio>> getServicios(@RequestParam(value =
+    public ResponseEntity<List<Servicio>> getServicios(@RequestParam(value =
             "nombre", defaultValue = "") String nombre, @RequestParam(value =
             "descripcion", defaultValue = "") String descripcion) {
         logger.info("inicio getServicios");
-        Set<Servicio> servicios = null;
+        List<Servicio> servicios = null;
         if (nombre.equals("")&&descripcion.equals(""))
             servicios = servicioService.findAll();
         else
-            servicios = (Set<Servicio>) servicioService.findByNombreOrDescripcion(nombre,descripcion);
+            servicios = (List<Servicio>) servicioService.findByNombreOrDescripcion(nombre,descripcion);
 
         logger.info("fin getServicios");
         return new ResponseEntity<>(servicios, HttpStatus.OK);

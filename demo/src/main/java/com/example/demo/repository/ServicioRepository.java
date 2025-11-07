@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 public interface ServicioRepository extends CrudRepository<Servicio, Long> {
-    Set<Servicio> findAll();
+    List<Servicio> findAll();
     Set<Servicio> findByNombre(String nombre);
     Optional<Servicio> findById(long id);
     Set<Servicio> findByDescripcion(String descripcion);
