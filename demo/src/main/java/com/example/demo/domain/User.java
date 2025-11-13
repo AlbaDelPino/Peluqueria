@@ -5,17 +5,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,12 +23,8 @@ public class User {
     private String username;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 70)
     private String nombre;
-
-    @NotBlank
-    @Size(max = 50)
-    private String apellidos;
 
     @NotBlank
     @Size(max = 50)
@@ -41,74 +35,35 @@ public class User {
     @Size(max = 120)
     private String contrasenya;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private ERole role;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, ERole role) {
         this.username = username;
         this.email = email;
         this.contrasenya = password;
+        this.role = role;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // getters y setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getContrasenya() { return contrasenya; }
+    public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContrasenya() {
-        return contrasenya;
-    }
-
-    public void setContrasenya(String contrasenya) {
-        this.contrasenya = contrasenya;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+    public ERole getRole() { return role; }
+    public void setRole(ERole role) { this.role = role; }
 }
