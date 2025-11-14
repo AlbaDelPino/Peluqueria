@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.security.service;
 
 import com.example.demo.domain.Servicio;
 
