@@ -32,14 +32,12 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 120)
+    @Size(max = 40)
     private String contrasenya;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private ERole role;
-
-    public User() {}
 
     public User(String username, String email, String password, ERole role) {
         this.username = username;
