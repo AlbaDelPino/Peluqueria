@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Grupo;
-import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.domain.User;
+import com.example.demo.security.service.GrupoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,26 +11,30 @@ import java.util.List;
 @RequestMapping("/api/grupos")
 public class GrupoController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final GrupoService grupoService;
 
-    // Obtener todos los grupos
-    @GetMapping("/")
-    public List<Grupo> getAllGrupos() {
-        return userRepository.findAll().stream()
-                .filter(u -> u instanceof Grupo)
-                .map(u -> (Grupo) u)
-                .toList();
+    public GrupoController(GrupoService grupoService) {
+        this.grupoService = grupoService;
     }
 
-    // Obtener grupo por username
-    @GetMapping("/{username}")
-    public ResponseEntity<Grupo> getGrupo(@PathVariable String username) {
-        return userRepository.findByUsername(username)
-                .filter(u -> u instanceof Grupo)
-                .map(u -> ResponseEntity.ok((Grupo) u)) // devolvemos la entidad Grupo
-                .orElse(ResponseEntity.notFound().build()); // devuelve 404 si no existe
+    @GetMapping
+    public List<User> getAllGrupos() {
+        return grupoService.getAllGrupos();
     }
 
-    // Puedes agregar más métodos específicos para Grupo aquí
+    @PostMapping
+    public Grupo createGrupo(@RequestBody Grupo grupo) {
+        return grupoService.createGrupo(grupo);
+    }
+
+    @PutMapping("/{id}")
+    public Grupo updateGrupo(@PathVariable Long id, @RequestBody Grupo grupo) {
+        return (Grupo) grupoService.updateGrupo(id, grupo);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public boolean deleteGrupo(@PathVariable Long id) {
+        return grupoService.deleteGrupo(id);
+    }
 }

@@ -4,12 +4,7 @@ import com.example.demo.domain.ERole;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
-import java.util.Set;
-
+import jakarta.validation.constraints.*;
 
 public class SignupRequest {
     @NotBlank
@@ -33,35 +28,18 @@ public class SignupRequest {
     @Column(length = 20, nullable = false)
     private ERole role;
 
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getContrasenya() {
-        return contrasenya;
-    }
-    public void setContrasenya(String contrasenya) {
-        this.contrasenya = contrasenya;
-    }
+    public String getContrasenya() { return contrasenya; }
+    public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
 
-    public String getRole() {
-        return this.role;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public ERole getRole() { return role; }
+    public void setRole(ERole role) { this.role = role; }
 }

@@ -1,39 +1,35 @@
 package com.example.demo.domain;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "grupos")
 public class Grupo extends User {
 
-    @Column(name = "curso")
+    @NotBlank
+    @Size(max = 50)
+    @Column(nullable = false, length = 50)
     private String curso;
-    @Column(name = "turno")
+
+    @NotBlank
+    @Size(max = 30)
+    @Column(nullable = false, length = 30)
     private String turno;
 
-    public Grupo(String username, String email, String password, ERole role, String curso, String turno) {
-        super(username, email, password, ERole.ROLE_GRUPO);
+    public Grupo() {}
+
+    public Grupo(String username, String nombre, String email, String contrasenya,
+                 String curso, String turno) {
+        super(username, nombre, email, contrasenya, ERole.ROLE_GRUPO);
         this.curso = curso;
         this.turno = turno;
     }
 
-    public String getCurso() {
-        return curso;
-    }
+    public String getCurso() { return curso; }
+    public void setCurso(String curso) { this.curso = curso; }
 
-    public void setCurso(String curso) {
-        this.curso = curso;
-    }
-
-    public String getTurno() {
-        return turno;
-    }
-
-    public void setTurno(String turno) {
-        this.turno = turno;
-    }
+    public String getTurno() { return turno; }
+    public void setTurno(String turno) { this.turno = turno; }
 }
-

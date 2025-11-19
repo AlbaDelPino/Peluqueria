@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.demo.controller.Response.NOT_FOUND;
@@ -35,21 +36,26 @@ public class ServicioController {
                     content = @Content(array = @ArraySchema(schema =
                     @Schema(implementation = Servicio.class)))),
     })
-
     @GetMapping(value = "/servicio", produces = "application/json")
-    public ResponseEntity<List<Servicio>> getServicios(@RequestParam(value =
-            "nombre", defaultValue = "") String nombre, @RequestParam(value =
-            "descripcion", defaultValue = "") String descripcion) {
+    public ResponseEntity<List<Servicio>> getServicios(
+            @RequestParam(value = "nombre", defaultValue = "") String nombre,
+            @RequestParam(value = "descripcion", defaultValue = "") String descripcion) {
+
         logger.info("inicio getServicios");
-        List<Servicio> servicios = null;
-        if (nombre.equals("")&&descripcion.equals(""))
+
+        List<Servicio> servicios;
+        if (nombre.isEmpty() && descripcion.isEmpty()) {
             servicios = servicioService.findAll();
-        else
-            servicios = (List<Servicio>) servicioService.findByNombreOrDescripcion(nombre,descripcion);
+        } else {
+            servicios = servicioService.findByNombreOrDescripcion(nombre, descripcion);
+        }
 
         logger.info("fin getServicios");
-        return new ResponseEntity<>(servicios, HttpStatus.OK);
+        return ResponseEntity.ok(servicios != null ? servicios : Collections.emptyList());
     }
+
+
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Existe el servicio", content = @Content(schema = @Schema(implementation =
                     Servicio.class))),

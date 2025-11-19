@@ -1,35 +1,33 @@
 package com.example.demo.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class TestController {
+
   @GetMapping("/all")
   public String allAccess() {
     return "Public Content.";
   }
 
   @GetMapping("/cliente")
-  @PreAuthorize("hasRole('CLIENTE') ")
-  public String userAccess() {
-    return "User Content.";
+  @PreAuthorize("hasRole('ROLE_CLIENTE')")
+  public String clienteAccess() {
+    return "Cliente Content.";
   }
 
   @GetMapping("/grupo")
-  @PreAuthorize("hasRole('GRUPO') or hasRole('CLIENTE')")
-  public String moderatorAccess() {
-    return "Moderator Board.";
+  @PreAuthorize("hasRole('ROLE_GRUPO') or hasRole('ROLE_CLIENTE')")
+  public String grupoAccess() {
+    return "Grupo Content.";
   }
 
   @GetMapping("/admin")
-  @PreAuthorize("hasRole('ADMIN') or hasRole('GRUPO') or hasRole('CLIENTE')")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GRUPO') or hasRole('ROLE_CLIENTE')")
   public String adminAccess() {
-    return "Admin Board.";
+    return "Admin Content.";
   }
 }
