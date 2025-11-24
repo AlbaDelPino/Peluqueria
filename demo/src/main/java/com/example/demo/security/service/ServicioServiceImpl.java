@@ -85,17 +85,6 @@ public class ServicioServiceImpl implements ServicioService {
         servicioRepository.deleteById(id);
     }
 
-    @Override
-    public void deleteAllByTipoId(long id_tipo_servicio) {
-        List<Servicio> servicios = servicioRepository.findByTipoId(id_tipo_servicio);
-
-        if (servicios!=null) {
-            for (Servicio servicio: servicios) {
-                servicioRepository.deleteById(servicio.getId_servicio());
-            }
-        }
-    }
-
 
 
 }

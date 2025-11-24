@@ -20,7 +20,6 @@ public interface ServicioService {
     Servicio addServicio(Servicio servicio);
     Servicio modifyServicio(long id, Servicio newServicio);
     void deleteServicio(long id);
-    void deleteAllByTipoId(long id);
 
     List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion);
     List<Servicio> findByNombreAndDuracion(String nombre, long duracion);

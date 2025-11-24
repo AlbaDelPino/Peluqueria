@@ -25,8 +25,8 @@ public class Servicio {
     private Long duracion;
 
     // 🔑 Opción A: cambiamos LAZY → EAGER
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tipoId", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id_tipo_servicio", nullable = false)
     @JsonBackReference
     private TipoServicio tipoServicio;
 

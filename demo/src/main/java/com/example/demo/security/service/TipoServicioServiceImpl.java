@@ -30,7 +30,6 @@ public class TipoServicioServiceImpl implements TipoServicioService {
 
     @Override
     public void deleteTipoServicio(Long id) {
-        servicioService.deleteAllByTipoId(id);
         tipoServicioRepository.deleteById(id);
     }
 

@@ -1,9 +1,6 @@
 package com.example.demo.exception;
 
 
-import java.util.Optional;
-import java.util.Set;
-
 public class ServicioNotFoundException extends RuntimeException {
     public ServicioNotFoundException() {
         super();
@@ -14,7 +11,7 @@ public class ServicioNotFoundException extends RuntimeException {
     }
 
     public ServicioNotFoundException(long id) {
-        super("Alumno not found: " + id);
+        super("Servicio not found: " + id);
     }
 
 
