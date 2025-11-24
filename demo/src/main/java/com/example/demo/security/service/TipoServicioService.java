@@ -9,4 +9,5 @@ public interface TipoServicioService {
     Optional<TipoServicio> findById(Long id);
     TipoServicio addTipoServicio(TipoServicio tipoServicio);
     void deleteTipoServicio(Long id);
+    TipoServicio upadateTipoServicio(Long id, TipoServicio tipoServi);
 }

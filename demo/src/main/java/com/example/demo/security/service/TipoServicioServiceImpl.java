@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Service
 public class TipoServicioServiceImpl implements TipoServicioService {
+
     @Autowired
     private TipoServicioRepository tipoServicioRepository;
+
+    @Autowired
+    private ServicioService servicioService;
 
     @Override
     public List<TipoServicio> findAll() { return tipoServicioRepository.findAll(); }
@@ -26,6 +30,21 @@ public class TipoServicioServiceImpl implements TipoServicioService {
 
     @Override
     public void deleteTipoServicio(Long id) {
+        servicioService.deleteAllByTipoId(id);
         tipoServicioRepository.deleteById(id);
+    }
+
+    @Override
+    public TipoServicio upadateTipoServicio(Long id, TipoServicio tipoServi) {
+        Optional<TipoServicio> optionalTipo = tipoServicioRepository.findById(id);
+
+        if (optionalTipo.isEmpty()) return null;
+
+        TipoServicio tipo = optionalTipo.get();
+
+        tipo.setNombre(tipoServi.getNombre() != null ? tipoServi.getNombre() : tipo.getNombre()) ;
+        tipo.setServicios(tipoServi.getServicios() != null ? tipoServi.getServicios() : tipo.getServicios());
+
+        return tipoServicioRepository.save(tipo);
     }
 }

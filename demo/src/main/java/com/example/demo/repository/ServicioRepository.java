@@ -11,6 +11,7 @@ public interface ServicioRepository extends CrudRepository<Servicio, Long> {
     List<Servicio> findAll();
     Set<Servicio> findByNombre(String nombre);
     Optional<Servicio> findById(long id);
+    List<Servicio> findByTipoId(long id);
     Set<Servicio> findByDescripcion(String descripcion);
     Set<Servicio> findByPrecio(long precio);
     Set<Servicio> findByDuracion(long duracion);

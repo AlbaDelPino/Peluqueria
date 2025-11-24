@@ -24,4 +24,15 @@ public class TipoServicioController {
     public ResponseEntity<TipoServicio> add(@RequestBody TipoServicio tipoServicio) {
         return ResponseEntity.ok(tipoServicioService.addTipoServicio(tipoServicio));
     }
+
+    @PutMapping("/{id}")
+    public TipoServicio upadateTipoServicio(@PathVariable Long id, @RequestBody TipoServicio tipoServicio) {
+        return tipoServicioService.upadateTipoServicio(id, tipoServicio);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public void deleteTipoServicio(@PathVariable Long id) {
+        tipoServicioService.deleteTipoServicio(id);
+    }
 }

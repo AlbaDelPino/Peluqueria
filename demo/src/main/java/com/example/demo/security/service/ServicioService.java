@@ -13,10 +13,12 @@ public interface ServicioService {
     Set<Servicio> findByNombre(String nombre);
     Set<Servicio> findByDescripcion(String descripcion);
     Optional<Servicio> findById(long id);
+    List<Servicio> findByTipoId(long id_tipo_servicio);
 
     Servicio addServicio(Servicio servicio);
     Servicio modifyServicio(long id, Servicio newServicio);
     void deleteServicio(long id);
+    void deleteAllByTipoId(long id);
 
     List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion);
     List<Servicio> findByNombreAndDuracion(String nombre, long duracion);

@@ -50,6 +50,11 @@ public class ServicioServiceImpl implements ServicioService {
     }
 
     @Override
+    public List<Servicio> findByTipoId(long id_tipo_servicio) {
+        return servicioRepository.findByTipoId(id_tipo_servicio);
+    }
+
+    @Override
     public Servicio addServicio(Servicio servicio) {
         return servicioRepository.save(servicio);
     }
@@ -68,6 +73,19 @@ public class ServicioServiceImpl implements ServicioService {
                 .orElseThrow(() -> new ServicioNotFoundException(id));
         servicioRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteAllByTipoId(long id_tipo_servicio) {
+        List<Servicio> servicios = servicioRepository.findByTipoId(id_tipo_servicio);
+
+        if (servicios!=null) {
+            for (Servicio servicio: servicios) {
+                servicioRepository.deleteById(servicio.getId_servicio());
+            }
+        }
+    }
+
+
 
 }
 
