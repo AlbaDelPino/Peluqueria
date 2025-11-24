@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 import com.example.demo.domain.Servicio;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -7,11 +8,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-public interface ServicioRepository extends CrudRepository<Servicio, Long> {
+public interface ServicioRepository extends JpaRepository<Servicio, Long> {
     List<Servicio> findAll();
     Set<Servicio> findByNombre(String nombre);
     Optional<Servicio> findById(long id);
-    List<Servicio> findByTipoId(long id);
     Set<Servicio> findByDescripcion(String descripcion);
     Set<Servicio> findByPrecio(long precio);
     Set<Servicio> findByDuracion(long duracion);
@@ -20,6 +20,9 @@ public interface ServicioRepository extends CrudRepository<Servicio, Long> {
   //  List<Servicio> findByNombreAndPrecio(String nombre, long precio);
 
 
+
+    @Query("SELECT s FROM Servicio s WHERE s.tipoServicio.id = :tipoServicioId")
+    List<Servicio> findByTipoId(@Param("tipoServicioId") Long tipoServicioId);
 
     // Query nativa: buscar por nombre LIKE y precio >
     @Query(value = "SELECT * FROM servicio WHERE nombre LIKE CONCAT('%', :nombre, '%') AND precio > :precio", nativeQuery = true)

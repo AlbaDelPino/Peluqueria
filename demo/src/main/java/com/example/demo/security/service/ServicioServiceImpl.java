@@ -30,6 +30,16 @@ public class ServicioServiceImpl implements ServicioService {
     public Set<Servicio> findByDescripcion(String descripcion) { return servicioRepository.findByDescripcion(descripcion); }
 
     @Override
+    public Set<Servicio> findByPrecio(long precio) {
+        return servicioRepository.findByPrecio(precio);
+    }
+
+    @Override
+    public Set<Servicio> findByDuracion(long duracion) {
+        return servicioRepository.findByDuracion(duracion);
+    }
+
+    @Override
     public List<Servicio> findByNombreOrDescripcion(String nombre, String descripcion) {
         return servicioRepository.findByNombreOrDescripcion(nombre, descripcion);
     }
@@ -48,6 +58,7 @@ public class ServicioServiceImpl implements ServicioService {
     public Optional<Servicio> findById(long id) {
         return servicioRepository.findById(id);
     }
+
 
     @Override
     public List<Servicio> findByTipoId(long id_tipo_servicio) {

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.TipoServicio;
+import com.example.demo.security.service.ServicioService;
 import com.example.demo.security.service.TipoServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ public class TipoServicioController {
 
     @Autowired
     private TipoServicioService tipoServicioService;
+
+    @Autowired
+    private ServicioService servicioService;
 
     @GetMapping
     public ResponseEntity<List<TipoServicio>> getAll() {
@@ -33,6 +37,8 @@ public class TipoServicioController {
 
     @DeleteMapping("/{id}")
     public void deleteTipoServicio(@PathVariable Long id) {
+        servicioService.deleteAllByTipoId(id);
         tipoServicioService.deleteTipoServicio(id);
+
     }
 }

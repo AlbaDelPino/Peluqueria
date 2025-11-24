@@ -12,6 +12,8 @@ public interface ServicioService {
     List<Servicio> findAll();
     Set<Servicio> findByNombre(String nombre);
     Set<Servicio> findByDescripcion(String descripcion);
+    Set<Servicio> findByPrecio(long precio);
+    Set<Servicio> findByDuracion(long duracion);
     Optional<Servicio> findById(long id);
     List<Servicio> findByTipoId(long id_tipo_servicio);
 
