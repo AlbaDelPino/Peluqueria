@@ -22,10 +22,6 @@ public class GrupoController {
         return grupoService.getAllGrupos();
     }
 
-    @PostMapping
-    public Grupo createGrupo(@RequestBody Grupo grupo) {
-        return grupoService.createGrupo(grupo);
-    }
 
     @PutMapping("/{id}")
     public Grupo updateGrupo(@PathVariable Long id, @RequestBody Grupo grupo) {

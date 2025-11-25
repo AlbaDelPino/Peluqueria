@@ -22,10 +22,6 @@ public class AdminController {
         return adminService.getAllAdmins();
     }
 
-    @PostMapping
-    public Admin createAdmin(@RequestBody Admin admin) {
-        return adminService.createAdmin(admin);
-    }
 
 
     @PutMapping("/{id}")

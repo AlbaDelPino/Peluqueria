@@ -10,9 +10,12 @@ import com.example.demo.payload.response.JwtResponse;
 import com.example.demo.payload.response.MessageResponse;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtils jwtUtils;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, JwtUtils jwtUtils) {
         this.userService = userService;
@@ -62,12 +67,12 @@ public class UserController {
         if (userService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
         }
-
+        String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
         Admin admin = new Admin(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
-                signUpRequest.getContrasenya(),
+                encodedPassword,
                 signUpRequest.getEspecialidad()
         );
 
@@ -84,12 +89,12 @@ public class UserController {
         if (userService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
         }
-
+        String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
         Grupo grupo = new Grupo(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
-                signUpRequest.getContrasenya(),
+                encodedPassword,
                 signUpRequest.getCurso(),
                 signUpRequest.getTurno()
         );
@@ -107,12 +112,13 @@ public class UserController {
         if (userService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
         }
+        String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
 
         User cliente = new User(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
-                signUpRequest.getContrasenya(),
+                encodedPassword,
                 ERole.ROLE_CLIENTE
         );
 

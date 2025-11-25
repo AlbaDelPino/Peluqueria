@@ -11,3 +11,46 @@ public class PeluqueriaApplication {
 	}
 
 }
+
+/*
+
+http://localhost:8082/api/auth/signup/admin
+
+{
+  "username": "admin1564",
+  "nombre": "Administrador General",
+  "email": "admin55654@empresa.com",
+  "contrasenya": "admin1263",
+  "especialidad": "Gfsdfsdf"
+}
+http://localhost:8082/api/auth/signin
+
+{
+  "username": "admin14",
+  "contrasenya": "admin123"
+
+}
+
+
+token geaders
+
+Authorization: Bearer <token>
+
+delete
+http://localhost:8082/api/admins/1
+get
+
+http://localhost:8082/api/admins
+
+put
+http://localhost:8082/api/admins/2
+{
+    "id": 2,
+    "username": "admin2r",
+    "nombre": "Super Admin",
+    "email": "superadmin@empresa.com",
+    "contrasenya": "super123",
+    "role": "ROLE_ADMIN",
+    "especialidad": "Infraestructura"
+}
+ */
