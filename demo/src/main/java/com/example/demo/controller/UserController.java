@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Admin;
 import com.example.demo.domain.ERole;
+import com.example.demo.domain.Grupo;
 import com.example.demo.domain.User;
 import com.example.demo.payload.request.LoginRequest;
 import com.example.demo.payload.request.SignupRequest;
@@ -50,36 +52,75 @@ public class UserController {
         ));
     }
 
-                // REGISTRO
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-        boolean usernameExists = userService.getAllUsers().stream()
-                .anyMatch(u -> u.getUsername().equals(signUpRequest.getUsername()));
-
-        if (usernameExists) {
+    // REGISTRO
+    // --- SIGNUP ADMIN ---
+    @PostMapping("/signup/admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody SignupRequest signUpRequest) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
         }
-
-        boolean emailExists = userService.getAllUsers().stream()
-                .anyMatch(u -> u.getEmail().equals(signUpRequest.getEmail()));
-
-        if (emailExists) {
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
         }
 
-        User user = new User(
+        Admin admin = new Admin(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
                 signUpRequest.getContrasenya(),
-                signUpRequest.getRole() != null ? signUpRequest.getRole() : ERole.ROLE_CLIENTE
+                signUpRequest.getEspecialidad()
         );
 
-        userService.saveUser(user);
-        return ResponseEntity.ok(new MessageResponse("Usuario registrado correctamente!"));
+        userService.saveUser(admin);
+        return ResponseEntity.ok(new MessageResponse("Admin registrado correctamente!"));
     }
 
-    // LISTAR todos los usuarios
+    // --- SIGNUP GRUPO ---
+    @PostMapping("/signup/grupo")
+    public ResponseEntity<?> registerGrupo(@RequestBody SignupRequest signUpRequest) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
+        }
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
+        }
+
+        Grupo grupo = new Grupo(
+                signUpRequest.getUsername(),
+                signUpRequest.getNombre(),
+                signUpRequest.getEmail(),
+                signUpRequest.getContrasenya(),
+                signUpRequest.getCurso(),
+                signUpRequest.getTurno()
+        );
+
+        userService.saveUser(grupo);
+        return ResponseEntity.ok(new MessageResponse("Grupo registrado correctamente!"));
+    }
+
+    // --- SIGNUP CLIENTE ---
+    @PostMapping("/signup/cliente")
+    public ResponseEntity<?> registerCliente(@RequestBody SignupRequest signUpRequest) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
+        }
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
+        }
+
+        User cliente = new User(
+                signUpRequest.getUsername(),
+                signUpRequest.getNombre(),
+                signUpRequest.getEmail(),
+                signUpRequest.getContrasenya(),
+                ERole.ROLE_CLIENTE
+        );
+
+        userService.saveUser(cliente);
+        return ResponseEntity.ok(new MessageResponse("Cliente registrado correctamente!"));
+    }
+
+        // LISTAR todos los usuarios
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();

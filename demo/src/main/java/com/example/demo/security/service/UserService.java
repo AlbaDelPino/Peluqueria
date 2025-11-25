@@ -16,6 +16,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public User saveUser(User user) {
         // Nota: idealmente encriptar contrasenya con BCrypt antes de guardar
         return userRepository.save(user);

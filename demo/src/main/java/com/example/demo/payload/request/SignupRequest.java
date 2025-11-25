@@ -6,13 +6,20 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class SignupRequest {
+
+    // --- Campos comunes ---
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(max = 20)
     private String username;
 
     @NotBlank
-    @Size(min = 3, max = 70)
+    @Size(max = 70)
     private String nombre;
 
     @NotBlank
@@ -21,13 +28,17 @@ public class SignupRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(max = 100)
     private String contrasenya;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private ERole role;
+    // --- Campos específicos de Admin ---
+    private String especialidad;
 
+    // --- Campos específicos de Grupo ---
+    private String curso;
+    private String turno;
+
+    // --- Getters y Setters ---
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
@@ -40,6 +51,12 @@ public class SignupRequest {
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
 
-    public ERole getRole() { return role; }
-    public void setRole(ERole role) { this.role = role; }
+    public String getEspecialidad() { return especialidad; }
+    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+
+    public String getCurso() { return curso; }
+    public void setCurso(String curso) { this.curso = curso; }
+
+    public String getTurno() { return turno; }
+    public void setTurno(String turno) { this.turno = turno; }
 }
