@@ -14,10 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // 🔑 activa @PreAuthorize
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtUtils jwtUtils;
@@ -31,6 +30,7 @@ public class WebSecurityConfig {
         return new AuthTokenFilter(jwtUtils);
     }
 
+    // 🔑 Aquí añades el PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,11 +46,16 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signin", "/api/auth/signup/cliente/public").permitAll()
+                        .requestMatchers(
+                                "/api/auth/signin",
+                                "/api/auth/signup/cliente/public",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-                // 🔑 Manejo de errores de acceso denegado
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -62,3 +67,5 @@ public class WebSecurityConfig {
         return http.build();
     }
 }
+
+
