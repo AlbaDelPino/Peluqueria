@@ -2,68 +2,46 @@ package com.example.demo.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtils {
-  private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-  @Value("${bezkoder.app.jwtSecret}")
-  private String jwtSecret;
+  private final String jwtSecret = "miClaveSuperSecretaDeAlMenos32Caracteres123456";
+  private final int jwtExpirationMs = 86400000; // 24h
 
-  @Value("${bezkoder.app.jwtExpirationMs}")
-  private int jwtExpirationMs;
+  private final Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
-  // Generar la clave segura a partir del secreto
-  private Key getSigningKey() {
-    return Keys.hmacShaKeyFor(jwtSecret.getBytes());
-  }
-
-  // Generar token JWT
-  public String generateJwtToken(String username) {
+  public String generateJwtToken(String username, List<String> roles) {
     return Jwts.builder()
             .setSubject(username)
+            .claim("roles", roles)
             .setIssuedAt(new Date())
             .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+            .signWith(key, SignatureAlgorithm.HS256)
             .compact();
   }
 
-  // Obtener username desde el token
   public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder()
-            .setSigningKey(getSigningKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .getSubject();
+    return Jwts.parserBuilder().setSigningKey(key).build()
+            .parseClaimsJws(token).getBody().getSubject();
   }
 
-  // Validar token
+  public List<String> getRolesFromJwtToken(String token) {
+    return Jwts.parserBuilder().setSigningKey(key).build()
+            .parseClaimsJws(token).getBody().get("roles", List.class);
+  }
+
   public boolean validateJwtToken(String authToken) {
     try {
-      Jwts.parserBuilder()
-              .setSigningKey(getSigningKey())
-              .build()
-              .parseClaimsJws(authToken);
+      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
       return true;
-    } catch (SecurityException e) {
-      logger.error("Invalid JWT signature: {}", e.getMessage());
-    } catch (MalformedJwtException e) {
-      logger.error("Invalid JWT token: {}", e.getMessage());
-    } catch (ExpiredJwtException e) {
-      logger.error("JWT token is expired: {}", e.getMessage());
-    } catch (UnsupportedJwtException e) {
-      logger.error("JWT token is unsupported: {}", e.getMessage());
-    } catch (IllegalArgumentException e) {
-      logger.error("JWT claims string is empty: {}", e.getMessage());
+    } catch (JwtException e) {
+      return false;
     }
-    return false;
   }
 }

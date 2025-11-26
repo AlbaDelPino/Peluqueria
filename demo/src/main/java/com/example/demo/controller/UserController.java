@@ -13,9 +13,9 @@ import com.example.demo.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtils jwtUtils;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -34,19 +35,23 @@ public class UserController {
         this.jwtUtils = jwtUtils;
     }
 
+    // --- SIGNIN ---
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         User user = userService.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals(loginRequest.getUsername()) &&
-                        u.getContrasenya().equals(loginRequest.getContrasenya()))
+                .filter(u -> u.getUsername().equals(loginRequest.getUsername()))
                 .findFirst()
                 .orElse(null);
 
         if (user == null) {
-            return ResponseEntity.status(401).body(new MessageResponse("Error: Usuario o contraseña incorrecta"));
+            return ResponseEntity.status(401).body(new MessageResponse("Error: Usuario no encontrado"));
         }
 
-        String token = jwtUtils.generateJwtToken(user.getUsername());
+        if (!passwordEncoder.matches(loginRequest.getContrasenya(), user.getContrasenya())) {
+            return ResponseEntity.status(401).body(new MessageResponse("Error: Contraseña incorrecta"));
+        }
+
+        String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
 
         return ResponseEntity.ok(new JwtResponse(
                 token,
@@ -57,17 +62,12 @@ public class UserController {
         ));
     }
 
-    // REGISTRO
-    // --- SIGNUP ADMIN ---
+    // --- SIGNUP ADMIN (solo otro admin puede crear) ---
     @PostMapping("/signup/admin")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerAdmin(@RequestBody SignupRequest signUpRequest) {
-        if (userService.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
-        }
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
-        }
         String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
+
         Admin admin = new Admin(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
@@ -75,21 +75,18 @@ public class UserController {
                 encodedPassword,
                 signUpRequest.getEspecialidad()
         );
+        admin.setRole(ERole.ROLE_ADMIN);
 
         userService.saveUser(admin);
         return ResponseEntity.ok(new MessageResponse("Admin registrado correctamente!"));
     }
 
-    // --- SIGNUP GRUPO ---
+    // --- SIGNUP GRUPO (solo admin puede crear) ---
     @PostMapping("/signup/grupo")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerGrupo(@RequestBody SignupRequest signUpRequest) {
-        if (userService.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
-        }
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
-        }
         String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
+
         Grupo grupo = new Grupo(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
@@ -98,20 +95,34 @@ public class UserController {
                 signUpRequest.getCurso(),
                 signUpRequest.getTurno()
         );
+        grupo.setRole(ERole.ROLE_GRUPO);
 
         userService.saveUser(grupo);
         return ResponseEntity.ok(new MessageResponse("Grupo registrado correctamente!"));
     }
 
-    // --- SIGNUP CLIENTE ---
+    // --- SIGNUP CLIENTE (admin o grupo pueden crear) ---
     @PostMapping("/signup/cliente")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO')")
     public ResponseEntity<?> registerCliente(@RequestBody SignupRequest signUpRequest) {
-        if (userService.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username ya está en uso!"));
-        }
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email ya está en uso!"));
-        }
+        String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
+
+        User cliente = new User(
+                signUpRequest.getUsername(),
+                signUpRequest.getNombre(),
+                signUpRequest.getEmail(),
+                encodedPassword,
+                ERole.ROLE_CLIENTE
+        );
+        cliente.setRole(ERole.ROLE_CLIENTE);
+
+        userService.saveUser(cliente);
+        return ResponseEntity.ok(new MessageResponse("Cliente registrado correctamente!"));
+    }
+
+    // --- SIGNUP CLIENTE PUBLIC (sin sesión) ---
+    @PostMapping("/signup/cliente/public")
+    public ResponseEntity<?> registerClientePublic(@RequestBody SignupRequest signUpRequest) {
         String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
 
         User cliente = new User(
@@ -123,17 +134,19 @@ public class UserController {
         );
 
         userService.saveUser(cliente);
-        return ResponseEntity.ok(new MessageResponse("Cliente registrado correctamente!"));
+        return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
     }
 
-        // LISTAR todos los usuarios
+    // --- LISTAR todos los usuarios ---
     @GetMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // OBTENER usuario por ID
+    // --- OBTENER usuario por ID ---
     @GetMapping("/users/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO')")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user == null) {
@@ -141,27 +154,5 @@ public class UserController {
                     .body(new MessageResponse("Usuario no encontrado"));
         }
         return ResponseEntity.ok(user);
-    }
-
-    // ACTUALIZAR usuario
-    @PutMapping("/users/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userService.updateUser(id, updatedUser)
-                .map(user -> ResponseEntity.ok(new MessageResponse("Usuario actualizado correctamente")))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new MessageResponse("Usuario no encontrado")));
-    }
-
-
-    // ELIMINAR usuario
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        boolean deleted = userService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok(new MessageResponse("Usuario eliminado correctamente"));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new MessageResponse("Usuario no encontrado"));
-        }
     }
 }

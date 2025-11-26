@@ -3,12 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.domain.Admin;
 import com.example.demo.domain.User;
 import com.example.demo.security.service.AdminService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/admins")
+
 public class AdminController {
 
     private final AdminService adminService;
@@ -18,6 +20,7 @@ public class AdminController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<User> getAllAdmins() {
         return adminService.getAllAdmins();
     }
@@ -25,12 +28,14 @@ public class AdminController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public Admin updateAdmin(@PathVariable Long id, @RequestBody Admin admin) {
         return (Admin) adminService.updateAdmin(id, admin);
     }
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public boolean deleteAdmin(@PathVariable Long id) {
         return adminService.deleteAdmin(id);
     }

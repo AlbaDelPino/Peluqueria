@@ -37,6 +37,7 @@ public class SignupRequest {
     // --- Campos específicos de Grupo ---
     private String curso;
     private String turno;
+    private String rol;
 
     // --- Getters y Setters ---
     public String getUsername() { return username; }
@@ -59,4 +60,12 @@ public class SignupRequest {
 
     public String getTurno() { return turno; }
     public void setTurno(String turno) { this.turno = turno; }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
 }
