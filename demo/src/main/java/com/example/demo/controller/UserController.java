@@ -136,6 +136,26 @@ public class UserController {
         userService.saveUser(cliente);
         return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
     }
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
+    public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {
+        // El username del usuario autenticado
+        String username = principal.getName();
+
+        // Buscar el usuario en la base de datos
+        User user = userService.getAllUsers().stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse("Usuario no encontrado"));
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
 
     // --- LISTAR todos los usuarios ---
     @GetMapping("/users")
