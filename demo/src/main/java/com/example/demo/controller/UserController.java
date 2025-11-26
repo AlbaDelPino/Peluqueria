@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Admin;
-import com.example.demo.domain.ERole;
-import com.example.demo.domain.Grupo;
-import com.example.demo.domain.User;
+import com.example.demo.domain.*;
 import com.example.demo.payload.request.LoginRequest;
 import com.example.demo.payload.request.SignupRequest;
 import com.example.demo.payload.response.JwtResponse;
@@ -20,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth")
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
@@ -101,18 +98,19 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Grupo registrado correctamente!"));
     }
 
-    // --- SIGNUP CLIENTE (admin o grupo pueden crear) ---
     @PostMapping("/signup/cliente")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO')")
     public ResponseEntity<?> registerCliente(@RequestBody SignupRequest signUpRequest) {
         String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
 
-        User cliente = new User(
+        Cliente cliente = new Cliente(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
                 encodedPassword,
-                ERole.ROLE_CLIENTE
+                signUpRequest.getDireccion(),
+                signUpRequest.getObservacion(),
+                signUpRequest.getAlergenos()
         );
         cliente.setRole(ERole.ROLE_CLIENTE);
 
@@ -120,33 +118,31 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Cliente registrado correctamente!"));
     }
 
-    // --- SIGNUP CLIENTE PUBLIC (sin sesión) ---
     @PostMapping("/signup/cliente/public")
     public ResponseEntity<?> registerClientePublic(@RequestBody SignupRequest signUpRequest) {
         String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
 
-        User cliente = new User(
+        Cliente cliente = new Cliente(
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
                 encodedPassword,
-                ERole.ROLE_CLIENTE
+                signUpRequest.getDireccion(),
+                signUpRequest.getObservacion(),
+                signUpRequest.getAlergenos()
         );
+        cliente.setRole(ERole.ROLE_CLIENTE);
 
         userService.saveUser(cliente);
         return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
     }
+
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {
-        // El username del usuario autenticado
         String username = principal.getName();
 
-        // Buscar el usuario en la base de datos
-        User user = userService.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
+        User user = userService.getUserByUsername(username);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -155,6 +151,7 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
 
 
     // --- LISTAR todos los usuarios ---

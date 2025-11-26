@@ -37,7 +37,15 @@ public class SignupRequest {
     // --- Campos específicos de Grupo ---
     private String curso;
     private String turno;
+
+    //--role ---
     private String rol;
+
+    //---cliente--
+
+    private String direccion;
+    private String observacion;
+    private String alergenos;
 
     // --- Getters y Setters ---
     public String getUsername() { return username; }
@@ -67,5 +75,29 @@ public class SignupRequest {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
+    public String getAlergenos() {
+        return alergenos;
+    }
+
+    public void setAlergenos(String alergenos) {
+        this.alergenos = alergenos;
     }
 }
