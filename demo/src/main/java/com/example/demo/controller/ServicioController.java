@@ -17,7 +17,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.demo.controller.Response.NOT_FOUND;
 
@@ -143,14 +145,14 @@ public class ServicioController {
             @ApiResponse(responseCode = "404", description = "El servicio no existe", content = @Content(schema = @Schema(implementation =
                     Response.class)))
     })
-    @DeleteMapping(value = "/servicio/{id}", produces =
-            "application/json")
-    public ResponseEntity<Response> deleteServicio(@PathVariable long id)
-    {
+    @DeleteMapping("/servicio/{id}")
+    public ResponseEntity<Map<String, String>> deleteServicio(@PathVariable long id) {
         servicioService.deleteServicio(id);
-        return new ResponseEntity<>(Response.noErrorResponse(),
-                HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Servicio eliminado correctamente");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     @ExceptionHandler(ServicioNotFoundException.class)
     @ResponseBody
