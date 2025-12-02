@@ -33,17 +33,23 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 70)
     private String nombre;
 
-    @NotBlank
     @Size(max = 50)
     @Email
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String email;
 
     @NotBlank
+    @Size(max = 15)
+    @Column(nullable = false, length = 15)
+    private long telefono;
+
+    @NotBlank
     @Size(max = 100)
-    
     @Column(nullable = false, length = 100)
     private String contrasenya;
+
+    @NotBlank
+    private boolean estado;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
@@ -51,11 +57,13 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String nombre, String email, String contrasenya, ERole role) {
+    public User(String username, String nombre, String email, long telefono, String contrasenya,boolean estado, ERole role) {
         this.username = username;
         this.nombre = nombre;
         this.email = email;
+        this.telefono = telefono;
         this.contrasenya = contrasenya;
+        this.estado = estado;
         this.role = role;
     }
 
@@ -72,8 +80,19 @@ public class User implements UserDetails {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
+    public long getTelefono() {return telefono;}
+    public void setTelefono(long telefono) {this.telefono = telefono;}
+
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
 
     public ERole getRole() { return role; }
     public void setRole(ERole role) { this.role = role; }

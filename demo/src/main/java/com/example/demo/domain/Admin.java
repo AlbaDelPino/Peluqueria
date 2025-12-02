@@ -15,8 +15,8 @@ public class Admin extends User {
 
     public Admin() {}
 
-    public Admin(String username, String nombre, String email, String contrasenya, String especialidad) {
-        super(username, nombre, email, contrasenya, ERole.ROLE_ADMIN);
+    public Admin(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String especialidad) {
+        super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_ADMIN);
         this.especialidad = especialidad;
     }
 

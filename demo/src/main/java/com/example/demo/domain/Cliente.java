@@ -23,9 +23,9 @@ public class Cliente extends User {
 
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, String contrasenya,
+    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
                    String direccion, String observacion, String alergenos) {
-        super(username, nombre, email, contrasenya, ERole.ROLE_CLIENTE);
+        super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE);
         this.direccion = direccion;
         this.observacion = observacion;
         this.alergenos = alergenos;

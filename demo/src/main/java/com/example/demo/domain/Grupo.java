@@ -20,9 +20,9 @@ public class Grupo extends User {
 
     public Grupo() {}
 
-    public Grupo(String username, String nombre, String email, String contrasenya,
+    public Grupo(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
                  String curso, String turno) {
-        super(username, nombre, email, contrasenya, ERole.ROLE_GRUPO);
+        super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_GRUPO);
         this.curso = curso;
         this.turno = turno;
     }
