@@ -22,14 +22,21 @@ public class SignupRequest {
     @Size(max = 70)
     private String nombre;
 
-    @NotBlank
+
     @Size(max = 50)
     @Email
     private String email;
 
     @NotBlank
+    @Size(max = 15)
+    private long telefono;
+
+    @NotBlank
     @Size(max = 100)
     private String contrasenya;
+
+    @NotBlank
+    private boolean estado;
 
     // --- Campos específicos de Admin ---
     private String especialidad;
@@ -56,6 +63,18 @@ public class SignupRequest {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public void setTelefono(long telefono) {
+        this.telefono = telefono;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
 
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
@@ -100,4 +119,6 @@ public class SignupRequest {
     public void setAlergenos(String alergenos) {
         this.alergenos = alergenos;
     }
+
+    public long getTelefono() {return telefono;}
 }
