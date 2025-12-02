@@ -18,7 +18,7 @@ public class TipoServicio {
     @Column(name = "nombre", nullable = false, unique = true)
     private String nombre;
 
-    @OneToMany(mappedBy = "tipoServicio", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tipoServicio")
     @JsonIgnore
     private List<Servicio> servicios = new ArrayList<>();
 
