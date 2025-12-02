@@ -38,8 +38,9 @@ public class User implements UserDetails {
     @Column(length = 50)
     private String email;
 
-    @NotBlank
-    @Size(max = 15)
+    @NotNull
+    @Min(100000000)          // mínimo 9 dígitos
+    @Max(999999999999999L)// máximo 15 dígitos
     @Column(nullable = false, length = 15)
     private long telefono;
 
@@ -48,7 +49,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 100)
     private String contrasenya;
 
-    @NotBlank
+    @NotNull
     private boolean estado;
 
     @Enumerated(EnumType.STRING)
