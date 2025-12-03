@@ -27,7 +27,6 @@ public class Servicio {
     // 🔑 Opción A: cambiamos LAZY → EAGER
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
-
     private TipoServicio tipoServicio;
 
     public Servicio() {

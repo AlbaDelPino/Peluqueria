@@ -153,6 +153,7 @@ public class ServicioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
     @ExceptionHandler(ServicioNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)

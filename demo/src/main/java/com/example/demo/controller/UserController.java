@@ -69,7 +69,9 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
+                signUpRequest.getTelefono(),
                 encodedPassword,
+                signUpRequest.isEstado(),
                 signUpRequest.getEspecialidad()
         );
         admin.setRole(ERole.ROLE_ADMIN);
@@ -88,7 +90,9 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
+                signUpRequest.getTelefono(),
                 encodedPassword,
+                signUpRequest.isEstado(),
                 signUpRequest.getCurso(),
                 signUpRequest.getTurno()
         );
@@ -107,7 +111,9 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
+                signUpRequest.getTelefono(),
                 encodedPassword,
+                signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
                 signUpRequest.getAlergenos()
@@ -126,7 +132,9 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
+                signUpRequest.getTelefono(),
                 encodedPassword,
+                signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
                 signUpRequest.getAlergenos()
