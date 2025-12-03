@@ -27,9 +27,8 @@ public class SignupRequest {
     @Email
     private String email;
 
-    @NotBlank
     @Size(max = 15)
-    private long telefono;
+    private Long telefono;
 
     @NotBlank
     @Size(max = 100)
@@ -64,7 +63,10 @@ public class SignupRequest {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public void setTelefono(long telefono) {
+    public Long getTelefono() {
+        return telefono;
+    }
+    public void setTelefono(Long telefono) {
         this.telefono = telefono;
     }
 
@@ -119,6 +121,4 @@ public class SignupRequest {
     public void setAlergenos(String alergenos) {
         this.alergenos = alergenos;
     }
-
-    public long getTelefono() {return telefono;}
 }

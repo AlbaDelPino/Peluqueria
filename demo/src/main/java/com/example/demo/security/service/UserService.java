@@ -42,7 +42,9 @@ public class UserService {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
+            user.setTelefono(updatedUser.getTelefono());
             user.setContrasenya(updatedUser.getContrasenya());
+            user.setEstado(updatedUser.isEstado());
             user.setRole(updatedUser.getRole());
             return userRepository.save(user);
         });
@@ -57,6 +59,9 @@ public class UserService {
     // En UserService
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
+    }
+    public List<User> getUsersByEstado(boolean estado) {
+        return userRepository.findByEstado(estado);
     }
 
 

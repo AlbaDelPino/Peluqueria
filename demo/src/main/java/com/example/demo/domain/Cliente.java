@@ -23,7 +23,7 @@ public class Cliente extends User {
 
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
+    public Cliente(String username, String nombre, String email, Long telefono, String contrasenya, boolean estado,
                    String direccion, String observacion, String alergenos) {
         super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE);
         this.direccion = direccion;

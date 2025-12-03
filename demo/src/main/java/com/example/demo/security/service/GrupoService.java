@@ -49,6 +49,8 @@ public class GrupoService {
         grupo.setNombre(grupoDetails.getNombre() != null ? grupoDetails.getNombre() : grupo.getNombre());
         grupo.setUsername(grupoDetails.getUsername() != null ? grupoDetails.getUsername() : grupo.getUsername());
         grupo.setEmail(grupoDetails.getEmail() != null ? grupoDetails.getEmail() : grupo.getEmail());
+        grupo.setTelefono(grupoDetails.getTelefono() != 0 ? grupoDetails.getTelefono() : grupo.getTelefono());
+        grupo.setEstado(grupoDetails.isEstado());
         if (grupoDetails.getContrasenya() != null && !grupoDetails.getContrasenya().isEmpty()) {
             grupo.setContrasenya(grupoDetails.getContrasenya());
         }

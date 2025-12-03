@@ -49,6 +49,8 @@ public class ClienteService {
         cliente.setNombre(clienteDetails.getNombre() != null ? clienteDetails.getNombre() : cliente.getNombre());
         cliente.setUsername(clienteDetails.getUsername() != null ? clienteDetails.getUsername() : cliente.getUsername());
         cliente.setEmail(clienteDetails.getEmail() != null ? clienteDetails.getEmail() : cliente.getEmail());
+        cliente.setTelefono(clienteDetails.getTelefono() != 0 ? clienteDetails.getTelefono() : cliente.getTelefono());
+        cliente.setEstado(clienteDetails.isEstado());
         if (clienteDetails.getContrasenya() != null && !clienteDetails.getContrasenya().isEmpty()) {
             cliente.setContrasenya(clienteDetails.getContrasenya());
         }

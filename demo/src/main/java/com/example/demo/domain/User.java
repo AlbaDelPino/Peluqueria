@@ -38,10 +38,9 @@ public class User implements UserDetails {
     @Column(length = 50)
     private String email;
 
-    @NotBlank
     @Size(max = 15)
-    @Column(nullable = false, length = 15)
-    private long telefono;
+    @Column(length = 15)
+    private Long telefono;
 
     @NotBlank
     @Size(max = 100)
@@ -57,7 +56,7 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String nombre, String email, long telefono, String contrasenya,boolean estado, ERole role) {
+    public User(String username, String nombre, String email, Long telefono, String contrasenya,boolean estado, ERole role) {
         this.username = username;
         this.nombre = nombre;
         this.email = email;
@@ -80,8 +79,8 @@ public class User implements UserDetails {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public long getTelefono() {return telefono;}
-    public void setTelefono(long telefono) {this.telefono = telefono;}
+    public Long getTelefono() {return telefono;}
+    public void setTelefono(Long telefono) {this.telefono = telefono;}
 
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
