@@ -146,7 +146,6 @@ public class UserController {
         userService.saveUser(cliente);
         return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
     }
-
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {

@@ -1,15 +1,6 @@
 package com.example.demo.payload.request;
 
-import com.example.demo.domain.ERole;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
-
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public class SignupRequest {
 
@@ -22,23 +13,17 @@ public class SignupRequest {
     @Size(max = 70)
     private String nombre;
 
-
     @Size(max = 50)
     @Email
     private String email;
 
-    @NotBlank
-    @Size(max = 15)
     private long telefono;
 
     @NotBlank
     @Size(max = 100)
     private String contrasenya;
 
-    @NotBlank
     private boolean estado;
-
-
 
     // --- Campos específicos de Admin ---
     private String especialidad;
@@ -50,12 +35,13 @@ public class SignupRequest {
     //--role ---
     private String rol;
 
-    //---cliente--
-
+    // --- Campos específicos de Cliente ---
     private String direccion;
     private String observacion;
     private String alergenos;
-    private String imagen;
+
+    private byte[] imagen;   // ahora byte[] para ser coherente con Cliente
+
 
     // --- Getters y Setters ---
     public String getUsername() { return username; }
@@ -67,20 +53,14 @@ public class SignupRequest {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public void setTelefono(long telefono) {
-        this.telefono = telefono;
-    }
-
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
+    public long getTelefono() { return telefono; }
+    public void setTelefono(long telefono) { this.telefono = telefono; }
 
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
+
+    public boolean isEstado() { return estado; }
+    public void setEstado(boolean estado) { this.estado = estado; }
 
     public String getEspecialidad() { return especialidad; }
     public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
@@ -91,45 +71,18 @@ public class SignupRequest {
     public String getTurno() { return turno; }
     public void setTurno(String turno) { this.turno = turno; }
 
-    public String getRol() {
-        return rol;
-    }
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public String getDireccion() {
-        return direccion;
-    }
+    public String getObservacion() { return observacion; }
+    public void setObservacion(String observacion) { this.observacion = observacion; }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
+    public String getAlergenos() { return alergenos; }
+    public void setAlergenos(String alergenos) { this.alergenos = alergenos; }
 
-    public String getObservacion() {
-        return observacion;
-    }
-
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
-    }
-
-    public String getAlergenos() {
-        return alergenos;
-    }
-
-    public void setAlergenos(String alergenos) {
-        this.alergenos = alergenos;
-    }
-
-    public long getTelefono() {return telefono;}
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
+    public byte[] getImagen() { return imagen; }
+    public void setImagen(byte[] imagen) { this.imagen = imagen; }
 }
