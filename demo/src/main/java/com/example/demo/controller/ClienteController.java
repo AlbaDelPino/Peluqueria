@@ -23,20 +23,23 @@ public class ClienteController {
     public List<User> getAllClientes() {
         return clienteService.getAllClientes();
     }
-
+    @GetMapping("/username/{username}")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
+    public User getClienteByUsername(@PathVariable String username) {
+        return clienteService.getClienteByUsername(username);
+    }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE)")
-
-    public Cliente updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        return (Cliente) clienteService.updateCliente(id, cliente);
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
+    public User updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+        return clienteService.updateCliente(id, cliente);
     }
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE)")
-
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public boolean deleteCliente(@PathVariable Long id) {
         return clienteService.deleteCliente(id);
     }
 }
+

@@ -1,8 +1,11 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 @Table(name = "grupos")
@@ -18,9 +21,14 @@ public class Grupo extends User {
     @Column(nullable = false, length = 30)
     private String turno;
 
+    // Relación con citas (un alumno/grupo puede tener muchas citas)
+    @OneToMany(mappedBy = "alumno", orphanRemoval = true)
+    @JsonIgnore
+    private List<Cita> citas;
+
     public Grupo() {}
 
-    public Grupo(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
+    public Grupo(String username, String nombre, String email, Long telefono, String contrasenya, boolean estado,
                  String curso, String turno) {
         super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_GRUPO);
         this.curso = curso;
@@ -32,4 +40,7 @@ public class Grupo extends User {
 
     public String getTurno() { return turno; }
     public void setTurno(String turno) { this.turno = turno; }
+
+    public List<Cita> getCitas() { return citas; }
+    public void setCitas(List<Cita> citas) { this.citas = citas; }
 }

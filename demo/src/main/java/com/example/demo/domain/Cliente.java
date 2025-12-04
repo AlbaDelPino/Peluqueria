@@ -21,14 +21,20 @@ public class Cliente extends User {
     @Column(length = 200)
     private String alergenos;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imagen;   // Usamos byte[] para mapear un BLOB
+
+
     public Cliente() {}
 
     public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
-                   String direccion, String observacion, String alergenos) {
+                   String direccion, String observacion, String alergenos, byte[] imagen) {
         super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE);
         this.direccion = direccion;
         this.observacion = observacion;
         this.alergenos = alergenos;
+        this.imagen = imagen;
     }
 
     public String getDireccion() { return direccion; }
@@ -39,4 +45,7 @@ public class Cliente extends User {
 
     public String getAlergenos() { return alergenos; }
     public void setAlergenos(String alergenos) { this.alergenos = alergenos; }
+
+    public byte[] getImagen() { return imagen; }
+    public void setImagen(byte[] imagen) { this.imagen = imagen; }
 }

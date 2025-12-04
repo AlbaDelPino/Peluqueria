@@ -116,7 +116,8 @@ public class UserController {
                 signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
-                signUpRequest.getAlergenos()
+                signUpRequest.getAlergenos(),
+                signUpRequest.getImagen()
         );
         cliente.setRole(ERole.ROLE_CLIENTE);
 
@@ -137,14 +138,14 @@ public class UserController {
                 signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
-                signUpRequest.getAlergenos()
+                signUpRequest.getAlergenos(),
+                signUpRequest.getImagen()
         );
         cliente.setRole(ERole.ROLE_CLIENTE);
 
         userService.saveUser(cliente);
         return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
     }
-
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {

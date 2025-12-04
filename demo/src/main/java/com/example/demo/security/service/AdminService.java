@@ -4,6 +4,7 @@ import com.example.demo.domain.Admin;
 import com.example.demo.domain.ERole;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,12 @@ import java.util.Optional;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminService(UserRepository userRepository) {
+    public AdminService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Obtener todos los administradores
@@ -49,9 +53,12 @@ public class AdminService {
         admin.setNombre(adminDetails.getNombre() != null ? adminDetails.getNombre() : admin.getNombre());
         admin.setUsername(adminDetails.getUsername() != null ? adminDetails.getUsername() : admin.getUsername());
         admin.setEmail(adminDetails.getEmail() != null ? adminDetails.getEmail() : admin.getEmail());
+        admin.setTelefono(adminDetails.getTelefono() != 0 ? adminDetails.getTelefono() : admin.getTelefono());
+        admin.setEstado(adminDetails.isEstado());
         if (adminDetails.getContrasenya() != null && !adminDetails.getContrasenya().isEmpty()) {
-            admin.setContrasenya(adminDetails.getContrasenya());
+            admin.setContrasenya(passwordEncoder.encode(adminDetails.getContrasenya()));
         }
+
 
         // 🔹 Atributo específico de Admin
         admin.setEspecialidad(adminDetails.getEspecialidad() != null ? adminDetails.getEspecialidad() : admin.getEspecialidad());

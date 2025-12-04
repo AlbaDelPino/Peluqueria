@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,16 +25,18 @@ public class Servicio {
     @Column(name = "duracion")
     private Long duracion;
 
-    // 🔑 Opción A: cambiamos LAZY → EAGER
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
     private TipoServicio tipoServicio;
 
+
+    // Relación con citas (un servicio puede estar en muchas citas)
+    @OneToMany(mappedBy = "servicio", orphanRemoval = true)
+    @JsonIgnore
+    private java.util.List<Cita> citas;
+
     public Servicio() {
-        this.nombre = "";
-        this.descripcion = "";
-        this.precio = 0L;
-        this.duracion = 0L;
+
     }
 
     public Servicio(String nombre, String descripcion, Long precio, Long duracion, TipoServicio tipoServicio) {
@@ -63,6 +66,8 @@ public class Servicio {
     public TipoServicio getTipoServicio() { return tipoServicio; }
     public void setTipoServicio(TipoServicio tipoServicio) { this.tipoServicio = tipoServicio; }
 
+    public java.util.List<Cita> getCitas() { return citas; }
+    public void setCitas(java.util.List<Cita> citas) { this.citas = citas; }
     @Override
     public String toString() {
         return "Servicio{" +
