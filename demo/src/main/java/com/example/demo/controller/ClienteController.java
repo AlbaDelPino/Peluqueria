@@ -26,7 +26,7 @@ public class ClienteController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE)")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
 
     public Cliente updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         return (Cliente) clienteService.updateCliente(id, cliente);
@@ -34,7 +34,7 @@ public class ClienteController {
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE)")
+    @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
 
     public boolean deleteCliente(@PathVariable Long id) {
         return clienteService.deleteCliente(id);
