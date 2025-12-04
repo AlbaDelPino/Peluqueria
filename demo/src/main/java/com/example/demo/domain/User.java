@@ -38,8 +38,8 @@ public class User implements UserDetails {
     @Column(length = 50)
     private String email;
 
-    @Size(max = 15)
-    @Column(length = 15)
+    @Max(999999999)
+    @Min(111111111)
     private Long telefono;
 
     @NotBlank
@@ -47,7 +47,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 100)
     private String contrasenya;
 
-    @NotBlank
+    @NotNull
     private boolean estado;
 
     @Enumerated(EnumType.STRING)
