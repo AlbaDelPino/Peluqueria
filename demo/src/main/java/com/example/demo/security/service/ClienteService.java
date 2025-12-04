@@ -33,15 +33,13 @@ public class ClienteService {
     }
 
     // Crear un cliente
-    public User createCliente(User user) {
-        user.setRole(ERole.ROLE_CLIENTE);
 
-        if (user.getContrasenya() != null && !user.getContrasenya().isBlank()) {
-            user.setContrasenya(passwordEncoder.encode(user.getContrasenya()));
-        }
-
-        return userRepository.save(user);
+    public Cliente createCliente(Cliente cliente) {
+        cliente.setRole(ERole.ROLE_CLIENTE);
+        return userRepository.save(cliente); // 👈 ahora sí se guarda como Cliente
     }
+
+
 
     // Obtener cliente por username
     public User getClienteByUsername(String username) {

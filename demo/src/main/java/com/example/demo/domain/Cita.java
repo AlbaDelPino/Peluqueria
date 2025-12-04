@@ -32,7 +32,7 @@ public class Cita {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_alumno", nullable = false)
+    @JoinColumn(name = "id_grupo", nullable = false)
     private Grupo alumno;
 
     @NotNull

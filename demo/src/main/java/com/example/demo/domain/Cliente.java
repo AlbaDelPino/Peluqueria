@@ -1,8 +1,11 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 @Table(name = "clientes")
@@ -22,9 +25,12 @@ public class Cliente extends User {
     private String alergenos;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] imagen;   // Usamos byte[] para mapear un BLOB
-
+  
+    private byte[] imagen;
+    // Usamos byte[] para mapear un BLOB
+    @OneToMany(mappedBy = "cliente", orphanRemoval = true)
+    @JsonIgnore
+    private List<Cita> citas;
 
     public Cliente() {}
 
@@ -48,4 +54,7 @@ public class Cliente extends User {
 
     public byte[] getImagen() { return imagen; }
     public void setImagen(byte[] imagen) { this.imagen = imagen; }
+
+    public List<Cita> getCitas() { return citas; }
+    public void setCitas(List<Cita> citas) { this.citas = citas; }
 }
