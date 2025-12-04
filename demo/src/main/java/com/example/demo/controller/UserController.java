@@ -116,7 +116,8 @@ public class UserController {
                 signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
-                signUpRequest.getAlergenos()
+                signUpRequest.getAlergenos(),
+                signUpRequest.getImagen()
         );
         cliente.setRole(ERole.ROLE_CLIENTE);
 
@@ -137,7 +138,8 @@ public class UserController {
                 signUpRequest.isEstado(),
                 signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
-                signUpRequest.getAlergenos()
+                signUpRequest.getAlergenos(),
+                signUpRequest.getImagen()
         );
         cliente.setRole(ERole.ROLE_CLIENTE);
 

@@ -4,6 +4,7 @@ import com.example.demo.domain.ERole;
 import com.example.demo.domain.Grupo;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,13 @@ import java.util.Optional;
 public class GrupoService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public GrupoService(UserRepository userRepository) {
+
+    public GrupoService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Obtener todos los grupos
@@ -52,7 +57,7 @@ public class GrupoService {
         grupo.setTelefono(grupoDetails.getTelefono() != 0 ? grupoDetails.getTelefono() : grupo.getTelefono());
         grupo.setEstado(grupoDetails.isEstado());
         if (grupoDetails.getContrasenya() != null && !grupoDetails.getContrasenya().isEmpty()) {
-            grupo.setContrasenya(grupoDetails.getContrasenya());
+            grupo.setContrasenya(passwordEncoder.encode(grupoDetails.getContrasenya()));
         }
 
         // 🔹 Atributos específicos de Grupo

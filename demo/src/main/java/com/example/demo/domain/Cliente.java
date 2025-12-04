@@ -1,6 +1,5 @@
 package com.example.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,21 +21,23 @@ public class Cliente extends User {
     @Column(length = 200)
     private String alergenos;
 
+    @Size(max = 255)
+    @Column(length = 255)
+    private String imagen;
 
-    // Relación con citas (un cliente puede tener muchas citas)
-    @OneToMany(mappedBy = "cliente", orphanRemoval = true)
-    @JsonIgnore
-    private java.util.List<Cita> citas;
 
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, Long telefono, String contrasenya, boolean estado,
-                   String direccion, String observacion, String alergenos) {
+    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
+                   String direccion, String observacion, String alergenos, String imagen) {
         super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE);
         this.direccion = direccion;
         this.observacion = observacion;
         this.alergenos = alergenos;
+        this.imagen = imagen;
     }
+
+
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
 
@@ -46,6 +47,11 @@ public class Cliente extends User {
     public String getAlergenos() { return alergenos; }
     public void setAlergenos(String alergenos) { this.alergenos = alergenos; }
 
-    public java.util.List<Cita> getCitas() { return citas; }
-    public void setCitas(java.util.List<Cita> citas) { this.citas = citas; }
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
 }

@@ -27,8 +27,9 @@ public class SignupRequest {
     @Email
     private String email;
 
+    @NotBlank
     @Size(max = 15)
-    private Long telefono;
+    private long telefono;
 
     @NotBlank
     @Size(max = 100)
@@ -36,6 +37,8 @@ public class SignupRequest {
 
     @NotBlank
     private boolean estado;
+
+
 
     // --- Campos específicos de Admin ---
     private String especialidad;
@@ -52,6 +55,7 @@ public class SignupRequest {
     private String direccion;
     private String observacion;
     private String alergenos;
+    private String imagen;
 
     // --- Getters y Setters ---
     public String getUsername() { return username; }
@@ -63,10 +67,7 @@ public class SignupRequest {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Long getTelefono() {
-        return telefono;
-    }
-    public void setTelefono(Long telefono) {
+    public void setTelefono(long telefono) {
         this.telefono = telefono;
     }
 
@@ -120,5 +121,15 @@ public class SignupRequest {
 
     public void setAlergenos(String alergenos) {
         this.alergenos = alergenos;
+    }
+
+    public long getTelefono() {return telefono;}
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

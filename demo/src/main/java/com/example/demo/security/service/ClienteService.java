@@ -4,6 +4,7 @@ import com.example.demo.domain.Cliente;
 import com.example.demo.domain.ERole;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,12 @@ import java.util.Optional;
 public class ClienteService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ClienteService(UserRepository userRepository) {
+    public ClienteService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Obtener todos los clientes
@@ -52,7 +56,7 @@ public class ClienteService {
         cliente.setTelefono(clienteDetails.getTelefono() != 0 ? clienteDetails.getTelefono() : cliente.getTelefono());
         cliente.setEstado(clienteDetails.isEstado());
         if (clienteDetails.getContrasenya() != null && !clienteDetails.getContrasenya().isEmpty()) {
-            cliente.setContrasenya(clienteDetails.getContrasenya());
+            cliente.setContrasenya(passwordEncoder.encode(clienteDetails.getContrasenya()));
         }
 
         // 🔹 Atributos específicos
