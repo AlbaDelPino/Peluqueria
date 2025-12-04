@@ -25,7 +25,7 @@ public class Cliente extends User {
     private String alergenos;
 
     @Lob
-  
+
     private byte[] imagen;
     // Usamos byte[] para mapear un BLOB
     @OneToMany(mappedBy = "cliente", orphanRemoval = true)
