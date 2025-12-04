@@ -40,7 +40,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Min(100000000)          // mínimo 9 dígitos
-    @Max(999999999999999L)// máximo 15 dígitos
+    @Max(999999999999999L)
     @Column(nullable = false, length = 15)
     private long telefono;
 
