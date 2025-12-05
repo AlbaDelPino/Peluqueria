@@ -1,127 +1,89 @@
 package com.example.demo.security.service;
 
-import com.example.demo.domain.Cita;
-import com.example.demo.domain.Cliente;
-import com.example.demo.domain.Grupo;
-import com.example.demo.domain.Servicio;
-import com.example.demo.repository.CitaRepository;
-import com.example.demo.repository.ClienteRepository;
-import com.example.demo.repository.GrupoRepository;
-import com.example.demo.repository.ServicioRepository;
-import com.example.demo.service.CitaService;
+import com.example.demo.domain.*;
+import com.example.demo.exception.CitaNotFoundException;
+import com.example.demo.exception.HorarioNotFoundException;
+import com.example.demo.exception.ServicioNotFoundException;
+import com.example.demo.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 @Service
 public class CitaServiceImpl implements CitaService {
 
-    private final CitaRepository citaRepository;
-    private final ServicioRepository servicioRepository;
-    private final ClienteRepository clienteRepository;
-    private final GrupoRepository grupoRepository;
-
-    public CitaServiceImpl(CitaRepository citaRepository,
-                           ServicioRepository servicioRepository,
-                           ClienteRepository clienteRepository,
-                           GrupoRepository grupoRepository) {
-        this.citaRepository = citaRepository;
-        this.servicioRepository = servicioRepository;
-        this.clienteRepository = clienteRepository;
-        this.grupoRepository = grupoRepository;
-    }
+    @Autowired
+    private CitaRepository citaRepository;
 
     @Override
-    public Cita crearCita(Cita cita) {
-        Servicio servicio = servicioRepository.findById(cita.getServicio().getId_servicio())
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
-
-        Cliente cliente = clienteRepository.findById(cita.getCliente().getId())
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
-        Grupo alumno = grupoRepository.findById(cita.getAlumno().getId())
-                .orElseThrow(() -> new RuntimeException("Alumno/Grupo no encontrado"));
-
-        cita.setServicio(servicio);
-        cita.setCliente(cliente);
-        cita.setAlumno(alumno);
-
-        return citaRepository.save(cita);
-    }
-
-    @Override
-    public List<Cita> obtenerTodas() {
+    public List<Cita> findAll() {
         return citaRepository.findAll();
     }
 
     @Override
-    public Optional<Cita> obtenerPorId(Long id) {
+    public Optional<Cita> findById(long id) {
         return citaRepository.findById(id);
     }
+
     @Override
-    public Optional<Cita> actualizarCita(Long id, Cita citaDetalles) {
-        return citaRepository.findById(id).map(cita -> {
-            cita.setFecha(citaDetalles.getFecha());
-            cita.setHoraInicio(citaDetalles.getHoraInicio());
-            cita.setHoraFin(citaDetalles.getHoraFin());
-            cita.setEstado(citaDetalles.getEstado());
-
-            if (citaDetalles.getServicio() != null && citaDetalles.getServicio().getId_servicio() != null) {
-                Servicio servicio = servicioRepository.findById(citaDetalles.getServicio().getId_servicio())
-                        .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
-                cita.setServicio(servicio);
-            }
-
-            if (citaDetalles.getCliente() != null && citaDetalles.getCliente().getId() != null) {
-                Cliente cliente = clienteRepository.findById(citaDetalles.getCliente().getId())
-                        .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-                cita.setCliente(cliente);
-            }
-
-            if (citaDetalles.getAlumno() != null && citaDetalles.getAlumno().getId() != null) {
-                Grupo alumno = grupoRepository.findById(citaDetalles.getAlumno().getId())
-                        .orElseThrow(() -> new RuntimeException("Alumno/Grupo no encontrado"));
-                cita.setAlumno(alumno);
-            }
-
-            return citaRepository.save(cita);
-        });
+    public List<Cita> findByFecha(LocalDate fecha) {
+        return citaRepository.findByFecha(fecha);
     }
 
     @Override
-    public boolean eliminarCita(Long id) {
-        if (!citaRepository.existsById(id)) return false;
+    public List<Cita> findByEstado(String estado) {
+        return citaRepository.findByEstado(estado);
+    }
+
+    @Override
+    public List<Cita> findByHorario(HorarioSemanal horario) {
+        return citaRepository.findByHorario(horario);
+    }
+
+    @Override
+    public List<Cita> findByGrupo(Grupo grupo) {
+        return citaRepository.findByGrupo(grupo);
+    }
+
+    @Override
+    public List<Cita> findByCliente(Cliente cliente) {
+        return citaRepository.findByCliente(cliente);
+    }
+
+    @Override
+    public List<Cita> findByHorarioOrGrupoOrCliente(HorarioSemanal horario, Grupo grupo, Cliente cliente) {
+        return citaRepository.findByHorarioOrGrupoOrCliente(horario, grupo, cliente);
+    }
+
+    @Override
+    public List<Cita> findByFechaAndEstado(LocalDate fecha, String estado) {
+        return citaRepository.findByFechaAndEstado(fecha, estado);
+    }
+
+    @Override
+    public List<Cita> findByFechaAndEstadoAndHorario(LocalDate fecha, String estado, HorarioSemanal horario) {
+        return citaRepository.findByFechaAndEstadoAndHorario(fecha, estado, horario);
+    }
+
+    @Override
+    public Cita addCita(Cita cita) {
+        return citaRepository.save(cita);
+    }
+
+    @Override
+    public Cita modifyCita(long id, Cita newCita) {
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new CitaNotFoundException(id));
+        newCita.setId(cita.getId());
+        return citaRepository.save(newCita);
+    }
+
+    @Override
+    public void deleteCita(long id) {
+        citaRepository.findById(id)
+                .orElseThrow(() -> new CitaNotFoundException(id));
         citaRepository.deleteById(id);
-        return true;
     }
-
-
-
-    @Override
-    public List<Cita> obtenerPorCliente(Cliente cliente) {
-        return null;
-    }
-
-    @Override
-    public List<Cita> obtenerPorAlumno(Grupo alumno) {
-        return null;
-    }
-
-    @Override
-    public List<Cita> obtenerPorServicio(Servicio servicio) {
-        return null;
-    }
-
-    @Override
-    public List<Cita> obtenerPorFecha(LocalDate fecha) {
-        return null;
-    }
-
-    @Override
-    public List<Cita> obtenerPorEstado(String estado) {
-        return null;
-    }
-
 }

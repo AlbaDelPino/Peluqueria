@@ -21,8 +21,7 @@ public class Grupo extends User {
     @Column(nullable = false, length = 30)
     private String turno;
 
-    // Relación con citas (un alumno/grupo puede tener muchas citas)
-    @OneToMany(mappedBy = "alumno", orphanRemoval = true)
+    @OneToMany(mappedBy = "grupo", orphanRemoval = true)
     @JsonIgnore
     private List<Cita> citas;
 

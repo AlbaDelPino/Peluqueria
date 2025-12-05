@@ -1,9 +1,6 @@
-package com.example.demo.service;
+package com.example.demo.security.service;
 
-import com.example.demo.domain.Cita;
-import com.example.demo.domain.Cliente;
-import com.example.demo.domain.Grupo;
-import com.example.demo.domain.Servicio;
+import com.example.demo.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,23 +9,18 @@ import java.util.Optional;
 
 public interface CitaService {
 
-    // Crear cita con IDs de entidades relacionadas
-    Cita crearCita(Cita cita);
-    List<Cita> obtenerTodas();
+    List<Cita> findAll();
+    Optional<Cita> findById(long id);
+    List<Cita> findByFecha(LocalDate fecha);
+    List<Cita> findByEstado(String estado);
+    List<Cita> findByHorario(HorarioSemanal horario);
+    List<Cita> findByGrupo(Grupo grupo);
+    List<Cita> findByCliente(Cliente cliente);
+    List<Cita> findByHorarioOrGrupoOrCliente (HorarioSemanal horario, Grupo grupo,Cliente cliente);
+    List<Cita> findByFechaAndEstado (LocalDate fecha,String estado);
+    List<Cita> findByFechaAndEstadoAndHorario (LocalDate fecha,String estado,HorarioSemanal horario);
 
-    Optional<Cita> obtenerPorId(Long id);
-
-    Optional<Cita> actualizarCita(Long id, Cita citaDetalles);
-
-    boolean eliminarCita(Long id);
-
-    List<Cita> obtenerPorCliente(Cliente cliente);
-
-    List<Cita> obtenerPorAlumno(Grupo alumno);
-
-    List<Cita> obtenerPorServicio(Servicio servicio);
-
-    List<Cita> obtenerPorFecha(LocalDate fecha);
-
-    List<Cita> obtenerPorEstado(String estado);
+    Cita addCita(Cita cita);
+    Cita modifyCita(long id, Cita cita);
+    void deleteCita(long id);
 }

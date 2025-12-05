@@ -3,7 +3,6 @@ package com.example.demo.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "cita")
@@ -17,23 +16,17 @@ public class Cita {
     private LocalDate fecha;
 
     @NotNull
-    private LocalTime horaInicio;
-
-    @NotNull
-    private LocalTime horaFin;
-
-    @NotNull
     private String estado;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_servicio", nullable = false)
-    private Servicio servicio;
+    @JoinColumn(name = "id_horario", nullable = false)
+    private HorarioSemanal horario;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_grupo", nullable = false)
-    private Grupo alumno;
+    private Grupo grupo;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,56 +34,74 @@ public class Cita {
     private Cliente cliente;
 
 
-    // 🔹 Constructor vacío requerido por Hibernate
     public Cita() {
     }
 
-    public Cita(Long id, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, String estado, Servicio servicio, Grupo alumno, Cliente cliente) {
+    public Cita(Long id, LocalDate fecha, String estado, HorarioSemanal horario, Grupo grupo, Cliente cliente) {
         this.id = id;
         this.fecha = fecha;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
         this.estado = estado;
-        this.servicio = servicio;
-        this.alumno = alumno;
+        this.horario = horario;
+        this.grupo = grupo;
         this.cliente = cliente;
     }
 
-    // getters y setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalTime getHoraInicio() { return horaInicio; }
-    public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }
+    public LocalDate getFecha() {
+        return fecha;
+    }
 
-    public LocalTime getHoraFin() { return horaFin; }
-    public void setHoraFin(LocalTime horaFin) { this.horaFin = horaFin; }
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public String getEstado() {
+        return estado;
+    }
 
-    public Servicio getServicio() { return servicio; }
-    public void setServicio(Servicio servicio) { this.servicio = servicio; }
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
-    public Grupo getAlumno() { return alumno; }
-    public void setAlumno(Grupo alumno) { this.alumno = alumno; }
+    public HorarioSemanal getHorario() {
+        return horario;
+    }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public void setHorario(HorarioSemanal idHorario) {
+        this.horario = horario;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
     @Override
     public String toString() {
         return "Cita{" +
                 "id=" + id +
                 ", fecha=" + fecha +
-                ", horaInicio=" + horaInicio +
-                ", horaFin=" + horaFin +
                 ", estado='" + estado + '\'' +
-                ", servicio=" + servicio +
-                ", alumno=" + alumno +
+                ", idHorario=" + horario +
+                ", alumno=" + grupo +
                 ", cliente=" + cliente +
                 '}';
     }

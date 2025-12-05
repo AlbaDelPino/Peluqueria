@@ -29,12 +29,6 @@ public class Servicio {
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
     private TipoServicio tipoServicio;
 
-
-    // Relación con citas (un servicio puede estar en muchas citas)
-    @OneToMany(mappedBy = "servicio", orphanRemoval = true)
-    @JsonIgnore
-    private java.util.List<Cita> citas;
-
     public Servicio() {
 
     }
@@ -66,8 +60,6 @@ public class Servicio {
     public TipoServicio getTipoServicio() { return tipoServicio; }
     public void setTipoServicio(TipoServicio tipoServicio) { this.tipoServicio = tipoServicio; }
 
-    public java.util.List<Cita> getCitas() { return citas; }
-    public void setCitas(java.util.List<Cita> citas) { this.citas = citas; }
     @Override
     public String toString() {
         return "Servicio{" +
