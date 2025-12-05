@@ -8,7 +8,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "horario_semanal")
+@Table(name = "horario_semanal",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"horaInicio", "horaFin","diaSemana","id_servicio","id_grupo"})
+        }
+)
 public class HorarioSemanal {
 
     @Id
