@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Service
 public class TipoServicioServiceImpl implements TipoServicioService {
-
     @Autowired
     private TipoServicioRepository tipoServicioRepository;
 
