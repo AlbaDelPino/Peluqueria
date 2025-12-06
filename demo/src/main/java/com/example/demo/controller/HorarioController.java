@@ -49,7 +49,7 @@ public class HorarioController {
         logger.info("inicio getHorarios");
 
         List<HorarioSemanal> horarios;
-        if (diaSemana.isEmpty() && horaInicio.equals("")) {
+        if (diaSemana.isEmpty() ) {
             horarios = horarioService.findAll();
         } else {
             horarios = horarioService.findByDiaSemanaOrHoraInicio(diaSemana, horaInicio);
