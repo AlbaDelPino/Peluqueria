@@ -3,10 +3,6 @@ package com.example.demo.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "servicio")
@@ -17,7 +13,6 @@ public class Servicio {
     @Column(name = "id_servicio")
     private Long id_servicio;
 
-    @NotBlank
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
@@ -30,9 +25,6 @@ public class Servicio {
     @Column(name = "duracion")
     private Long duracion;
 
-    @ManyToMany(mappedBy = "servicios", cascade = CascadeType.DETACH)
-    private List<HorarioSemanal> horarios;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
     private TipoServicio tipoServicio;
@@ -41,12 +33,11 @@ public class Servicio {
 
     }
 
-    public Servicio(String nombre, String descripcion, Long precio, Long duracion, List<HorarioSemanal> horarios, TipoServicio tipoServicio) {
+    public Servicio(String nombre, String descripcion, Long precio, Long duracion, TipoServicio tipoServicio) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.duracion = duracion;
-        this.horarios = horarios;
         this.tipoServicio = tipoServicio;
     }
 
@@ -65,13 +56,6 @@ public class Servicio {
 
     public Long getDuracion() { return duracion; }
     public void setDuracion(Long duracion) { this.duracion = duracion; }
-
-    public List<HorarioSemanal> getHorarios() {
-        return horarios;
-    }
-    public void setHorarios(List<HorarioSemanal> horarios) {
-        this.horarios = horarios;
-    }
 
     public TipoServicio getTipoServicio() { return tipoServicio; }
     public void setTipoServicio(TipoServicio tipoServicio) { this.tipoServicio = tipoServicio; }

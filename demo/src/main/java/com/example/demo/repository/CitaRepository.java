@@ -18,7 +18,6 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByCliente(Cliente cliente);
     List<Cita> findByGrupo(Grupo grupo);
     List<Cita> findByHorario(HorarioSemanal horario);
-    List<Cita> findByServicio(Servicio servicio);
     List<Cita> findByFecha(LocalDate fecha);
     List<Cita> findByEstado(String estado);
     List<Cita> findByFechaAndEstado(LocalDate fecha, String estado);

@@ -16,8 +16,7 @@ public interface HorarioService {
     List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
     List<HorarioSemanal> findByHoraFin(LocalTime horaFin);
     List<HorarioSemanal> findByPlazas(long plazas);
-    List<HorarioSemanal> findByServicios(List<Servicio> servicios);
-
+    List<HorarioSemanal> findByServicio(Servicio servicio);
     List<HorarioSemanal> findByGrupo(Grupo grupo);
     List<HorarioSemanal> findByDiaSemanaOrHoraInicio (String diaSemana,LocalTime horaInicio);
 

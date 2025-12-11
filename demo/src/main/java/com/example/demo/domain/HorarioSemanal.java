@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "horario_semanal",
@@ -19,8 +17,7 @@ public class HorarioSemanal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_horario")
-    private Long id_horario;
+    private Long id;
 
     @NotNull
     private String diaSemana;
@@ -34,14 +31,10 @@ public class HorarioSemanal {
     @NotNull
     private long plazas;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinTable(name="horario_servicio",
-            joinColumns = {@JoinColumn(name="id_horario")},
-            inverseJoinColumns = {@JoinColumn(name="id_servicio")},
-            uniqueConstraints = {
-                    @UniqueConstraint(columnNames = {"id_horario", "id_servicio"})
-            })
-    private List<Servicio> servicios;
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_servicio", nullable = false)
+    private Servicio servicio;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -51,22 +44,22 @@ public class HorarioSemanal {
     public HorarioSemanal() {
     }
 
-    public HorarioSemanal(Long id_horario, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, List<Servicio> servicios, Grupo grupo) {
-        this.id_horario = id_horario;
+    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo) {
+        this.id = id;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.plazas = plazas;
-        this.servicios = servicios;
+        this.servicio = servicio;
         this.grupo = grupo;
     }
 
     public Long getId() {
-        return id_horario;
+        return id;
     }
 
     public void setId(Long id) {
-        this.id_horario = id_horario;
+        this.id = id;
     }
 
     public String getDiaSemana() {
@@ -101,12 +94,12 @@ public class HorarioSemanal {
         this.plazas = plazas;
     }
 
-    public List<Servicio> getServicios() {
-        return servicios;
+    public Servicio getServicio() {
+        return servicio;
     }
 
-    public void setServicios(List<Servicio> servicios) {
-        this.servicios = servicios;
+    public void setServicio(Servicio servicio) {
+        this.servicio = servicio;
     }
 
     public Grupo getGrupo() {
@@ -120,13 +113,13 @@ public class HorarioSemanal {
     @Override
     public String toString() {
         return "HorarioSemanal{" +
-                "id=" + id_horario +
+                "id=" + id +
                 ", diaSemana='" + diaSemana + '\'' +
                 ", horaInicio=" + horaInicio +
                 ", horaFin=" + horaFin +
                 ", plazas=" + plazas +
+                ", idServicio=" + servicio +
                 ", idGrupo=" + grupo +
-                ", Servicios=" + servicios +
                 '}';
     }
 }

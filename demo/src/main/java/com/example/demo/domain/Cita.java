@@ -33,22 +33,15 @@ public class Cita {
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_servicio", nullable = false)
-    private Servicio servicio;
-
-
 
     public Cita() {
     }
 
-    public Cita(Long id, LocalDate fecha, String estado, HorarioSemanal horario,Servicio servicio, Grupo grupo, Cliente cliente) {
+    public Cita(Long id, LocalDate fecha, String estado, HorarioSemanal horario, Grupo grupo, Cliente cliente) {
         this.id = id;
         this.fecha = fecha;
         this.estado = estado;
         this.horario = horario;
-        this.servicio = servicio;
         this.grupo = grupo;
         this.cliente = cliente;
     }
@@ -85,14 +78,6 @@ public class Cita {
         this.horario = horario;
     }
 
-    public Servicio getServicio() {
-        return servicio;
-    }
-
-    public void setServicio(Servicio servicio) {
-        this.servicio = servicio;
-    }
-
     public Grupo getGrupo() {
         return grupo;
     }
@@ -115,8 +100,7 @@ public class Cita {
                 "id=" + id +
                 ", fecha=" + fecha +
                 ", estado='" + estado + '\'' +
-                ", horario=" + horario +
-                ", servicio=" + servicio +
+                ", idHorario=" + horario +
                 ", alumno=" + grupo +
                 ", cliente=" + cliente +
                 '}';
