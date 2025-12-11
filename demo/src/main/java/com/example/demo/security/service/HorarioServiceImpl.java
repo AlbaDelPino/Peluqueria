@@ -8,7 +8,6 @@ import com.example.demo.exception.ServicioNotFoundException;
 import com.example.demo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -51,8 +50,8 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public List<HorarioSemanal> findByServicio(Servicio servicio) {
-        return horarioRepository.findByServicio(servicio);
+    public List<HorarioSemanal> findByServicios(List<Servicio> servicios) {
+        return horarioRepository.findByServicios(servicios);
     }
 
     @Override
