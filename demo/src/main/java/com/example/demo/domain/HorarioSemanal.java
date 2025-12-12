@@ -6,20 +6,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 @Entity
 @Table(name = "horario_semanal",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"horaInicio", "horaFin", "diaSemana", "id_servicio", "id_grupo"})
+                @UniqueConstraint(columnNames = {"horaInicio", "horaFin","diaSemana","id_servicio","id_grupo"})
         }
 )
 public class HorarioSemanal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_horario")
-    private Long id_horario;
+    private Long id;
 
     @NotNull
     private String diaSemana;
@@ -43,11 +41,11 @@ public class HorarioSemanal {
     @JoinColumn(name = "id_grupo", nullable = false)
     private Grupo grupo;
 
-    public HorarioSemanal() {}
+    public HorarioSemanal() {
+    }
 
-    public HorarioSemanal(Long id_horario, String diaSemana, LocalTime horaInicio, LocalTime horaFin,
-                          long plazas, Servicio servicio, Grupo grupo) {
-        this.id_horario = id_horario;
+    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo) {
+        this.id = id;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -57,11 +55,11 @@ public class HorarioSemanal {
     }
 
     public Long getId() {
-        return id_horario;
+        return id;
     }
 
     public void setId(Long id) {
-        this.id_horario = id;
+        this.id = id;
     }
 
     public String getDiaSemana() {
@@ -115,13 +113,13 @@ public class HorarioSemanal {
     @Override
     public String toString() {
         return "HorarioSemanal{" +
-                "id=" + id_horario +
+                "id=" + id +
                 ", diaSemana='" + diaSemana + '\'' +
                 ", horaInicio=" + horaInicio +
                 ", horaFin=" + horaFin +
                 ", plazas=" + plazas +
-                ", grupo=" + grupo +
-                ", servicio=" + servicio +
+                ", idServicio=" + servicio +
+                ", idGrupo=" + grupo +
                 '}';
     }
 }

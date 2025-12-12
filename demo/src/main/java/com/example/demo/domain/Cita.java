@@ -15,13 +15,8 @@ public class Cita {
     @NotNull
     private LocalDate fecha;
 
-    /**
-     * Estado de la cita:
-     * true  = confirmada
-     * false = cancelada
-     */
     @NotNull
-    private boolean estado;
+    private String estado;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -30,43 +25,84 @@ public class Cita {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_grupo", nullable = false)
+    private Grupo grupo;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
-    public Cita() {}
 
-    public Cita(Long id, LocalDate fecha, boolean estado, HorarioSemanal horario, Cliente cliente) {
+    public Cita() {
+    }
+
+    public Cita(Long id, LocalDate fecha, String estado, HorarioSemanal horario, Grupo grupo, Cliente cliente) {
         this.id = id;
         this.fecha = fecha;
         this.estado = estado;
         this.horario = horario;
+        this.grupo = grupo;
         this.cliente = cliente;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public boolean isEstado() { return estado; }
-    public void setEstado(boolean estado) { this.estado = estado; }
+    public LocalDate getFecha() {
+        return fecha;
+    }
 
-    public HorarioSemanal getHorario() { return horario; }
-    public void setHorario(HorarioSemanal horario) { this.horario = horario; }
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public HorarioSemanal getHorario() {
+        return horario;
+    }
+
+    public void setHorario(HorarioSemanal idHorario) {
+        this.horario = horario;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
     @Override
     public String toString() {
         return "Cita{" +
                 "id=" + id +
                 ", fecha=" + fecha +
-                ", estado=" + (estado ? "CONFIRMADA" : "CANCELADA") +
-                ", horario=" + horario +
+                ", estado='" + estado + '\'' +
+                ", idHorario=" + horario +
+                ", alumno=" + grupo +
                 ", cliente=" + cliente +
                 '}';
     }
 }
-
