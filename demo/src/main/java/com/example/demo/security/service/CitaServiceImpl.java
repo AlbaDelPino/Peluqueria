@@ -11,11 +11,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class CitaServiceImpl implements CitaService {
 
     @Autowired
     private CitaRepository citaRepository;
+
+    @Autowired
+    private HorarioRepository horarioRepository;
 
     @Override
     public List<Cita> findAll() {
@@ -33,7 +37,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public List<Cita> findByEstado(String estado) {
+    public List<Cita> findByEstado(boolean estado) {
         return citaRepository.findByEstado(estado);
     }
 
@@ -42,10 +46,7 @@ public class CitaServiceImpl implements CitaService {
         return citaRepository.findByHorario(horario);
     }
 
-    @Override
-    public List<Cita> findByGrupo(Grupo grupo) {
-        return citaRepository.findByGrupo(grupo);
-    }
+
 
     @Override
     public List<Cita> findByCliente(Cliente cliente) {
@@ -53,22 +54,32 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public List<Cita> findByHorarioOrGrupoOrCliente(HorarioSemanal horario, Grupo grupo, Cliente cliente) {
-        return citaRepository.findByHorarioOrGrupoOrCliente(horario, grupo, cliente);
-    }
-
-    @Override
-    public List<Cita> findByFechaAndEstado(LocalDate fecha, String estado) {
+    public List<Cita> findByFechaAndEstado(LocalDate fecha, boolean estado) {
         return citaRepository.findByFechaAndEstado(fecha, estado);
     }
 
     @Override
-    public List<Cita> findByFechaAndEstadoAndHorario(LocalDate fecha, String estado, HorarioSemanal horario) {
+    public List<Cita> findByFechaAndEstadoAndHorario(LocalDate fecha, boolean estado, HorarioSemanal horario) {
         return citaRepository.findByFechaAndEstadoAndHorario(fecha, estado, horario);
     }
 
     @Override
+    public List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha) {
+        return citaRepository.findByClienteAndFecha(cliente, fecha);
+    }
+
+
+
+    @Override
     public Cita addCita(Cita cita) {
+        // 🔹 Resta plaza en el horario
+        HorarioSemanal horario = cita.getHorario();
+        if (horario.getPlazas() <= 0) {
+            throw new RuntimeException("No quedan plazas disponibles en este horario");
+        }
+        horario.setPlazas(horario.getPlazas() - 1);
+        horarioRepository.save(horario);
+
         return citaRepository.save(cita);
     }
 
@@ -82,8 +93,23 @@ public class CitaServiceImpl implements CitaService {
 
     @Override
     public void deleteCita(long id) {
-        citaRepository.findById(id)
+        Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new CitaNotFoundException(id));
+
+        HorarioSemanal horario = cita.getHorario();
+        if (horario != null) {
+            horario.setPlazas(horario.getPlazas() + 1);
+            horarioRepository.save(horario);
+        }
+
         citaRepository.deleteById(id);
+    }
+
+    @Override
+    public Cita cambiarEstado(long id, boolean nuevoEstado) {
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new CitaNotFoundException(id));
+        cita.setEstado(nuevoEstado);
+        return citaRepository.save(cita);
     }
 }

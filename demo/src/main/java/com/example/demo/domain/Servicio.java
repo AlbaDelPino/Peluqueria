@@ -30,8 +30,10 @@ public class Servicio {
     @Column(name = "duracion")
     private Long duracion;
 
-    @ManyToMany(mappedBy = "servicios", cascade = CascadeType.DETACH)
-    private List<HorarioSemanal> horarios;
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<HorarioSemanal> horarios = new ArrayList<>();
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_servicio", nullable = false)

@@ -25,129 +25,75 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.demo.controller.Response.NOT_FOUND;
-
 @RestController
+@RequestMapping("/horarios")
 public class HorarioController {
 
-    private final Logger logger =
-            LoggerFactory.getLogger(HorarioController.class);
+    private final Logger logger = LoggerFactory.getLogger(HorarioController.class);
 
     @Autowired
     private HorarioService horarioService;
 
+    // 🔹 Listar todos o filtrar por día/hora
     @Operation(summary = "Obtiene el listado de horarios")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de horarios",
-                    content = @Content(array = @ArraySchema(schema =
-                    @Schema(implementation = HorarioSemanal.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = HorarioSemanal.class))))
     })
-    @GetMapping(value = "/horario", produces = "application/json")
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<HorarioSemanal>> getHorarios(
-            @RequestParam(value = "diaSemana", defaultValue = "") String diaSemana,
-            @RequestParam(value = "horaInicio", defaultValue = "") LocalTime horaInicio) {
+            @RequestParam(value = "diaSemana", required = false) String diaSemana,
+            @RequestParam(value = "horaInicio", required = false) LocalTime horaInicio) {
 
         logger.info("inicio getHorarios");
 
         List<HorarioSemanal> horarios;
-        if (diaSemana.isEmpty() ) {
+        if (diaSemana == null && horaInicio == null) {
             horarios = horarioService.findAll();
-        } else {
+        } else if (diaSemana != null && horaInicio != null) {
             horarios = horarioService.findByDiaSemanaOrHoraInicio(diaSemana, horaInicio);
+        } else if (diaSemana != null) {
+            horarios = horarioService.findByDiaSemana(diaSemana);
+        } else {
+            horarios = horarioService.findByHoraInicio(horaInicio);
         }
+
         logger.info("fin getHorarios");
         return ResponseEntity.ok(horarios != null ? horarios : Collections.emptyList());
     }
 
-
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Existe el horario", content = @Content(schema = @Schema(implementation =
-                    Servicio.class))),
-            @ApiResponse(responseCode = "404", description = "El horario no existe", content = @Content(schema = @Schema(implementation =
-                    Response.class)))
-    })
-
-    /*@GetMapping("/serviciobynombreandduracion")
-    public ResponseEntity<List<Servicio>> getServicioByNombreAndDuracion(
-            @RequestParam(value = "nombre", defaultValue = "")String nombre,
-            @RequestParam(value = "duracion", defaultValue = "") long duracion) {
-
-        return ResponseEntity.ok(servicioService.findByNombreAndDuracion(nombre, duracion));
-    }
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Existe el servicio", content = @Content(schema = @Schema(implementation =
-                    Servicio.class))),
-            @ApiResponse(responseCode = "404", description = "El servicio no existe", content = @Content(schema = @Schema(implementation =
-                    Response.class)))
-    })
-    @GetMapping("/serviciobynombreandprecio")
-    public ResponseEntity<List<Servicio>> getServicioByNombreAndPrecio(
-            @RequestParam(value = "nombre", defaultValue = "") String nombre,
-            @RequestParam(value = "precio", defaultValue = "0") long precio) {
-
-        return ResponseEntity.ok(servicioService.findByNombreAndPrecio(nombre, precio));
-    }*/
-
-
-
-    @GetMapping("/horariobydiasemanaorhorainicio")
-    public ResponseEntity<List<HorarioSemanal>> getServicioByNombreOrDescripcion(
-            @RequestParam(value = "diaSemana", defaultValue = "")String diaSemana,
-            @RequestParam(value = "horaInicio", defaultValue = "") LocalTime horaInicio) {
-
-        return ResponseEntity.ok(horarioService.findByDiaSemanaOrHoraInicio(diaSemana, horaInicio));
-
-    }
-
+    // 🔹 Obtener horario por ID
     @Operation(summary = "Obtiene un horario determinado")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Existe el horario", content = @Content(schema = @Schema(implementation =
-                    Servicio.class))),
-            @ApiResponse(responseCode = "404", description = "El horario no existe", content = @Content(schema = @Schema(implementation =
-                    Response.class)))
+            @ApiResponse(responseCode = "200", description = "Existe el horario",
+                    content = @Content(schema = @Schema(implementation = HorarioSemanal.class))),
+            @ApiResponse(responseCode = "404", description = "El horario no existe",
+                    content = @Content(schema = @Schema(implementation = Response.class)))
     })
-
-    @GetMapping(value = "/horario/{id}", produces = "application/json")
-    public ResponseEntity<HorarioSemanal> getServicio(@PathVariable long id) {
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<HorarioSemanal> getHorario(@PathVariable long id) {
         HorarioSemanal horario = horarioService.findById(id)
                 .orElseThrow(() -> new HorarioNotFoundException(id));
-
         return new ResponseEntity<>(horario, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se registra el horario", content = @Content(schema = @Schema(implementation =
-                    Servicio.class)))
-    })
-    @PostMapping(value = "/horario", produces = "application/json",
-            consumes = "application/json")
+    // 🔹 Crear horario
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<HorarioSemanal> addHorario(@RequestBody HorarioSemanal horario) {
         HorarioSemanal addedHorario = horarioService.addHorario(horario);
-        return new ResponseEntity<>(addedHorario, HttpStatus.OK);
+        return new ResponseEntity<>(addedHorario, HttpStatus.CREATED);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se modifica el horario", content = @Content(schema = @Schema(implementation =
-                    Servicio.class))),
-            @ApiResponse(responseCode = "404", description = "El horario no existe", content = @Content(schema = @Schema(implementation =
-                    Response.class)))
-    })
-    @PutMapping(value = "/horario/{id}", produces = "application/json",
-            consumes = "application/json")
+    // 🔹 Modificar horario
+    @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<HorarioSemanal> modifyHorario(@PathVariable long id,
-                                                   @RequestBody HorarioSemanal newHorario) {
+                                                        @RequestBody HorarioSemanal newHorario) {
         HorarioSemanal horario = horarioService.modifyHorario(id, newHorario);
         return new ResponseEntity<>(horario, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se elimina el horario", content = @Content(schema = @Schema(implementation =
-                    Response.class))),
-            @ApiResponse(responseCode = "404", description = "El horario no existe", content = @Content(schema = @Schema(implementation =
-                    Response.class)))
-    })
-    @DeleteMapping("/horario/{id}")
+    // 🔹 Eliminar horario
+    @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteHorario(@PathVariable long id) {
         horarioService.deleteHorario(id);
         Map<String, String> response = new HashMap<>();
@@ -155,15 +101,13 @@ public class HorarioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    // 🔹 Manejo de excepciones
     @ExceptionHandler(HorarioNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response>
-    handleException(HorarioNotFoundException pnfe) {
-        Response response = Response.errorResonse(NOT_FOUND,
-                pnfe.getMessage());
-        logger.error(pnfe.getMessage(), pnfe);
+    public ResponseEntity<Response> handleException(HorarioNotFoundException ex) {
+        Response response = Response.errorResonse(NOT_FOUND, ex.getMessage());
+        logger.error(ex.getMessage(), ex);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

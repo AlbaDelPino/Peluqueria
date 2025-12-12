@@ -21,9 +21,7 @@ public class Grupo extends User {
     @Column(nullable = false, length = 30)
     private String turno;
 
-    @OneToMany(mappedBy = "grupo", orphanRemoval = true)
-    @JsonIgnore
-    private List<Cita> citas;
+
 
     public Grupo() {}
 
@@ -40,6 +38,5 @@ public class Grupo extends User {
     public String getTurno() { return turno; }
     public void setTurno(String turno) { this.turno = turno; }
 
-    public List<Cita> getCitas() { return citas; }
-    public void setCitas(List<Cita> citas) { this.citas = citas; }
+
 }
