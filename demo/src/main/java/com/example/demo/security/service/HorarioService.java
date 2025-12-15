@@ -1,8 +1,8 @@
 package com.example.demo.security.service;
 
-import com.example.demo.domain.Grupo;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
+import com.example.demo.domain.Grupo;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -12,15 +12,26 @@ public interface HorarioService {
 
     List<HorarioSemanal> findAll();
     Optional<HorarioSemanal> findById(long id);
-    List<HorarioSemanal> findByDiaSemana(String diaSemana);
-    List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
-    List<HorarioSemanal> findByHoraFin(LocalTime horaFin);
-    List<HorarioSemanal> findByPlazas(long plazas);
+
     List<HorarioSemanal> findByServicio(Servicio servicio);
     List<HorarioSemanal> findByGrupo(Grupo grupo);
-    List<HorarioSemanal> findByDiaSemanaOrHoraInicio (String diaSemana,LocalTime horaInicio);
+
+    // 🔹 Buscar por todos los campos de la clave única
+    List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupo(
+            Servicio servicio,
+            LocalTime horaInicio,
+            LocalTime horaFin,
+            String diaSemana,
+            Grupo grupo
+    );
+
+    // 🔹 Buscar por día de semana
+    List<HorarioSemanal> findByDiaSemana(String diaSemana);
+
+    // 🔹 Buscar por hora de inicio
+    List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
 
     HorarioSemanal addHorario(HorarioSemanal horario);
-    HorarioSemanal modifyHorario(long id, HorarioSemanal newHorario);
+    HorarioSemanal modifyHorario(long id, HorarioSemanal horario);
     void deleteHorario(long id);
 }

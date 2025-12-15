@@ -1,13 +1,14 @@
 package com.example.demo.security.service;
 
-import com.example.demo.domain.Grupo;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
+import com.example.demo.domain.Grupo;
 import com.example.demo.exception.HorarioNotFoundException;
+import com.example.demo.repository.GrupoRepository;
 import com.example.demo.repository.HorarioRepository;
+import com.example.demo.repository.ServicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -19,6 +20,12 @@ public class HorarioServiceImpl implements HorarioService {
     @Autowired
     private HorarioRepository horarioRepository;
 
+    @Autowired
+    private ServicioRepository servicioRepository;
+
+    @Autowired
+    private GrupoRepository grupoRepository;
+
     @Override
     public List<HorarioSemanal> findAll() {
         return horarioRepository.findAll();
@@ -27,6 +34,35 @@ public class HorarioServiceImpl implements HorarioService {
     @Override
     public Optional<HorarioSemanal> findById(long id) {
         return horarioRepository.findById(id);
+    }
+
+    @Override
+    public List<HorarioSemanal> findByServicio(Servicio servicio) {
+        return horarioRepository.findAll()
+                .stream()
+                .filter(h -> h.getServicio().equals(servicio))
+                .toList();
+    }
+
+    @Override
+    public List<HorarioSemanal> findByGrupo(Grupo grupo) {
+        return horarioRepository.findAll()
+                .stream()
+                .filter(h -> h.getGrupo().equals(grupo))
+                .toList();
+    }
+
+    @Override
+    public List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupo(
+            Servicio servicio,
+            LocalTime horaInicio,
+            LocalTime horaFin,
+            String diaSemana,
+            Grupo grupo
+    ) {
+        return horarioRepository.findByServicioAndHoraInicioAndDiaSemanaAndGrupo(
+                servicio, horaInicio, diaSemana, grupo
+        );
     }
 
     @Override
@@ -40,49 +76,38 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public List<HorarioSemanal> findByHoraFin(LocalTime horaFin) {
-        return horarioRepository.findByHoraFin(horaFin);
-    }
-
-    @Override
-    public List<HorarioSemanal> findByPlazasGreaterThanEqual(long plazas) {
-        return horarioRepository.findByPlazasGreaterThanEqual(plazas);
-    }
-
-    @Override
-    public List<HorarioSemanal> findByServicio(Servicio servicio) {
-        return horarioRepository.findByServicio(servicio);
-    }
-
-    @Override
-    public List<HorarioSemanal> findByGrupo(Grupo grupo) {
-        return horarioRepository.findByGrupo(grupo);
-    }
-
-    @Override
-    public List<HorarioSemanal> findByDiaSemanaOrHoraInicio(String diaSemana, LocalTime horaInicio) {
-        return horarioRepository.findByDiaSemanaOrHoraInicio(diaSemana, horaInicio);
-    }
-
-    @Override
-    public Optional<HorarioSemanal> findByDiaSemanaAndHoraInicioAndHoraFinAndGrupoAndServicio(
-            String diaSemana, LocalTime horaInicio, LocalTime horaFin, Grupo grupo, Servicio servicio) {
-        return horarioRepository.findByDiaSemanaAndHoraInicioAndHoraFinAndGrupoAndServicio(
-                diaSemana, horaInicio, horaFin, grupo, servicio);
-    }
-
-    @Override
     public HorarioSemanal addHorario(HorarioSemanal horario) {
+        // Recuperar servicio desde BD
+        Servicio servicio = servicioRepository.findById(horario.getServicio().getId_servicio())
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+        horario.setServicio(servicio);
+
+        // Recuperar grupo desde BD
+        Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
+                .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+        horario.setGrupo(grupo);
+
         return horarioRepository.save(horario);
     }
-
     @Override
     public HorarioSemanal modifyHorario(long id, HorarioSemanal newHorario) {
         HorarioSemanal horario = horarioRepository.findById(id)
                 .orElseThrow(() -> new HorarioNotFoundException(id));
+
+        // Recuperar servicio desde BD
+        Servicio servicio = servicioRepository.findById(newHorario.getServicio().getId_servicio())
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+        newHorario.setServicio(servicio);
+
+        // Recuperar grupo desde BD
+        Grupo grupo = grupoRepository.findById(newHorario.getGrupo().getId())
+                .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+        newHorario.setGrupo(grupo);
+
         newHorario.setId(horario.getId());
         return horarioRepository.save(newHorario);
     }
+
 
     @Override
     public void deleteHorario(long id) {

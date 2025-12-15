@@ -3,10 +3,11 @@ package com.example.demo.security.service;
 import com.example.demo.domain.Cita;
 import com.example.demo.domain.Cliente;
 import com.example.demo.domain.Grupo;
-import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
+import com.example.demo.domain.EstadoCita;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,19 +17,21 @@ public interface CitaService {
     Optional<Cita> findById(long id);
 
     List<Cita> findByFecha(LocalDate fecha);
-    List<Cita> findByEstado(boolean estado);
-    List<Cita> findByHorario(HorarioSemanal horario);
+    List<Cita> findByHora(LocalTime hora);
+    List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
+
+    List<Cita> findByEstado(EstadoCita estado);
     List<Cita> findByCliente(Cliente cliente);
-
-    List<Cita> findByFechaAndEstado(LocalDate fecha, boolean estado);
-    List<Cita> findByFechaAndEstadoAndHorario(LocalDate fecha, boolean estado, HorarioSemanal horario);
-
+    List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
     List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
 
-    Cita addCita(Cita cita);
-    Cita modifyCita(long id, Cita cita);
+    List<Cita> findByHorario_Servicio(Servicio servicio);
+    List<Cita> findByHorario_Grupo(Grupo grupo);
+    List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
+
+    Cita addCita(Cita cita, Long servicioId);
     void deleteCita(long id);
 
-    // 🔹 Método extra para cambiar estado (confirmar/cancelar)
-    Cita cambiarEstado(long id, boolean nuevoEstado);
+    // 🔹 Solo se cambia el estado
+    Cita cambiarEstado(long id, EstadoCita nuevoEstado);
 }

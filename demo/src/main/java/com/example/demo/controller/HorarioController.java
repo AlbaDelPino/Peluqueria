@@ -1,93 +1,77 @@
 package com.example.demo.controller;
+
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
+import com.example.demo.domain.Grupo;
 import com.example.demo.exception.HorarioNotFoundException;
-import com.example.demo.exception.ServicioNotFoundException;
 import com.example.demo.security.service.HorarioService;
-import com.example.demo.security.service.ServicioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.example.demo.controller.Response.NOT_FOUND;
 @RestController
 @RequestMapping("/horarios")
 public class HorarioController {
 
-    private final Logger logger = LoggerFactory.getLogger(HorarioController.class);
-
     @Autowired
     private HorarioService horarioService;
 
-    // 🔹 Listar todos o filtrar por día/hora
-    @Operation(summary = "Obtiene el listado de horarios")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de horarios",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = HorarioSemanal.class))))
-    })
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<List<HorarioSemanal>> getHorarios(
-            @RequestParam(value = "diaSemana", required = false) String diaSemana,
-            @RequestParam(value = "horaInicio", required = false) LocalTime horaInicio) {
-
-        logger.info("inicio getHorarios");
-
-        List<HorarioSemanal> horarios;
-        if (diaSemana == null && horaInicio == null) {
-            horarios = horarioService.findAll();
-        } else if (diaSemana != null && horaInicio != null) {
-            horarios = horarioService.findByDiaSemanaOrHoraInicio(diaSemana, horaInicio);
-        } else if (diaSemana != null) {
-            horarios = horarioService.findByDiaSemana(diaSemana);
-        } else {
-            horarios = horarioService.findByHoraInicio(horaInicio);
-        }
-
-        logger.info("fin getHorarios");
-        return ResponseEntity.ok(horarios != null ? horarios : Collections.emptyList());
+    // 🔹 Listar todos los horarios
+    @GetMapping
+    public ResponseEntity<List<HorarioSemanal>> getHorarios() {
+        return ResponseEntity.ok(horarioService.findAll());
     }
 
     // 🔹 Obtener horario por ID
-    @Operation(summary = "Obtiene un horario determinado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Existe el horario",
-                    content = @Content(schema = @Schema(implementation = HorarioSemanal.class))),
-            @ApiResponse(responseCode = "404", description = "El horario no existe",
-                    content = @Content(schema = @Schema(implementation = Response.class)))
-    })
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping("/{id}")
     public ResponseEntity<HorarioSemanal> getHorario(@PathVariable long id) {
         HorarioSemanal horario = horarioService.findById(id)
                 .orElseThrow(() -> new HorarioNotFoundException(id));
         return new ResponseEntity<>(horario, HttpStatus.OK);
     }
 
+    // 🔹 Buscar por día de semana
+    @GetMapping("/dia")
+    public ResponseEntity<List<HorarioSemanal>> getByDia(@RequestParam String diaSemana) {
+        return ResponseEntity.ok(horarioService.findByDiaSemana(diaSemana.toUpperCase()));
+    }
+
+    // 🔹 Buscar por hora inicio
+    @GetMapping("/horaInicio")
+    public ResponseEntity<List<HorarioSemanal>> getByHoraInicio(@RequestParam LocalTime horaInicio) {
+        return ResponseEntity.ok(horarioService.findByHoraInicio(horaInicio));
+    }
+
+    // 🔹 Buscar por servicio
+    @GetMapping("/servicio/{id}")
+    public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id) {
+        Servicio servicio = new Servicio();
+        servicio.setId_servicio(id);
+        return ResponseEntity.ok(horarioService.findByServicio(servicio));
+    }
+
+    // 🔹 Buscar por grupo
+    @GetMapping("/grupo/{id}")
+    public ResponseEntity<List<HorarioSemanal>> getByGrupo(@PathVariable Long id) {
+        Grupo grupo = new Grupo();
+        grupo.setId(id);
+        return ResponseEntity.ok(horarioService.findByGrupo(grupo));
+    }
+
     // 🔹 Crear horario
-    @PostMapping(produces = "application/json", consumes = "application/json")
+    @PostMapping
     public ResponseEntity<HorarioSemanal> addHorario(@RequestBody HorarioSemanal horario) {
-        HorarioSemanal addedHorario = horarioService.addHorario(horario);
-        return new ResponseEntity<>(addedHorario, HttpStatus.CREATED);
+        HorarioSemanal added = horarioService.addHorario(horario);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
     // 🔹 Modificar horario
-    @PutMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<HorarioSemanal> modifyHorario(@PathVariable long id,
-                                                        @RequestBody HorarioSemanal newHorario) {
+    @PutMapping("/{id}")
+    public ResponseEntity<HorarioSemanal> modifyHorario(@PathVariable long id, @RequestBody HorarioSemanal newHorario) {
         HorarioSemanal horario = horarioService.modifyHorario(id, newHorario);
         return new ResponseEntity<>(horario, HttpStatus.OK);
     }
@@ -99,15 +83,5 @@ public class HorarioController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Horario eliminado correctamente");
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    // 🔹 Manejo de excepciones
-    @ExceptionHandler(HorarioNotFoundException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> handleException(HorarioNotFoundException ex) {
-        Response response = Response.errorResonse(NOT_FOUND, ex.getMessage());
-        logger.error(ex.getMessage(), ex);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

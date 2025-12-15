@@ -1,26 +1,47 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.*;
+import com.example.demo.domain.Cita;
+import com.example.demo.domain.Cliente;
+import com.example.demo.domain.Grupo;
+import com.example.demo.domain.HorarioSemanal;
+import com.example.demo.domain.Servicio;
+import com.example.demo.domain.EstadoCita;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface CitaRepository extends JpaRepository<Cita, Long> {
 
-    List<Cita> findAll();
     Optional<Cita> findById(long id);
 
     List<Cita> findByCliente(Cliente cliente);
-    List<Cita> findByGrupo(Grupo grupo);
+
     List<Cita> findByHorario(HorarioSemanal horario);
+
     List<Cita> findByFecha(LocalDate fecha);
-    List<Cita> findByEstado(String estado);
-    List<Cita> findByFechaAndEstado(LocalDate fecha, String estado);
-    List<Cita> findByFechaAndEstadoAndHorario(LocalDate fecha, String estado, HorarioSemanal horario);
-    List<Cita> findByHorarioOrGrupoOrCliente (HorarioSemanal horario, Grupo grupo,Cliente cliente);
+
+    List<Cita> findByHora(LocalTime hora);
+
+    List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
+
+    // 🔹 Ahora usamos EstadoCita en vez de boolean
+    List<Cita> findByEstado(EstadoCita estado);
+
+    List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
+
+    List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
+
+    List<Cita> findByHorario_Servicio(Servicio servicio);
+
+    List<Cita> findByHorario_Grupo(Grupo grupo);
+
+    List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
+
+    // 🔹 Control de plazas por fecha concreta + hora
+    int countByHorarioAndFechaAndHora(HorarioSemanal horario, LocalDate fecha, LocalTime hora);
 }
