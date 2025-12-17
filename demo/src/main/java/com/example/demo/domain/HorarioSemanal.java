@@ -17,15 +17,19 @@ public class HorarioSemanal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_horario")
     private Long id;
 
     @NotNull
+    @Column(name = "dia_semana")
     private String diaSemana;
 
     @NotNull
+    @Column(name = "hora_inicio")
     private LocalTime horaInicio;
 
     @NotNull
+    @Column(name = "hora_fin")
     private LocalTime horaFin;
 
     @NotNull
