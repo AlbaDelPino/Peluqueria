@@ -1,16 +1,13 @@
 package com.example.demo.security.service;
 
-import com.example.demo.domain.Cita;
-import com.example.demo.domain.Cliente;
-import com.example.demo.domain.EstadoCita;
-import com.example.demo.domain.Grupo;
-import com.example.demo.domain.HorarioSemanal;
-import com.example.demo.domain.Servicio;
+import com.example.demo.domain.*;
 import com.example.demo.exception.CitaNotFoundException;
 import com.example.demo.repository.CitaRepository;
+import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,11 +19,9 @@ import java.util.Optional;
 @Service
 public class CitaServiceImpl implements CitaService {
 
-    @Autowired
-    private CitaRepository citaRepository;
-
-    @Autowired
-    private HorarioRepository horarioRepository;
+    @Autowired private CitaRepository citaRepository;
+    @Autowired private HorarioRepository horarioRepository;
+    @Autowired private ClienteRepository clienteRepository;
 
     @Override
     public List<Cita> findAll() {
@@ -37,6 +32,8 @@ public class CitaServiceImpl implements CitaService {
     public Optional<Cita> findById(long id) {
         return citaRepository.findById(id);
     }
+
+    // --- MÉTODOS DE BÚSQUEDA ---
 
     @Override
     public List<Cita> findByFecha(LocalDate fecha) {
@@ -59,9 +56,67 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public List<Cita> findByCliente(Cliente cliente) {
+    public List<Cita> findByCliente(Long clienteId) {
+        // Buscamos al cliente para asegurarnos de que existe
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        // Retornamos su lista de citas
         return citaRepository.findByCliente(cliente);
     }
+
+    // --- LÓGICA DE NEGOCIO PRINCIPAL ---
+    @Override
+    @Transactional
+    public Cita addCita(Cita cita, Long servicioId, Long clienteId) {
+        // 1. Buscar Cliente
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
+        cita.setCliente(cliente);
+
+        // 2. Obtener día de la semana en español para el Horario
+        String diaSemana = cita.getFecha()
+                .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
+                .toUpperCase();
+
+        // 3. Buscar el HorarioSemanal (la "plantilla")
+        Servicio servicio = new Servicio();
+        servicio.setId_servicio(servicioId);
+
+        HorarioSemanal horario = horarioRepository
+                .findByServicioAndHoraInicioAndDiaSemana(servicio, cita.getHora(), diaSemana)
+                .stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("No existe un horario para este servicio en ese día/hora"));
+
+        // 4. VALIDACIÓN DE PLAZAS (Usando la Query)
+        long ocupadas = citaRepository.countCitasActivas(horario, cita.getFecha(), EstadoCita.CANCELADO);
+
+        if (ocupadas >= horario.getPlazas()) {
+            throw new RuntimeException("Lo sentimos, no quedan plazas libres para este horario el día " + cita.getFecha());
+        }
+
+        // 5. Configurar y guardar
+        cita.setHorario(horario);
+        cita.setEstado(EstadoCita.PENDIENTE);
+        return citaRepository.save(cita);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCita(long id) {
+        if (!citaRepository.existsById(id)) throw new RuntimeException("Cita no encontrada");
+        citaRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Cita cambiarEstado(long id, EstadoCita nuevoEstado) {
+        Cita cita = citaRepository.findById(id).orElseThrow(() -> new RuntimeException("No existe la cita"));
+        cita.setEstado(nuevoEstado);
+        return citaRepository.save(cita);
+    }
+
+    // --- OTROS MÉTODOS ---
 
     @Override
     public List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado) {
@@ -87,75 +142,4 @@ public class CitaServiceImpl implements CitaService {
     public List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha) {
         return citaRepository.findByHorario_ServicioAndFecha(servicio, fecha);
     }
-
-    // 🔹 Crear cita con validación completa
-    @Override
-    public Cita addCita(Cita cita, Long servicioId) {
-        Servicio servicio = new Servicio();
-        servicio.setId_servicio(servicioId);
-
-        // Día de la semana en español usando DateTimeFormatter
-        String diaSemanaCitaStr = cita.getFecha()
-                .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
-                .toUpperCase();
-
-        List<HorarioSemanal> horarios = horarioRepository
-                .findByServicioAndHoraInicioAndDiaSemana(
-                        servicio,
-                        cita.getHora(),
-                        diaSemanaCitaStr
-                );
-
-        if (horarios.isEmpty()) {
-            throw new RuntimeException("No existe un horario para ese servicio, hora y día");
-        }
-
-        HorarioSemanal horario = horarios.get(0);
-
-        int ocupadas = citaRepository.countByHorarioAndFechaAndHora(horario, cita.getFecha(), cita.getHora());
-        if (ocupadas >= horario.getPlazas()) {
-            throw new RuntimeException("No quedan plazas disponibles en este horario para ese día/hora");
-        }
-
-        cita.setHorario(horario);
-        cita.setEstado(EstadoCita.PENDIENTE); // por defecto
-        return citaRepository.save(cita);
-    }
-
-
-    @Override
-    public void deleteCita(long id) {
-        Cita cita = citaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
-
-        HorarioSemanal horario = cita.getHorario();
-        if (horario == null) {
-            throw new RuntimeException("La cita no tiene horario asociado");
-        }
-
-        horario.setPlazas(horario.getPlazas() + 1);
-        horarioRepository.save(horario);
-
-        citaRepository.delete(cita);
-    }
-
-    // 🔹 Solo se cambia el estado
-    @Override
-    public Cita cambiarEstado(long id, EstadoCita nuevoEstado) {
-        Cita cita = citaRepository.findById(id)
-                .orElseThrow(() -> new CitaNotFoundException(id));
-
-        // Si se cancela la cita, liberar la plaza en el horario
-        if (nuevoEstado == EstadoCita.CANCELADO) {
-            HorarioSemanal horario = cita.getHorario();
-            if (horario != null) {
-                horario.setPlazas(horario.getPlazas() + 1);
-                horarioRepository.save(horario);
-            }
-        }
-
-        cita.setEstado(nuevoEstado);
-        return citaRepository.save(cita);
-    }
-
 }

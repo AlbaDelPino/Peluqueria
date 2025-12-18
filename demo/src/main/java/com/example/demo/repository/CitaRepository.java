@@ -7,6 +7,8 @@ import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
 import com.example.demo.domain.EstadoCita;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -43,5 +45,12 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
 
     // 🔹 Control de plazas por fecha concreta + hora
-    int countByHorarioAndFechaAndHora(HorarioSemanal horario, LocalDate fecha, LocalTime hora);
+// Lógica clave: Cuenta cuántas plazas están ocupadas realmente para una fecha y horario
+    @Query("SELECT COUNT(c) FROM Cita c WHERE c.horario = :horario AND c.fecha = :fecha AND c.estado != :estadoCancelado")
+    long countCitasActivas(
+            @Param("horario") HorarioSemanal horario,
+            @Param("fecha") LocalDate fecha,
+            @Param("estadoCancelado") EstadoCita estadoCancelado
+    );
+
 }

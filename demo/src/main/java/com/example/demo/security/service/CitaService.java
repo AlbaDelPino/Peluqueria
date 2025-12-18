@@ -21,7 +21,7 @@ public interface CitaService {
     List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
 
     List<Cita> findByEstado(EstadoCita estado);
-    List<Cita> findByCliente(Cliente cliente);
+    List<Cita> findByCliente(Long clienteId);
     List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
     List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
 
@@ -29,7 +29,7 @@ public interface CitaService {
     List<Cita> findByHorario_Grupo(Grupo grupo);
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
 
-    Cita addCita(Cita cita, Long servicioId);
+    Cita addCita(Cita cita, Long servicioId, Long clienteId);
     void deleteCita(long id);
 
     // 🔹 Solo se cambia el estado
