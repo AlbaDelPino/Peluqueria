@@ -141,17 +141,17 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public List<Cita> findByServicio(Servicio servicio) {
-        return citaRepository.findByServicio(servicio);
+    public List<Cita> findByHorario_Servicio(Servicio servicio) {
+        return citaRepository.findByHorario_Servicio(servicio);
     }
 
     @Override
-    public List<Cita> findByGrupo(Grupo grupo) {
-        return citaRepository.findByGrupo(grupo);
+    public List<Cita> findByHorario_Grupo(Grupo grupo) {
+        return citaRepository.findByHorario_Grupo(grupo);
     }
 
     @Override
-    public List<Cita> findByServicioAndFecha(Servicio servicio, LocalDate fecha) {
-        return citaRepository.findByServicioAndFecha(servicio, fecha);
+    public List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha) {
+        return citaRepository.findByHorario_ServicioAndFecha(servicio, fecha);
     }
 }

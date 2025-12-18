@@ -48,14 +48,16 @@ public class CitaController {
 
     // 3. Crear una nueva cita (Lógica de validación de plazas incluida)
     @PostMapping("/reservar")
-    public ResponseEntity<Cita> addCita(@RequestBody Cita cita,@RequestBody Long clienteId,@RequestBody HorarioSemanal horario) {
-        Cita added = citaService.addCita(cita,clienteId,horario);
+    public ResponseEntity<Cita> addCita(@RequestBody Cita cita) {
+        Long clienteId = cita.getCliente().getId();
+        Cita added = citaService.addCita(cita,clienteId, cita.getHorario());
         return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
     @PostMapping("/reservarCliente")
-    public ResponseEntity<Cita> addCitaCliente(@RequestBody Cita cita,@RequestBody Long clienteId,@RequestBody HorarioSemanal horario) {
-        Cita added = citaService.addCitaCliente(cita,clienteId,horario);
+    public ResponseEntity<Cita> addCitaCliente(@RequestBody Cita cita) {
+        Long clienteId = cita.getCliente().getId();
+        Cita added = citaService.addCita(cita,clienteId, cita.getHorario());
         return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 

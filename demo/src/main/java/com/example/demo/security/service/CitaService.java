@@ -21,9 +21,9 @@ public interface CitaService {
     List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
     List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
 
-    List<Cita> findByServicio(Servicio servicio);
-    List<Cita> findByGrupo(Grupo grupo);
-    List<Cita> findByServicioAndFecha(Servicio servicio, LocalDate fecha);
+    List<Cita> findByHorario_Servicio(Servicio servicio);
+    List<Cita> findByHorario_Grupo(Grupo grupo);
+    List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
 
     Cita addCita(Cita cita, Long clienteId, HorarioSemanal horario);
     Cita addCitaCliente(Cita cita, Long clienteId,HorarioSemanal horario);
