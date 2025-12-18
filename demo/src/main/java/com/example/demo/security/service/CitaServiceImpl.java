@@ -68,7 +68,28 @@ public class CitaServiceImpl implements CitaService {
     // --- LÓGICA DE NEGOCIO PRINCIPAL ---
     @Override
     @Transactional
-    public Cita addCita(Cita cita, Long servicioId, Long clienteId) {
+    public Cita addCitaCliente(Cita cita, Long clienteId, HorarioSemanal horario) {
+        // 1. Obtener día de la semana en español para el Horario
+        String diaSemana = cita.getFecha()
+                .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
+                .toUpperCase();
+
+        // 2. VALIDACIÓN DE PLAZAS (Usando la Query)
+        long ocupadas = citaRepository.countCitasActivas(horario, cita.getFecha(), EstadoCita.CANCELADO);
+
+        if (ocupadas >= horario.getPlazas()) {
+            throw new RuntimeException("Lo sentimos, no quedan plazas libres para este horario el día " + cita.getFecha());
+        }
+
+        // 3. Configurar y guardar
+        cita.setHorario(horario);
+        cita.setEstado(EstadoCita.PENDIENTE);
+        return citaRepository.save(cita);
+    }
+
+    @Override
+    @Transactional
+    public Cita addCita(Cita cita, Long clienteId,HorarioSemanal horario) {
         // 1. Buscar Cliente
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
@@ -78,15 +99,6 @@ public class CitaServiceImpl implements CitaService {
         String diaSemana = cita.getFecha()
                 .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
                 .toUpperCase();
-
-        // 3. Buscar el HorarioSemanal (la "plantilla")
-        Servicio servicio = new Servicio();
-        servicio.setId_servicio(servicioId);
-
-        HorarioSemanal horario = horarioRepository
-                .findByServicioAndHoraInicioAndDiaSemana(servicio, cita.getHora(), diaSemana)
-                .stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("No existe un horario para este servicio en ese día/hora"));
 
         // 4. VALIDACIÓN DE PLAZAS (Usando la Query)
         long ocupadas = citaRepository.countCitasActivas(horario, cita.getFecha(), EstadoCita.CANCELADO);
@@ -129,17 +141,17 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public List<Cita> findByHorario_Servicio(Servicio servicio) {
-        return citaRepository.findByHorario_Servicio(servicio);
+    public List<Cita> findByServicio(Servicio servicio) {
+        return citaRepository.findByServicio(servicio);
     }
 
     @Override
-    public List<Cita> findByHorario_Grupo(Grupo grupo) {
-        return citaRepository.findByHorario_Grupo(grupo);
+    public List<Cita> findByGrupo(Grupo grupo) {
+        return citaRepository.findByGrupo(grupo);
     }
 
     @Override
-    public List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha) {
-        return citaRepository.findByHorario_ServicioAndFecha(servicio, fecha);
+    public List<Cita> findByServicioAndFecha(Servicio servicio, LocalDate fecha) {
+        return citaRepository.findByServicioAndFecha(servicio, fecha);
     }
 }

@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Cita;
-import com.example.demo.domain.Cliente;
 import com.example.demo.domain.EstadoCita;
-import com.example.demo.exception.CitaNotFoundException;
+import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.security.service.CitaService;
-import com.example.demo.payload.request.CitaRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
 @RestController
@@ -25,7 +22,6 @@ public class CitaController {
     @Autowired
     private CitaService citaService;
 
-    // 1. Obtener todas las citas
     // 1. Mostrar todas las citas (Solo para ADMIN y GRUPO)
     @GetMapping("/todas")
     @PreAuthorize("hasAnyRole('ADMIN', 'GRUPO')")
@@ -52,20 +48,15 @@ public class CitaController {
 
     // 3. Crear una nueva cita (Lógica de validación de plazas incluida)
     @PostMapping("/reservar")
-    public ResponseEntity<?> reservarCita(@RequestBody CitaRequest request) {
-        try {
-            // Creamos el objeto Cita base
-            Cita cita = new Cita();
-            cita.setFecha(request.getFecha());
-            cita.setHora(request.getHora());
+    public ResponseEntity<Cita> addCita(@RequestBody Cita cita,@RequestBody Long clienteId,@RequestBody HorarioSemanal horario) {
+        Cita added = citaService.addCita(cita,clienteId,horario);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    }
 
-            // Llamamos al service pasando los datos extraídos del JSON
-            Cita nuevaCita = citaService.addCita(cita, request.getServicioId(), request.getClienteId());
-
-            return new ResponseEntity<>(nuevaCita, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PostMapping("/reservarCliente")
+    public ResponseEntity<Cita> addCitaCliente(@RequestBody Cita cita,@RequestBody Long clienteId,@RequestBody HorarioSemanal horario) {
+        Cita added = citaService.addCitaCliente(cita,clienteId,horario);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
     // 4. Cambiar estado de la cita (Confirmar, Cancelar, etc.)

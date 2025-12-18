@@ -1,10 +1,6 @@
 package com.example.demo.security.service;
 
-import com.example.demo.domain.Cita;
-import com.example.demo.domain.Cliente;
-import com.example.demo.domain.Grupo;
-import com.example.demo.domain.Servicio;
-import com.example.demo.domain.EstadoCita;
+import com.example.demo.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,13 +21,15 @@ public interface CitaService {
     List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
     List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
 
-    List<Cita> findByHorario_Servicio(Servicio servicio);
-    List<Cita> findByHorario_Grupo(Grupo grupo);
-    List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
+    List<Cita> findByServicio(Servicio servicio);
+    List<Cita> findByGrupo(Grupo grupo);
+    List<Cita> findByServicioAndFecha(Servicio servicio, LocalDate fecha);
 
-    Cita addCita(Cita cita, Long servicioId, Long clienteId);
+    Cita addCita(Cita cita, Long clienteId, HorarioSemanal horario);
+    Cita addCitaCliente(Cita cita, Long clienteId,HorarioSemanal horario);
     void deleteCita(long id);
 
     // 🔹 Solo se cambia el estado
     Cita cambiarEstado(long id, EstadoCita nuevoEstado);
+
 }

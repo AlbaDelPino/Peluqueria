@@ -38,11 +38,11 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findByClienteAndFecha(Cliente cliente, LocalDate fecha);
 
-    List<Cita> findByHorario_Servicio(Servicio servicio);
+    List<Cita> findByServicio(Servicio servicio);
 
-    List<Cita> findByHorario_Grupo(Grupo grupo);
+    List<Cita> findByGrupo(Grupo grupo);
 
-    List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
+    List<Cita> findByServicioAndFecha(Servicio servicio, LocalDate fecha);
 
     // 🔹 Control de plazas por fecha concreta + hora
 // Lógica clave: Cuenta cuántas plazas están ocupadas realmente para una fecha y horario
