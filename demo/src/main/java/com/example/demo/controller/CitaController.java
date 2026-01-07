@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Cita;
 import com.example.demo.domain.EstadoCita;
-import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.security.service.CitaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/citas")
@@ -29,16 +30,13 @@ public class CitaController {
         return ResponseEntity.ok(citaService.findAll());
     }
 
+    // 2. Citas de un cliente
     @GetMapping("/cliente/{clienteId}")
     public ResponseEntity<List<Cita>> listarCitasCliente(@PathVariable Long clienteId) {
-        try {
-            List<Cita> citas = citaService.findByCliente(clienteId);
-            return ResponseEntity.ok(citas);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(citaService.findByCliente(clienteId));
     }
-    // 2. Obtener cita por ID
+
+    // 3. Obtener cita por ID
     @GetMapping("/{id}")
     public ResponseEntity<Cita> getCitaById(@PathVariable long id) {
         return citaService.findById(id)
@@ -46,27 +44,27 @@ public class CitaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 3. Crear una nueva cita (Lógica de validación de plazas incluida)
+    @GetMapping("/disponible")
+    public ResponseEntity<?> getCitasDisponibles(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,@RequestParam Long horarioId) {
+        return ResponseEntity.ok(citaService.citasDisponibles(horarioId,fecha));
+    }
+
+
+
+
+    // 4. Crear una nueva cita
     @PostMapping("/reservar")
     public ResponseEntity<Cita> addCita(@RequestBody Cita cita) {
-        Long clienteId = cita.getCliente().getId();
-        Cita added = citaService.addCita(cita,clienteId, cita.getHorario());
+        Cita added = citaService.addCita(cita);
         return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
-    @PostMapping("/reservarCliente")
-    public ResponseEntity<Cita> addCitaCliente(@RequestBody Cita cita) {
-        Long clienteId = cita.getCliente().getId();
-        Cita added = citaService.addCita(cita,clienteId, cita.getHorario());
-        return new ResponseEntity<>(added, HttpStatus.CREATED);
-    }
-
-    // 4. Cambiar estado de la cita (Confirmar, Cancelar, etc.)
-    // Si el estado es CANCELADO, libera la plaza automáticamente
     @PutMapping("/{id}/estado/{nuevoEstado}")
     public ResponseEntity<?> cambiarEstado(
             @PathVariable long id,
-            @PathVariable EstadoCita nuevoEstado) {
+            @PathVariable boolean nuevoEstado) {
+
         try {
             Cita citaActualizada = citaService.cambiarEstado(id, nuevoEstado);
             return ResponseEntity.ok(citaActualizada);
@@ -75,7 +73,11 @@ public class CitaController {
         }
     }
 
-    // 5. Eliminar una cita física (También libera la plaza)
+
+
+
+
+    // 6. Eliminar una cita
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCita(@PathVariable long id) {
         try {
@@ -86,7 +88,7 @@ public class CitaController {
         }
     }
 
-    // 6. Buscar citas por fecha específica
+    // 7. Buscar citas por fecha
     @GetMapping("/fecha")
     public ResponseEntity<List<Cita>> getCitasByFecha(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {

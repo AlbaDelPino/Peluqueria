@@ -5,6 +5,7 @@ import com.example.demo.domain.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CitaService {
@@ -13,8 +14,8 @@ public interface CitaService {
     Optional<Cita> findById(long id);
 
     List<Cita> findByFecha(LocalDate fecha);
-    List<Cita> findByHora(LocalTime hora);
-    List<Cita> findByFechaAndHora(LocalDate fecha, LocalTime hora);
+
+
 
     List<Cita> findByEstado(EstadoCita estado);
     List<Cita> findByCliente(Long clienteId);
@@ -24,12 +25,13 @@ public interface CitaService {
     List<Cita> findByHorario_Servicio(Servicio servicio);
     List<Cita> findByHorario_Grupo(Grupo grupo);
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
+    Long citasDisponibles(Long horarioId,LocalDate fecha);
 
-    Cita addCita(Cita cita, Long clienteId, HorarioSemanal horario);
-    Cita addCitaCliente(Cita cita, Long clienteId,HorarioSemanal horario);
+
+    Cita addCita(Cita cita);
     void deleteCita(long id);
 
     // 🔹 Solo se cambia el estado
-    Cita cambiarEstado(long id, EstadoCita nuevoEstado);
+    Cita cambiarEstado(long id, boolean nuevoEstado);
 
 }

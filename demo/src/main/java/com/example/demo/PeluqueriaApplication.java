@@ -57,4 +57,24 @@ http://localhost:8082/api/admins/2
 }
 
 
+//citas disponibles
+
+http://localhost:8082/citas/disponibilidad?fecha=2026-01-12&hora=08:00:00
+
+//crear cita
+
+http://localhost:8082/citas/reservar
+
+{
+    "fecha": "2025-12-29",
+    "hora": "14:00:00",
+    "horario": {
+        "id": 6,
+
+
+			"cliente": {
+			"id": 20
+			}
+			}
+
  */
