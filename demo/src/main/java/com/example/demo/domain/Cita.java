@@ -29,19 +29,18 @@ public class Cita {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
-
+    @NotNull
+    private LocalTime horaInicio;
     public Cita() {}
 
-    public Cita(Long id, LocalDate fecha, boolean estado,
-                HorarioSemanal horario, Cliente cliente) {
-        this.id = id;
-        this.fecha = fecha;
+    public Cita( LocalDate fecha, boolean estado, HorarioSemanal horario, Cliente cliente, LocalTime horaInicio) {
 
+        this.fecha = fecha;
         this.estado = estado;
         this.horario = horario;
         this.cliente = cliente;
+        this.horaInicio = horaInicio;
     }
-
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -50,10 +49,21 @@ public class Cita {
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
+    public boolean isEstado() {
+        return estado;
+    }
 
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
 
-    public boolean getEstado() { return estado; }
-    public void setEstado(boolean estado) { this.estado = estado; }
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
 
     public HorarioSemanal getHorario() { return horario; }
     public void setHorario(HorarioSemanal horario) { this.horario = horario; }

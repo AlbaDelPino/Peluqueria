@@ -32,6 +32,14 @@ public class Cliente extends User {
     @JsonIgnore
     private List<Cita> citas;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "cliente_servicios_favoritos", // Nombre de la tabla que se creará
+            joinColumns = @JoinColumn(name = "id"), // Referencia al 'id' de User
+            inverseJoinColumns = @JoinColumn(name = "id_servicio") // Referencia al 'id_servicio' de Servicio
+    )
+    private java.util.Set<Servicio> favoritos = new java.util.HashSet<>();
+
     public Cliente() {}
 
     public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
@@ -57,4 +65,11 @@ public class Cliente extends User {
 
     public List<Cita> getCitas() { return citas; }
     public void setCitas(List<Cita> citas) { this.citas = citas; }
+    public java.util.Set<Servicio> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(java.util.Set<Servicio> favoritos) {
+        this.favoritos = favoritos;
+    }
 }

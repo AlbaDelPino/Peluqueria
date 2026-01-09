@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "servicio")
 public class Servicio {
@@ -28,6 +31,10 @@ public class Servicio {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_servicio", nullable = false)
     private TipoServicio tipoServicio;
+
+    @ManyToMany(mappedBy = "favoritos")
+    @JsonIgnore // Importante para evitar bucles infinitos en el JSON
+    private Set<Cliente> clientesQueMeFavorecen = new HashSet<>();
 
     public Servicio() {
 
@@ -59,6 +66,14 @@ public class Servicio {
 
     public TipoServicio getTipoServicio() { return tipoServicio; }
     public void setTipoServicio(TipoServicio tipoServicio) { this.tipoServicio = tipoServicio; }
+
+    public Set<Cliente> getClientesQueMeFavorecen() {
+        return clientesQueMeFavorecen;
+    }
+
+    public void setClientesQueMeFavorecen(Set<Cliente> clientesQueMeFavorecen) {
+        this.clientesQueMeFavorecen = clientesQueMeFavorecen;
+    }
 
     @Override
     public String toString() {
