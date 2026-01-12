@@ -48,6 +48,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/signin",
+                                "/api/auth/google",
                                 "/api/auth/signup/cliente/public",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
