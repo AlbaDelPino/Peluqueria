@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -182,50 +181,5 @@ public class UserController {
                     .body(new MessageResponse("Usuario no encontrado"));
         }
         return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/google")
-    public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, Object> data) {
-        String email = (String) data.get("email");
-        String nombre = (String) data.get("nombre");
-        String username = (String) data.get("username");
-        String googleId = (String) data.get("googleId");
-
-        // 1. Buscamos si el usuario ya existe por email
-        User user = userService.getAllUsers().stream()
-                .filter(u -> u != null && u.getEmail() != null && u.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
-
-        // 2. Si no existe, lo registramos como nuevo Cliente
-        if (user == null) {
-            Cliente nuevoCliente = new Cliente(
-                    username,
-                    nombre,
-                    email,
-                    123456789L,  // Long para el teléfono
-                    passwordEncoder.encode("GOOGLE_USER_" + googleId),
-                    true,        // estado activo
-                    "Sin dirección",
-                    "Registro vía Google",
-                    "Ninguna",
-                    null         // null para el BLOB de imagen
-            );
-            nuevoCliente.setRole(ERole.ROLE_CLIENTE);
-
-            userService.saveUser(nuevoCliente);
-            user = nuevoCliente;
-        }
-
-        // 3. Generamos el Token JWT
-        String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
-
-        return ResponseEntity.ok(new JwtResponse(
-                token,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                List.of(user.getRole().name())
-        ));
     }
 }

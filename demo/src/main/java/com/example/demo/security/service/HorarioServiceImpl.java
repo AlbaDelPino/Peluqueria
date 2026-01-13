@@ -37,12 +37,15 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public List<HorarioSemanal> findByServicio(Servicio servicio) {
-        return horarioRepository.findAll()
-                .stream()
-                .filter(h -> h.getServicio().equals(servicio))
-                .toList();
+    public List<HorarioSemanal> findByServicio(Long idServicio) {
+        return horarioRepository.findByServicio_IdServicio(idServicio);
     }
+
+    @Override
+    public List<HorarioSemanal> findByDiaSemanaAndServicio(String diaSemana, Long idServicio) {
+        return horarioRepository.findByDiaSemanaAndServicio_IdServicio(diaSemana.toUpperCase(), idServicio);
+    }
+
 
     @Override
     public List<HorarioSemanal> findByGrupo(Grupo grupo) {

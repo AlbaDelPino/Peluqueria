@@ -49,10 +49,18 @@ public class HorarioController {
     // 🔹 Buscar por servicio
     @GetMapping("/servicio/{id}")
     public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id) {
-        Servicio servicio = new Servicio();
-        servicio.setId_servicio(id);
-        return ResponseEntity.ok(horarioService.findByServicio(servicio));
+        return ResponseEntity.ok(horarioService.findByServicio(id));
     }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<HorarioSemanal>> getByDiaAndServicio(
+            @RequestParam String diaSemana,
+            @RequestParam Long idServicio
+    ) {
+        List<HorarioSemanal> horarios = horarioService.findByDiaSemanaAndServicio(diaSemana, idServicio);
+        return ResponseEntity.ok(horarios);
+    }
+
 
     // 🔹 Buscar por grupo
     @GetMapping("/grupo/{id}")

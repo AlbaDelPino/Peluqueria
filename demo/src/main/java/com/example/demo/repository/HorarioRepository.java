@@ -28,6 +28,9 @@ public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
     );
 
     List<HorarioSemanal> findByDiaSemana(String diaSemana);
+    List<HorarioSemanal> findByServicio_IdServicio(Long idServicio);
 
     List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
+    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicio(String diaSemana, Long idServicio);
+
 }

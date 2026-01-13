@@ -13,7 +13,7 @@ public interface HorarioService {
     List<HorarioSemanal> findAll();
     Optional<HorarioSemanal> findById(long id);
 
-    List<HorarioSemanal> findByServicio(Servicio servicio);
+    List<HorarioSemanal> findByServicio(Long idServicio);
     List<HorarioSemanal> findByGrupo(Grupo grupo);
 
     // 🔹 Buscar por todos los campos de la clave única
@@ -24,6 +24,8 @@ public interface HorarioService {
             String diaSemana,
             Grupo grupo
     );
+    List<HorarioSemanal> findByDiaSemanaAndServicio(String diaSemana, Long idServicio);
+
 
     // 🔹 Buscar por día de semana
     List<HorarioSemanal> findByDiaSemana(String diaSemana);
