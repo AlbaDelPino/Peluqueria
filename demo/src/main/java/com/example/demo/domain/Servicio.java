@@ -14,7 +14,7 @@ public class Servicio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_servicio")
-    private Long id_servicio;
+    private Long idServicio;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -49,8 +49,8 @@ public class Servicio {
     }
 
     // Getters y Setters
-    public Long getId_servicio() { return id_servicio; }
-    public void setId_servicio(Long id_servicio) { this.id_servicio = id_servicio; }
+    public Long getId_servicio() { return idServicio; }
+    public void setId_servicio(Long id_servicio) { this.idServicio = id_servicio; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -78,7 +78,7 @@ public class Servicio {
     @Override
     public String toString() {
         return "Servicio{" +
-                "id_servicio=" + id_servicio +
+                "id_servicio=" + idServicio +
                 ", nombre='" + nombre + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", precio=" + precio +
