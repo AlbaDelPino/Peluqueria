@@ -19,6 +19,7 @@ public class PeluqueriaApplication {
 http://localhost:8082/api/auth/signup/admin
 
 {
+
   "username": "admin1564",
   "nombre": "Administrador General",
   "email": "admin55654@empresa.com",
