@@ -31,6 +31,7 @@ public class WebSecurityConfig {
     }
 
     // 🔑 Aquí añades el PasswordEncoder
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

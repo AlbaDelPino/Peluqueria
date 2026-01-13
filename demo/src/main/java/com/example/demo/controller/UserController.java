@@ -165,6 +165,7 @@ public class UserController {
 
 
     // --- LISTAR todos los usuarios ---
+
     @GetMapping("/users")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO')")
     public List<User> getAllUsers() {
