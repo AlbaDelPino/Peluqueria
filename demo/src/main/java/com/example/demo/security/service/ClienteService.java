@@ -76,7 +76,7 @@ public class ClienteService {
             helper.setTo(cliente.getEmail());
             helper.setSubject("Activa tu cuenta - Bernat Experience");
 
-            String urlVerificacion = "http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId();
+            String urlVerificacion = "http://10.50.183.95:8082/clientes/verificar?id=" + cliente.getId();
 
             String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
                     "<p>Pulsa el enlace para activar tu cuenta:</p>" +
@@ -91,7 +91,7 @@ public class ClienteService {
             System.err.println("❌ ERROR AL ENVIAR CORREO: " + e.getMessage());
             // PLAN B: Imprimimos el link en consola por si el mail falla
             System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR: ");
-            System.out.println("http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId());
+            System.out.println("http://10.50.183.95:8082/clientes/verificar?id=" + cliente.getId());
         }
     }
 
