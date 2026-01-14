@@ -11,6 +11,13 @@ import java.util.Optional;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    Optional<User> findByUsername(String username);
-    List<User> findByRole(ERole role);
+    Optional<Cliente> findByUsername(String username);
+
+    // Para buscar por email (útil para validaciones de registro)
+    Optional<Cliente> findByEmail(String email);
+
+    // Verificar si ya existe un email antes de registrar
+    Boolean existsByEmail(String email);
+
+    Boolean existsByUsername(String username);
 }

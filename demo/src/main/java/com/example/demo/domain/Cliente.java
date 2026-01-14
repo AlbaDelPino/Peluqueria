@@ -25,7 +25,6 @@ public class Cliente extends User {
     private String alergenos;
 
     @Lob
-
     private byte[] imagen;
     // Usamos byte[] para mapear un BLOB
     @OneToMany(mappedBy = "cliente", orphanRemoval = true)
@@ -39,6 +38,9 @@ public class Cliente extends User {
             inverseJoinColumns = @JoinColumn(name = "id_servicio") // Referencia al 'id_servicio' de Servicio
     )
     private java.util.Set<Servicio> favoritos = new java.util.HashSet<>();
+
+    @Column(nullable = false)
+    private boolean verificado = false;
 
     public Cliente() {}
 
@@ -67,6 +69,14 @@ public class Cliente extends User {
     public void setCitas(List<Cita> citas) { this.citas = citas; }
     public java.util.Set<Servicio> getFavoritos() {
         return favoritos;
+    }
+
+    public boolean isVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
     }
 
     public void setFavoritos(java.util.Set<Servicio> favoritos) {

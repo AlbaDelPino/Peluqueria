@@ -6,6 +6,7 @@ import com.example.demo.payload.request.SignupRequest;
 import com.example.demo.payload.response.JwtResponse;
 import com.example.demo.payload.response.MessageResponse;
 import com.example.demo.security.jwt.JwtUtils;
+import com.example.demo.security.service.ClienteService;
 import com.example.demo.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,19 +24,22 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final ClienteService clienteService;
     private final JwtUtils jwtUtils;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, JwtUtils jwtUtils) {
+    public UserController(UserService userService, JwtUtils jwtUtils,ClienteService clienteService) {
         this.userService = userService;
+        this.clienteService = clienteService;
         this.jwtUtils = jwtUtils;
     }
 
     // --- SIGNIN ---
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        // 1. Buscamos al usuario (Esto ya lo tienes)
         User user = userService.getAllUsers().stream()
                 .filter(u -> u.getUsername().equals(loginRequest.getUsername()))
                 .findFirst()
@@ -45,10 +49,24 @@ public class UserController {
             return ResponseEntity.status(401).body(new MessageResponse("Error: Usuario no encontrado"));
         }
 
+        // ---------------------------------------------------------
+        // 2. AÑADE ESTO AQUÍ (Control de verificación)
+        // ---------------------------------------------------------
+        if (user instanceof Cliente) {
+            Cliente cliente = (Cliente) user;
+            if (!cliente.isVerificado()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new MessageResponse("Error: Debes activar tu cuenta mediante el correo enviado."));
+            }
+        }
+        // ---------------------------------------------------------
+
+        // 3. Validar contraseña (Esto ya lo tienes)
         if (!passwordEncoder.matches(loginRequest.getContrasenya(), user.getContrasenya())) {
             return ResponseEntity.status(401).body(new MessageResponse("Error: Contraseña incorrecta"));
         }
 
+        // 4. Generar Token (Esto ya lo tienes)
         String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
 
         return ResponseEntity.ok(new JwtResponse(
@@ -128,25 +146,31 @@ public class UserController {
 
     @PostMapping("/signup/cliente/public")
     public ResponseEntity<?> registerClientePublic(@RequestBody SignupRequest signUpRequest) {
-        String encodedPassword = passwordEncoder.encode(signUpRequest.getContrasenya());
+        try {
+            // 1. Creamos la instancia del cliente
+            Cliente cliente = new Cliente(
+                    signUpRequest.getUsername(),
+                    signUpRequest.getNombre(),
+                    signUpRequest.getEmail(),
+                    signUpRequest.getTelefono(),
+                    signUpRequest.getContrasenya(), // Se pasará al service para cifrarla
+                    true, // estado activo
+                    signUpRequest.getDireccion(),
+                    signUpRequest.getObservacion(),
+                    signUpRequest.getAlergenos(),
+                    signUpRequest.getImagen()
+            );
 
-        Cliente cliente = new Cliente(
-                signUpRequest.getUsername(),
-                signUpRequest.getNombre(),
-                signUpRequest.getEmail(),
-                signUpRequest.getTelefono(),
-                encodedPassword,
-                signUpRequest.isEstado(),
-                signUpRequest.getDireccion(),
-                signUpRequest.getObservacion(),
-                signUpRequest.getAlergenos(),
-                signUpRequest.getImagen()
-        );
-        cliente.setRole(ERole.ROLE_CLIENTE);
+            // 2. Usamos el Service que ya configuramos para enviar el mail
+            clienteService.createCliente(cliente);
 
-        userService.saveUser(cliente);
-        return ResponseEntity.ok(new MessageResponse("Cliente registrado públicamente!"));
+            return ResponseEntity.ok(new MessageResponse("Registro realizado. Revisa tu email."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse("Error al registrar: " + e.getMessage()));
+        }
     }
+
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getCurrentUser(java.security.Principal principal) {
@@ -213,7 +237,7 @@ public class UserController {
                     null         // null para el BLOB de imagen
             );
             nuevoCliente.setRole(ERole.ROLE_CLIENTE);
-
+            nuevoCliente.setVerificado(true);
             userService.saveUser(nuevoCliente);
             user = nuevoCliente;
         }

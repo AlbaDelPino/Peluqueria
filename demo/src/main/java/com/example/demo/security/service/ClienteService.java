@@ -3,7 +3,10 @@ package com.example.demo.security.service;
 import com.example.demo.domain.Cliente;
 import com.example.demo.domain.ERole;
 import com.example.demo.domain.User;
+import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +17,18 @@ import java.util.Optional;
 public class ClienteService {
 
     private final UserRepository userRepository;
+    private final ClienteRepository clienteRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
-    public ClienteService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public ClienteService(UserRepository userRepository,
+                          ClienteRepository clienteRepository,
+                          PasswordEncoder passwordEncoder,
+                          JavaMailSender mailSender) {
         this.userRepository = userRepository;
+        this.clienteRepository = clienteRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     // Obtener todos los clientes
@@ -35,8 +45,53 @@ public class ClienteService {
     // Crear un cliente
 
     public Cliente createCliente(Cliente cliente) {
+        // 1. Configuración básica
         cliente.setRole(ERole.ROLE_CLIENTE);
-        return userRepository.save(cliente); // 👈 ahora sí se guarda como Cliente
+        cliente.setVerificado(false); // Empieza sin verificar
+
+        // 2. Cifrar la contraseña
+        if (cliente.getContrasenya() != null) {
+            cliente.setContrasenya(passwordEncoder.encode(cliente.getContrasenya()));
+        }
+
+        // 3. Guardar en BD
+        Cliente nuevoCliente = clienteRepository.save(cliente);
+
+        // 4. Enviar Correo de Verificación
+        try {
+            enviarCorreoVerificacion(nuevoCliente);
+        } catch (Exception e) {
+            System.err.println("Error enviando correo: " + e.getMessage());
+        }
+
+        return nuevoCliente;
+    }
+
+    private void enviarCorreoVerificacion(Cliente cliente) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(cliente.getEmail());
+        message.setSubject("Verifica tu cuenta - Bernat Experience");
+
+        // El enlace apunta a tu IP y al endpoint que crearemos en el Controller
+        String urlVerificacion = "http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId();
+
+        message.setText("¡Hola " + cliente.getNombre() + "!\n\n" +
+                "Para activar tu cuenta y empezar a reservar citas, haz clic en el siguiente enlace:\n" +
+                urlVerificacion + "\n\n" +
+                "¡Te esperamos!");
+
+        mailSender.send(message);
+    }
+
+    // --- NUEVO: MÉTODO DE VERIFICACIÓN ---
+    public boolean verificarCuenta(Long id) {
+        return clienteRepository.findById(id).map(cliente -> {
+            if (cliente.isVerificado()) return true;
+
+            cliente.setVerificado(true);
+            clienteRepository.save(cliente);
+            return true;
+        }).orElse(false);
     }
 
 
@@ -120,4 +175,7 @@ public class ClienteService {
         userRepository.deleteById(id);
         return true;
     }
+    // En ClienteServiceImpl.java
+
+
 }

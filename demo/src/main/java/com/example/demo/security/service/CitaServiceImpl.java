@@ -6,6 +6,9 @@ import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +97,23 @@ public class CitaServiceImpl implements CitaService {
         // 5. Estado inicial
         cita.setEstado(true);
         // 6. Guardar cita (cliente se guarda tal cual viene)
-        return citaRepository.save(cita);
+        Cita citaGuardada = citaRepository.save(cita);
+        // 5. CARGAR CLIENTE Y ENVIAR CORREO
+        try {
+            // Buscamos al cliente en la BD para tener su EMAIL y NOMBRE reales
+            Cliente clienteCompleto = clienteRepository.findById(cita.getCliente().getId())
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+            try {
+                enviarCorreoConfirmacion(clienteCompleto, citaGuardada);
+            } catch (MailException e) {
+                // Si el correo rebota o no existe, la app NO se detiene
+                System.err.println("Error de envío: El destinatario no pudo recibir el correo.");
+            }        } catch (Exception e) {
+            // Importante: No lanzamos excepción para no hacer rollback de la reserva si solo falla el correo
+            System.err.println("La reserva se hizo pero el correo falló: " + e.getMessage());
+        }
+        return citaGuardada;
     }
 
 
@@ -151,5 +170,25 @@ public class CitaServiceImpl implements CitaService {
          return plazas-ocupadas;
      }
 
+     @Autowired
+     private JavaMailSender mailSender;
+
+
+     // Método auxiliar para el envío
+     private void enviarCorreoConfirmacion(Cliente cliente, Cita cita) {
+         SimpleMailMessage message = new SimpleMailMessage();
+         message.setTo(cliente.getEmail());
+         message.setSubject("Reserva Confirmada - Bernat Experience");
+
+         String texto = "Hola " + cliente.getNombre() + ",\n\n" +
+                 "Tu cita ha sido confirmada correctamente:\n" +
+                 "- Servicio: " + cita.getHorario().getServicio().getNombre() + "\n" +
+                 "- Fecha: " + cita.getFecha() + "\n" +
+                 "- Hora: " + cita.getHorario().getHoraInicio() + "\n\n" +
+                 "¡Gracias por confiar en nosotros!";
+
+         message.setText(texto);
+         mailSender.send(message);
+     }
 
  }
