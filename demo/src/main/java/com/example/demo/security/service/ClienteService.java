@@ -5,8 +5,10 @@ import com.example.demo.domain.ERole;
 import com.example.demo.domain.User;
 import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.UserRepository;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -66,21 +68,31 @@ public class ClienteService {
 
         return nuevoCliente;
     }
-
     private void enviarCorreoVerificacion(Cliente cliente) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(cliente.getEmail());
-        message.setSubject("Verifica tu cuenta - Bernat Experience");
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        // El enlace apunta a tu IP y al endpoint que crearemos en el Controller
-        String urlVerificacion = "http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId();
+            helper.setTo(cliente.getEmail());
+            helper.setSubject("Activa tu cuenta - Bernat Experience");
 
-        message.setText("¡Hola " + cliente.getNombre() + "!\n\n" +
-                "Para activar tu cuenta y empezar a reservar citas, haz clic en el siguiente enlace:\n" +
-                urlVerificacion + "\n\n" +
-                "¡Te esperamos!");
+            String urlVerificacion = "http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId();
 
-        mailSender.send(message);
+            String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
+                    "<p>Pulsa el enlace para activar tu cuenta:</p>" +
+                    "<a href='" + urlVerificacion + "'>ACTIVAR CUENTA</a>";
+
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+            System.out.println("✅ CORREO ENVIADO CON ÉXITO A: " + cliente.getEmail());
+
+        } catch (Exception e) {
+            System.err.println("❌ ERROR AL ENVIAR CORREO: " + e.getMessage());
+            // PLAN B: Imprimimos el link en consola por si el mail falla
+            System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR: ");
+            System.out.println("http://192.168.7.13:8082/clientes/verificar?id=" + cliente.getId());
+        }
     }
 
     // --- NUEVO: MÉTODO DE VERIFICACIÓN ---
