@@ -5,6 +5,7 @@ import com.example.demo.payload.request.LoginRequest;
 import com.example.demo.payload.request.SignupRequest;
 import com.example.demo.payload.response.JwtResponse;
 import com.example.demo.payload.response.MessageResponse;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.service.ClienteService;
 import com.example.demo.security.service.UserService;
@@ -24,15 +25,17 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
     private final ClienteService clienteService;
     private final JwtUtils jwtUtils;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, JwtUtils jwtUtils,ClienteService clienteService) {
+    public UserController(UserService userService, JwtUtils jwtUtils,ClienteService clienteService,UserRepository userRepository) {
         this.userService = userService;
         this.clienteService = clienteService;
+        this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
     }
 
@@ -254,4 +257,51 @@ public class UserController {
                 List.of(user.getRole().name())
         ));
     }
+    // 1. Endpoint para solicitar el correo de recuperación
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+        // 1. Buscamos directamente en el repositorio (más rápido y seguro)
+        // Suponiendo que tienes userRepository inyectado, o usa un método en userService
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    try {
+                        // 2. Usamos el servicio para generar código y enviar
+                        clienteService.enviarCorreoRecuperacion(user);
+                        return ResponseEntity.ok(new MessageResponse("Correo de recuperación enviado con éxito."));
+                    } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new MessageResponse("Error al enviar el correo: " + e.getMessage()));
+                    }
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new MessageResponse("Error: No existe un usuario con ese email.")));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String codigo = request.get("codigo");
+        String nuevaPassword = request.get("nuevaPassword");
+
+        // Buscamos directamente por email para evitar el NullPointerException de los Streams
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse("Usuario no encontrado."));
+        }
+
+        boolean codigoValido = clienteService.validarCodigoRecuperacion(email, codigo);
+
+        if (!codigoValido) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse("Código incorrecto o expirado."));
+        }
+
+        user.setContrasenya(passwordEncoder.encode(nuevaPassword));
+        userRepository.save(user); // O userService.saveUser(user);
+
+        return ResponseEntity.ok(new MessageResponse("Contraseña actualizada correctamente."));
+    }
+
 }

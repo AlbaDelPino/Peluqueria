@@ -56,6 +56,8 @@ public class User implements UserDetails {
     @Column(length = 20, nullable = false)
     private ERole role;
 
+    private String codigoVerificacion; // Añade este atributo
+
     public User() {}
 
     public User(String username, String nombre, String email, long telefono, String contrasenya,boolean estado, ERole role) {
@@ -133,5 +135,13 @@ public class User implements UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
     }
 }

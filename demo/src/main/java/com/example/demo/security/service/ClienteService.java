@@ -188,6 +188,30 @@ public class ClienteService {
         return true;
     }
     // En ClienteServiceImpl.java
+    public void enviarCorreoRecuperacion(User user) {
+        // 1. Generar código
+        String codigo = String.valueOf((int)(Math.random() * 900000) + 100000);
 
+        // 2. Guardar código en el usuario
+        user.setCodigoVerificacion(codigo);
+        userRepository.save(user);
+
+        // 3. Enviar correo
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Recuperar Contraseña - Bernat Experience");
+        message.setText("Tu código de recuperación es: " + codigo);
+        mailSender.send(message);
+    }
+
+    public boolean validarCodigoRecuperacion(String email, String codigo) {
+        // Corregimos el error del Optional usando .orElse(null)
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user != null && user.getCodigoVerificacion() != null) {
+            return user.getCodigoVerificacion().equals(codigo);
+        }
+        return false;
+    }
 
 }
