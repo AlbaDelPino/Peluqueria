@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -74,12 +75,32 @@ public class CitaServiceImpl implements CitaService {
         Long horarioId = cita.getHorario().getId();
         HorarioSemanal horario = horarioRepository.findById(horarioId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado con ID: " + horarioId));
+
+        // ❗ Validar que la fecha y hora NO estén en el pasado
+        LocalDateTime fechaHoraCita = LocalDateTime.of(
+                cita.getFecha(),
+                horario.getHoraInicio()
+        );
+
+        if (fechaHoraCita.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("No puedes reservar una cita en una fecha u hora que ya han pasado.");
+        }
+
         String diaSemana = cita.getFecha()
                 .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
                 .toUpperCase();
+
         if (!diaSemana.equalsIgnoreCase(horario.getDiaSemana())){
             throw new CitaNotFoundException("La fecha no coincide con el horario de este dia ");
         }
+        // 🔥 VALIDACIÓN NUEVA: evitar doble reserva en la misma hora
+        boolean yaExiste = citaRepository.existsByCliente_IdAndHorario_IdAndFecha(
+                cita.getCliente().getId(),
+                horario.getId(),
+                cita.getFecha()
+        );
+
+        if (yaExiste) { throw new RuntimeException("Ya tienes una cita reservada en esta hora."); }
         // 3. Validar plazas (citas activas != CANCELADO)
         long ocupadas = citaRepository.countCitasActivas(
                 horario,
@@ -190,5 +211,12 @@ public class CitaServiceImpl implements CitaService {
          message.setText(texto);
          mailSender.send(message);
      }
+
+     @Override
+     public List<Cita> findCitasDeHoy() {
+         LocalDate hoy = LocalDate.now();
+         return citaRepository.findByFecha(hoy);
+     }
+
 
  }

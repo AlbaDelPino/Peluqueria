@@ -50,6 +50,13 @@ public class CitaController {
         return ResponseEntity.ok(citaService.citasDisponibles(horarioId,fecha));
     }
 
+    @GetMapping("/today")
+    public ResponseEntity<List<Cita>> getCitasDeHoy() {
+        LocalDate hoy = LocalDate.now();
+        return ResponseEntity.ok(citaService.findByFecha(hoy));
+    }
+
+
 
 
 

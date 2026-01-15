@@ -27,6 +27,7 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findByFecha(LocalDate fecha);
 
+    boolean existsByCliente_IdAndHorario_IdAndFecha(Long clienteId, Long horarioId, LocalDate fecha);
 
 
 

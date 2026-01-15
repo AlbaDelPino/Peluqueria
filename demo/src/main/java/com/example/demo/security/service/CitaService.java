@@ -26,7 +26,7 @@ public interface CitaService {
     List<Cita> findByHorario_Grupo(Grupo grupo);
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
     Long citasDisponibles(Long horarioId,LocalDate fecha);
-
+    List<Cita> findCitasDeHoy();
 
     Cita addCita(Cita cita);
     void deleteCita(long id);
