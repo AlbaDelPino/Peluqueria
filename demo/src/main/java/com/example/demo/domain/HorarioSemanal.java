@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "horario_semanal",
@@ -44,6 +45,9 @@ public class HorarioSemanal {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_grupo", nullable = false)
     private Grupo grupo;
+
+    @OneToMany(mappedBy = "horario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cita> citas;
 
     public HorarioSemanal() {
     }

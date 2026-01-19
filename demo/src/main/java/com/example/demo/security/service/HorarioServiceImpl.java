@@ -4,6 +4,7 @@ import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
 import com.example.demo.domain.Grupo;
 import com.example.demo.exception.HorarioNotFoundException;
+import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.GrupoRepository;
 import com.example.demo.repository.HorarioRepository;
 import com.example.demo.repository.ServicioRepository;
@@ -25,6 +26,9 @@ public class HorarioServiceImpl implements HorarioService {
 
     @Autowired
     private GrupoRepository grupoRepository;
+
+    @Autowired
+    private CitaRepository citaRepository;
 
     @Override
     public List<HorarioSemanal> findAll() {
@@ -112,10 +116,20 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
 
+    // En HorarioServiceImpl.java
     @Override
+    public void deleteHorario(long id) {
+        // ELIMINA cualquier "if" o "throw new RuntimeException" que tengas aquí
+        // El "cascade = CascadeType.ALL" que pusimos arriba se encarga de todo
+        horarioRepository.deleteById(id);
+    }
+
+   /* @Override
     public void deleteHorario(long id) {
         HorarioSemanal horario = horarioRepository.findById(id)
                 .orElseThrow(() -> new HorarioNotFoundException(id));
         horarioRepository.deleteById(id);
-    }
+    }*/
+
+
 }
