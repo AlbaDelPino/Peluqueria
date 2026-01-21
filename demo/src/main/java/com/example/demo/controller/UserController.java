@@ -9,13 +9,20 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.security.service.ClienteService;
 import com.example.demo.security.service.UserService;
+import com.google.api.client.json.JsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -209,53 +216,64 @@ public class UserController {
                     .body(new MessageResponse("Usuario no encontrado"));
         }
         return ResponseEntity.ok(user);
-    }
-    @PostMapping("/google")
-    public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String,
-                Object> data) {
-        String email = (String) data.get("email");
-        String nombre = (String) data.get("nombre");
-        String username = (String) data.get("username");
-        String googleId = (String) data.get("googleId");
+    }@PostMapping("/google")
+    public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, String> data) {
+        String idTokenString = data.get("idToken"); // El token que viene del frontend
 
-        // 1. Buscamos si el usuario ya existe por email
-        User user = userService.getAllUsers().stream()
-                .filter(u -> u != null && u.getEmail() != null &&
-                        u.getEmail().equals(email))
-                .findFirst()
-                .orElse(null);
+        try {
+            // 1. VALIDAR EL TOKEN CON GOOGLE
+            NetHttpTransport transport = new NetHttpTransport();
+            JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
-        // 2. Si no existe, lo registramos como nuevo Cliente
-        if (user == null) {
-            Cliente nuevoCliente = new Cliente(
-                    username,
-                    nombre,
-                    email,
-                    123456789L,  // Long para el teléfono
-                    passwordEncoder.encode("GOOGLE_USER_" + googleId),
-                    true,        // estado activo
-                    "Sin dirección",
-                    "Registro vía Google",
-                    "Ninguna",
-                    null         // null para el BLOB de imagen
-            );
-            nuevoCliente.setRole(ERole.ROLE_CLIENTE);
-            nuevoCliente.setVerificado(true);
-            userService.saveUser(nuevoCliente);
-            user = nuevoCliente;
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    // Reemplaza con tu CLIENT_ID de Google Cloud Console
+                    .setAudience(Collections.singletonList("1008130346590-9ilfj26ft3s8n2ki85gf5tmaspehn8mk.apps.googleusercontent.com"))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+
+                // Extraemos la información real de Google
+                String email = payload.getEmail();
+                String nombre = (String) payload.get("name");
+                String googleId = payload.getSubject();
+
+                // 2. BUSCAR O CREAR EN TU BASE DE DATOS (Tu lógica actual)
+                User user = userRepository.findByEmail(email).orElse(null);
+
+                if (user == null) {
+                    Cliente nuevoCliente = new Cliente();
+                    nuevoCliente.setUsername(email); // O generar uno
+                    nuevoCliente.setEmail(email);
+                    nuevoCliente.setNombre(nombre);
+                    nuevoCliente.setContrasenya(passwordEncoder.encode("GOOGLE_PWD_" + googleId));
+                    nuevoCliente.setRole(ERole.ROLE_CLIENTE);
+                    nuevoCliente.setVerificado(true);
+                    nuevoCliente.setEstado(true);
+
+                    userRepository.save(nuevoCliente);
+                    user = nuevoCliente;
+                }
+
+                // 3. GENERAR TU PROPIO JWT (El que ya usas en signin normal)
+                String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
+
+                return ResponseEntity.ok(new JwtResponse(
+                        token,
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        List.of(user.getRole().name())
+                ));
+
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token de Google inválido");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la autenticación: " + e.getMessage());
         }
-
-        // 3. Generamos el Token JWT
-        String token = jwtUtils.generateJwtToken(user.getUsername(),
-                List.of(user.getRole().name()));
-
-        return ResponseEntity.ok(new JwtResponse(
-                token,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                List.of(user.getRole().name())
-        ));
     }
     // 1. Endpoint para solicitar el correo de recuperación
     @PostMapping("/forgot-password")
