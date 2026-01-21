@@ -2,9 +2,11 @@ package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +37,10 @@ public class Servicio {
     @ManyToMany(mappedBy = "favoritos")
     @JsonIgnore // Importante para evitar bucles infinitos en el JSON
     private Set<Cliente> clientesQueMeFavorecen = new HashSet<>();
+
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ServicioImagen> imagenes;
 
     public Servicio() {
 
