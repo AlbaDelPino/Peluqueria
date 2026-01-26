@@ -43,6 +43,19 @@ public class ServicioImagenController {
     }
 
     /**
+     * Obtiene TODAS las imágenes de la base de datos (Galería General)
+     * GET http://localhost:8082/api/imagenes
+     */
+    @GetMapping
+    public ResponseEntity<List<ServicioImagen>> listarTodas() {
+        List<ServicioImagen> todas = service.listarTodas(); // Asegúrate de crear este método en el Service
+        if (todas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(todas);
+    }
+
+    /**
      * Obtiene todas las imágenes de un servicio.
      * El campo 'datos' contendrá el String en Base64.
      * GET http://localhost:8082/api/imagenes/servicio/{servicioId}

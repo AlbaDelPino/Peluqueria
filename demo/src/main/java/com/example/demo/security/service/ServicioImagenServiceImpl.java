@@ -38,6 +38,16 @@ public class ServicioImagenServiceImpl implements ServicioImagenService {
     }
 
     @Override
+    public List<ServicioImagen> listarTodas() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public List<ServicioImagen> listarPorServicio(Long servicioId) {
         return repository.findByServicioId(servicioId);
     }

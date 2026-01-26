@@ -38,8 +38,7 @@ public class Servicio {
     @JsonIgnore // Importante para evitar bucles infinitos en el JSON
     private Set<Cliente> clientesQueMeFavorecen = new HashSet<>();
 
-    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "servicio", fetch = FetchType.EAGER)
     private List<ServicioImagen> imagenes;
 
     public Servicio() {

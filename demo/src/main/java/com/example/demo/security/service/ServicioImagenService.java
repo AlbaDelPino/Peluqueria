@@ -9,4 +9,8 @@ public interface ServicioImagenService {
     ServicioImagen guardar(MultipartFile archivo, Long servicioId) throws IOException;
     List<ServicioImagen> listarPorServicio(Long servicioId);
     ServicioImagen obtenerPorId(Long id);
+    // Para la Galería General (Menú inferior Flutter)
+    List<ServicioImagen> listarTodas();
+    // Para borrar
+    void eliminar(Long id);
 }
