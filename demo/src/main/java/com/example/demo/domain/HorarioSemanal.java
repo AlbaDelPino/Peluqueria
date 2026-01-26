@@ -2,10 +2,8 @@ package com.example.demo.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Entity
@@ -92,6 +90,10 @@ public class HorarioSemanal {
 
     public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
+    }
+
+    public long getDuracion(){
+        return this.horaInicio.until(this.horaFin, ChronoUnit.MINUTES);
     }
 
     public long getPlazas() {

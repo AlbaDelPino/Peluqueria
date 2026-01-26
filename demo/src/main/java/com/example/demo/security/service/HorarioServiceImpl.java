@@ -87,14 +87,18 @@ public class HorarioServiceImpl implements HorarioService {
         // Recuperar servicio desde BD
         Servicio servicio = servicioRepository.findById(horario.getServicio().getId_servicio())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
-        horario.setServicio(servicio);
 
-        // Recuperar grupo desde BD
-        Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
-                .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
-        horario.setGrupo(grupo);
+        if (servicio.getDuracion()<=horario.getDuracion()){
+            horario.setServicio(servicio);
+            // Recuperar grupo desde BD
+            Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
+                    .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+            horario.setGrupo(grupo);
 
-        return horarioRepository.save(horario);
+            return horarioRepository.save(horario);
+        }
+
+        return null;
     }
     @Override
     public HorarioSemanal modifyHorario(long id, HorarioSemanal newHorario) {
