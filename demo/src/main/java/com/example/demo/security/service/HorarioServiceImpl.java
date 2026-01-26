@@ -88,17 +88,15 @@ public class HorarioServiceImpl implements HorarioService {
         Servicio servicio = servicioRepository.findById(horario.getServicio().getId_servicio())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
 
-        if (servicio.getDuracion()<=horario.getDuracion()){
-            horario.setServicio(servicio);
-            // Recuperar grupo desde BD
-            Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
-                    .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
-            horario.setGrupo(grupo);
-
-            return horarioRepository.save(horario);
+        if (servicio.getDuracion()>horario.getDuracion()){
+            new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
         }
-
-        return null;
+        horario.setServicio(servicio);
+        // Recuperar grupo desde BD
+        Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
+                .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+        horario.setGrupo(grupo);
+        return horarioRepository.save(horario);
     }
     @Override
     public HorarioSemanal modifyHorario(long id, HorarioSemanal newHorario) {
