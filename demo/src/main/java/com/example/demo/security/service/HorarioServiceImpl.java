@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,9 +88,9 @@ public class HorarioServiceImpl implements HorarioService {
         // Recuperar servicio desde BD
         Servicio servicio = servicioRepository.findById(horario.getServicio().getId_servicio())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
-
-        if (servicio.getDuracion()>horario.getDuracion()){
-            new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
+        long until = horario.getHoraInicio().until(horario.getHoraFin(), ChronoUnit.MINUTES);
+        if (servicio.getDuracion()>until){
+            throw new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
         }
         horario.setServicio(servicio);
         // Recuperar grupo desde BD

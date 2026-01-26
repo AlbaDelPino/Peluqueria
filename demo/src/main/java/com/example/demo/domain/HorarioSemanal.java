@@ -92,10 +92,6 @@ public class HorarioSemanal {
         this.horaFin = horaFin;
     }
 
-    public long getDuracion(){
-        return this.horaInicio.until(this.horaFin, ChronoUnit.MINUTES);
-    }
-
     public long getPlazas() {
         return plazas;
     }
