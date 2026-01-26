@@ -1,29 +1,26 @@
- package com.example.demo.security.service;
+package com.example.demo.security.service;
 
 import com.example.demo.domain.*;
-import com.example.demo.exception.CitaNotFoundException;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
- @Service
+@Service
 public class CitaServiceImpl implements CitaService {
 
     @Autowired private CitaRepository citaRepository;
     @Autowired private HorarioRepository horarioRepository;
     @Autowired private ClienteRepository clienteRepository;
+    @Autowired private JavaMailSender mailSender;
 
     @Override
     public List<Cita> findAll() {
@@ -35,14 +32,10 @@ public class CitaServiceImpl implements CitaService {
         return citaRepository.findById(id);
     }
 
-    // --- MÉTODOS DE BÚSQUEDA ---
-
     @Override
     public List<Cita> findByFecha(LocalDate fecha) {
         return citaRepository.findByFecha(fecha);
     }
-
-
 
     @Override
     public List<Cita> findByEstado(EstadoCita estado) {
@@ -51,112 +44,129 @@ public class CitaServiceImpl implements CitaService {
 
     @Override
     public List<Cita> findByCliente(Long clienteId) {
-        // Buscamos al cliente para asegurarnos de que existe
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
-        // Retornamos su lista de citas
         return citaRepository.findByCliente(cliente);
     }
 
-    // --- LÓGICA DE NEGOCIO PRINCIPAL ---
-
+    // ⭐⭐⭐ CREAR CITA POR BLOQUES ⭐⭐⭐
     @Override
     @Transactional
     public Cita addCita(Cita cita) {
 
-        // 1. El cliente viene del JSON, NO se carga de la BD
-        //    Solo verificamos que trae un ID
         if (cita.getCliente() == null || cita.getCliente().getId() == null) {
             throw new RuntimeException("Debes enviar un cliente con ID");
         }
 
-        // 2. El horario también viene del JSON, pero aquí sí cargamos el real
         Long horarioId = cita.getHorario().getId();
         HorarioSemanal horario = horarioRepository.findById(horarioId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado con ID: " + horarioId));
 
-        // ❗ Validar que la fecha y hora NO estén en el pasado
-        LocalDateTime fechaHoraCita = LocalDateTime.of(
-                cita.getFecha(),
-                horario.getHoraInicio()
-        );
-
+        // Validar fecha pasada
+        LocalDateTime fechaHoraCita = LocalDateTime.of(cita.getFecha(), cita.getHoraInicio());
         if (fechaHoraCita.isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("No puedes reservar una cita en una fecha u hora que ya han pasado.");
+            throw new RuntimeException("No puedes reservar una cita en una fecha u hora pasada.");
         }
 
+        // Validar día de la semana
         String diaSemana = cita.getFecha()
                 .format(DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES")))
                 .toUpperCase();
 
-        if (!diaSemana.equalsIgnoreCase(horario.getDiaSemana())){
-            throw new CitaNotFoundException("La fecha no coincide con el horario de este dia ");
+        if (!diaSemana.equalsIgnoreCase(horario.getDiaSemana())) {
+            throw new RuntimeException("La fecha no coincide con el día del horario.");
         }
-        // 🔥 VALIDACIÓN NUEVA: evitar doble reserva en la misma hora
-        boolean yaExiste = citaRepository.existsByCliente_IdAndHorario_IdAndFecha(
-                cita.getCliente().getId(),
-                horario.getId(),
-                cita.getFecha()
-        );
 
-        if (yaExiste) { throw new RuntimeException("Ya tienes una cita reservada en esta hora."); }
-        // 3. Validar plazas (citas activas != CANCELADO)
-        long ocupadas = citaRepository.countCitasActivas(
+        long duracion = horario.getServicio().getDuracion();
+        LocalTime horaInicio = cita.getHoraInicio();
+        LocalTime horaFin = horaInicio.plusMinutes(duracion);
+
+        // Validar que cabe dentro del horario
+        if (horaFin.isAfter(horario.getHoraFin())) {
+            throw new RuntimeException("La cita no cabe dentro del horario. No hay tiempo suficiente.");
+        }
+
+        // ⭐ VALIDAR QUE LA HORA ES UN BLOQUE VÁLIDO
+        Map<String, Integer> bloques = horasDisponibles(horario.getId(), cita.getFecha());
+        if (!bloques.containsKey(horaInicio.toString())) {
+            throw new RuntimeException("La hora seleccionada no es válida para este horario.");
+        }
+
+        // ⭐ VALIDAR QUE EL CLIENTE NO TENGA YA UNA CITA EN ESA HORA
+        List<Cita> citasCliente = citaRepository.findByClienteAndFecha(cita.getCliente(), cita.getFecha());
+        boolean yaTieneMismaHora = citasCliente.stream()
+                .anyMatch(c -> c.getHoraInicio().equals(horaInicio));
+
+        if (yaTieneMismaHora) {
+            throw new RuntimeException("El cliente ya tiene una cita en esta hora.");
+        }
+
+        // ⭐ VALIDAR PLAZAS DEL BLOQUE
+        long ocupadasEnBloque = citaRepository.countCitasEnBloque(
                 horario,
-                cita.getFecha()
-
+                cita.getFecha(),
+                horaInicio
         );
 
-        if (ocupadas >= horario.getPlazas()) {
-            throw new RuntimeException("No quedan plazas disponibles para este horario el día " + cita.getFecha());
+        if (ocupadasEnBloque >= horario.getPlazas()) {
+            throw new RuntimeException("No quedan plazas disponibles para este bloque horario.");
         }
 
-        // 4. Asignar el horario real
-        cita.setHorario(horario);
+        // Estado inicial
+        cita.setEstado(EstadoCita.CONFIRMADO);
 
-        // 5. Estado inicial
-        cita.setEstado(true);
-        // 6. Guardar cita (cliente se guarda tal cual viene)
-        Cita citaGuardada = citaRepository.save(cita);
-        // 5. CARGAR CLIENTE Y ENVIAR CORREO
+        // Guardar
+        Cita guardada = citaRepository.save(cita);
+
+        // Enviar correo
         try {
-            // Buscamos al cliente en la BD para tener su EMAIL y NOMBRE reales
             Cliente clienteCompleto = clienteRepository.findById(cita.getCliente().getId())
                     .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-            try {
-                enviarCorreoConfirmacion(clienteCompleto, citaGuardada);
-            } catch (MailException e) {
-                // Si el correo rebota o no existe, la app NO se detiene
-                System.err.println("Error de envío: El destinatario no pudo recibir el correo.");
-            }        } catch (Exception e) {
-            // Importante: No lanzamos excepción para no hacer rollback de la reserva si solo falla el correo
+            enviarCorreoConfirmacion(clienteCompleto, guardada);
+
+        } catch (Exception e) {
             System.err.println("La reserva se hizo pero el correo falló: " + e.getMessage());
         }
-        return citaGuardada;
+
+        return guardada;
     }
 
-
+    // ⭐⭐⭐ ELIMINAR CITA ⭐⭐⭐
     @Override
     @Transactional
     public void deleteCita(long id) {
-        if (!citaRepository.existsById(id)) throw new RuntimeException("Cita no encontrada");
+
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        // Solo se puede eliminar si está cancelada o completada
+        if (cita.getEstado() != EstadoCita.CANCELADO &&
+                cita.getEstado() != EstadoCita.COMPLETADO) {
+
+            throw new RuntimeException("Solo puedes eliminar citas canceladas o completadas.");
+        }
+
         citaRepository.deleteById(id);
     }
 
-     @Override
-     @Transactional
-     public Cita cambiarEstado(long id, boolean nuevoEstado) {
-         Cita cita = citaRepository.findById(id)
-                 .orElseThrow(() -> new RuntimeException("No existe la cita"));
+    // ⭐⭐⭐ CAMBIAR ESTADO ⭐⭐⭐
+    @Override
+    @Transactional
+    public Cita cambiarEstado(long id, EstadoCita nuevoEstado) {
 
-         cita.setEstado(nuevoEstado); // true o false
-         return citaRepository.save(cita);
-     }
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No existe la cita"));
 
+        // Solo se puede cancelar o completar
+        if (nuevoEstado != EstadoCita.CANCELADO && nuevoEstado != EstadoCita.COMPLETADO) {
+            throw new RuntimeException("Estado no permitido. Solo se puede cancelar o completar la cita.");
+        }
 
-     // --- OTROS MÉTODOS ---
+        cita.setEstado(nuevoEstado);
+
+        return citaRepository.save(cita);
+    }
 
     @Override
     public List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado) {
@@ -183,40 +193,93 @@ public class CitaServiceImpl implements CitaService {
         return citaRepository.findByHorario_ServicioAndFecha(servicio, fecha);
     }
 
-     @Override
-     public Long citasDisponibles(Long horarioId,LocalDate fecha) {
-         HorarioSemanal hor = horarioRepository.findById(horarioId).orElseThrow(() -> new RuntimeException("Horario no encontrado"));
-         Long ocupadas = citaRepository.countCitasActivas(hor, fecha);
-         Long plazas = hor.getPlazas();
-         return plazas-ocupadas;
-     }
+    @Override
+    public Long citasDisponibles(Long horarioId, LocalDate fecha) {
+        HorarioSemanal hor = horarioRepository.findById(horarioId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-     @Autowired
-     private JavaMailSender mailSender;
+        Long ocupadas = citaRepository.countCitasActivas(hor, fecha);
+        return hor.getPlazas() - ocupadas;
+    }
+
+    // ⭐⭐⭐ HORAS DISPONIBLES POR BLOQUE ⭐⭐⭐
+    @Override
+    public Map<String, Integer> horasDisponibles(Long horarioId, LocalDate fecha) {
+
+        HorarioSemanal horario = horarioRepository.findById(horarioId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        long duracion = horario.getServicio().getDuracion();
+        LocalTime inicio = horario.getHoraInicio();
+        LocalTime fin = horario.getHoraFin();
+
+        Map<String, Integer> resultado = new LinkedHashMap<>();
+
+        LocalTime bloque = inicio;
+
+        while (!bloque.plusMinutes(duracion).isAfter(fin)) {
+
+            long ocupadas = citaRepository.countCitasEnBloque(horario, fecha, bloque);
+            int plazasDisponibles = (int) (horario.getPlazas() - ocupadas);
+
+            // ⭐ SIEMPRE AÑADIMOS LA HORA, TENGA O NO PLAZAS
+            resultado.put(bloque.toString(), plazasDisponibles);
+
+            bloque = bloque.plusMinutes(duracion);
+        }
+
+        return resultado;
+    }
+
+    @Override
+    public Map<String, Integer> horasConPlazasDisponibles(Long horarioId, LocalDate fecha) {
+
+        HorarioSemanal horario = horarioRepository.findById(horarioId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        long duracion = horario.getServicio().getDuracion();
+        LocalTime inicio = horario.getHoraInicio();
+        LocalTime fin = horario.getHoraFin();
+
+        Map<String, Integer> resultado = new LinkedHashMap<>();
+
+        LocalTime bloque = inicio;
+
+        while (!bloque.plusMinutes(duracion).isAfter(fin)) {
+
+            long ocupadas = citaRepository.countCitasEnBloque(horario, fecha, bloque);
+            int plazasDisponibles = (int) (horario.getPlazas() - ocupadas);
+
+            // ⭐ SOLO AÑADIR SI HAY PLAZAS
+            if (plazasDisponibles > 0) {
+                resultado.put(bloque.toString(), plazasDisponibles);
+            }
+
+            bloque = bloque.plusMinutes(duracion);
+        }
+
+        return resultado;
+    }
 
 
-     // Método auxiliar para el envío
-     private void enviarCorreoConfirmacion(Cliente cliente, Cita cita) {
-         SimpleMailMessage message = new SimpleMailMessage();
-         message.setTo(cliente.getEmail());
-         message.setSubject("Reserva Confirmada - Bernat Experience");
+    private void enviarCorreoConfirmacion(Cliente cliente, Cita cita) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(cliente.getEmail());
+        message.setSubject("Reserva Confirmada - Bernat Experience");
 
-         String texto = "Hola " + cliente.getNombre() + ",\n\n" +
-                 "Tu cita ha sido confirmada correctamente:\n" +
-                 "- Servicio: " + cita.getHorario().getServicio().getNombre() + "\n" +
-                 "- Fecha: " + cita.getFecha() + "\n" +
-                 "- Hora: " + cita.getHorario().getHoraInicio() + "\n\n" +
-                 "¡Gracias por confiar en nosotros!";
+        String texto = "Hola " + cliente.getNombre() + ",\n\n" +
+                "Tu cita ha sido confirmada:\n" +
+                "- Servicio: " + cita.getHorario().getServicio().getNombre() + "\n" +
+                "- Fecha: " + cita.getFecha() + "\n" +
+                "- Hora: " + cita.getHoraInicio() + "\n\n" +
+                "¡Gracias por confiar en nosotros!";
 
-         message.setText(texto);
-         mailSender.send(message);
-     }
+        message.setText(texto);
+        mailSender.send(message);
+    }
 
-     @Override
-     public List<Cita> findCitasDeHoy() {
-         LocalDate hoy = LocalDate.now();
-         return citaRepository.findByFecha(hoy);
-     }
-
-
- }
+    @Override
+    public List<Cita> findCitasDeHoy() {
+        return citaRepository.findByFecha(LocalDate.now());
+    }
+}

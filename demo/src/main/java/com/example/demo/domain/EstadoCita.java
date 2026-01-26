@@ -1,7 +1,7 @@
 package com.example.demo.domain;
 
 public enum EstadoCita {
-    PENDIENTE,
+    COMPLETADO,
     CONFIRMADO,
     CANCELADO
 }

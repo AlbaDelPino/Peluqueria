@@ -16,11 +16,12 @@ public class Cita {
     @NotNull
     private LocalDate fecha;
 
-
+    @NotNull
+    private LocalTime horaInicio;   // ⭐ SOLO hora de comienzo
 
     @NotNull
-    // 👈 guarda el nombre del enum en la BD
-    private boolean estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoCita estado = EstadoCita.CONFIRMADO;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_horario", nullable = false)
@@ -32,13 +33,14 @@ public class Cita {
 
     public Cita() {}
 
-    public Cita( LocalDate fecha, boolean estado, HorarioSemanal horario, Cliente cliente) {
+    public Cita(LocalDate fecha, LocalTime horaInicio,
+                EstadoCita estado, HorarioSemanal horario, Cliente cliente) {
 
         this.fecha = fecha;
+        this.horaInicio = horaInicio;
         this.estado = estado;
         this.horario = horario;
         this.cliente = cliente;
-
     }
 
     // Getters y Setters
@@ -48,17 +50,11 @@ public class Cita {
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
-    public boolean isEstado() {
-        return estado;
-    }
+    public LocalTime getHoraInicio() { return horaInicio; }
+    public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }
 
-
-
-
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
+    public EstadoCita getEstado() { return estado; }
+    public void setEstado(EstadoCita estado) { this.estado = estado; }
 
     public HorarioSemanal getHorario() { return horario; }
     public void setHorario(HorarioSemanal horario) { this.horario = horario; }

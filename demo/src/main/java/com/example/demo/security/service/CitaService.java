@@ -3,7 +3,6 @@ package com.example.demo.security.service;
 import com.example.demo.domain.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,8 +14,6 @@ public interface CitaService {
 
     List<Cita> findByFecha(LocalDate fecha);
 
-
-
     List<Cita> findByEstado(EstadoCita estado);
     List<Cita> findByCliente(Long clienteId);
     List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
@@ -25,13 +22,17 @@ public interface CitaService {
     List<Cita> findByHorario_Servicio(Servicio servicio);
     List<Cita> findByHorario_Grupo(Grupo grupo);
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
-    Long citasDisponibles(Long horarioId,LocalDate fecha);
+
+    Long citasDisponibles(Long horarioId, LocalDate fecha);
     List<Cita> findCitasDeHoy();
+
+    // ⭐ Plazas por bloque
+    Map<String, Integer> horasDisponibles(Long horarioId, LocalDate fecha);
+    Map<String, Integer> horasConPlazasDisponibles(Long horarioId, LocalDate fecha);
 
     Cita addCita(Cita cita);
     void deleteCita(long id);
 
-    // 🔹 Solo se cambia el estado
-    Cita cambiarEstado(long id, boolean nuevoEstado);
-
+    // ⭐ Cambiar estado con ENUM
+    Cita cambiarEstado(long id, EstadoCita nuevoEstado);
 }

@@ -31,9 +31,6 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     boolean existsByHorario_Id(Long horarioId);
 
-
-
-    // 🔹 Ahora usamos EstadoCita en vez de boolean
     List<Cita> findByEstado(EstadoCita estado);
 
     List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado);
@@ -46,11 +43,35 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
 
-    // 🔹 Control de plazas por fecha concreta + hora
-// Lógica clave: Cuenta cuántas plazas están ocupadas realmente para una fecha y horario
-    @Query("SELECT COUNT(c) FROM Cita c WHERE c.horario = :horario AND c.fecha = :fecha AND c.estado = true")
+
+    // ⭐ Plazas ocupadas SOLO en ese bloque
+    @Query("""
+        SELECT COUNT(c)
+        FROM Cita c
+        WHERE c.horario = :horario
+        AND c.fecha = :fecha
+        AND c.horaInicio = :horaInicio
+        AND c.estado = com.example.demo.domain.EstadoCita.CONFIRMADO
+    """)
+    long countCitasEnBloque(
+            @Param("horario") HorarioSemanal horario,
+            @Param("fecha") LocalDate fecha,
+            @Param("horaInicio") LocalTime horaInicio
+    );
+
+    // ⭐ Citas activas del día
+    @Query("""
+        SELECT COUNT(c) 
+        FROM Cita c 
+        WHERE c.horario = :horario 
+        AND c.fecha = :fecha 
+        AND c.estado = com.example.demo.domain.EstadoCita.CONFIRMADO
+    """)
     long countCitasActivas(
             @Param("horario") HorarioSemanal horario,
             @Param("fecha") LocalDate fecha
     );
+
+    // ⭐ Para limpieza automática
+    List<Cita> findByEstadoAndFechaBefore(EstadoCita estado, LocalDate fecha);
 }
