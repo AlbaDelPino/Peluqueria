@@ -21,7 +21,7 @@ public class Cita {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private EstadoCita estado = EstadoCita.CONFIRMADO;
+    private EstadoCita estado;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_horario", nullable = false)
@@ -34,11 +34,11 @@ public class Cita {
     public Cita() {}
 
     public Cita(LocalDate fecha, LocalTime horaInicio,
-                EstadoCita estado, HorarioSemanal horario, Cliente cliente) {
+                HorarioSemanal horario, Cliente cliente) {
 
         this.fecha = fecha;
         this.horaInicio = horaInicio;
-        this.estado = estado;
+        this.estado = EstadoCita.CONFIRMADO;;
         this.horario = horario;
         this.cliente = cliente;
     }

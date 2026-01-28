@@ -88,11 +88,14 @@ public class HorarioServiceImpl implements HorarioService {
         // Recuperar servicio desde BD
         Servicio servicio = servicioRepository.findById(horario.getServicio().getId_servicio())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
         long until = horario.getHoraInicio().until(horario.getHoraFin(), ChronoUnit.MINUTES);
         if (servicio.getDuracion()>until){
             throw new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
         }
+
         horario.setServicio(servicio);
+
         // Recuperar grupo desde BD
         Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
                 .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
@@ -107,6 +110,12 @@ public class HorarioServiceImpl implements HorarioService {
         // Recuperar servicio desde BD
         Servicio servicio = servicioRepository.findById(newHorario.getServicio().getId_servicio())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
+        long until = horario.getHoraInicio().until(horario.getHoraFin(), ChronoUnit.MINUTES);
+        if (servicio.getDuracion()>until){
+            throw new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
+        }
+
         newHorario.setServicio(servicio);
 
         // Recuperar grupo desde BD
