@@ -1,4 +1,4 @@
-package com.example.demo.security.service;
+/*package com.example.demo.security.service;
 
 import com.example.demo.domain.Cita;
 import com.example.demo.domain.EstadoCita;
@@ -31,4 +31,4 @@ public class CitaCleanupService {
 
         citas.forEach(citaRepository::delete);
     }
-}
+}*/

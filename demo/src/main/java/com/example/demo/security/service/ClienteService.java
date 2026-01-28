@@ -134,7 +134,7 @@ public class ClienteService {
 
         // 🔹 Atributos específicos (Cliente)
         if (user instanceof Cliente cliente) {
-            cliente.setDireccion(clienteDetails.getDireccion());
+            cliente.setComentarioCitas(clienteDetails.getComentarioCitas());
             cliente.setObservacion(clienteDetails.getObservacion());
             cliente.setAlergenos(clienteDetails.getAlergenos());
 
@@ -164,7 +164,7 @@ public class ClienteService {
 
         // 🔹 Atributos específicos de Cliente
         if (user instanceof Cliente cliente) {
-            cliente.setDireccion(clienteDetails.getDireccion() != null ? clienteDetails.getDireccion() : cliente.getDireccion());
+            cliente.setComentarioCitas(clienteDetails.getComentarioCitas() != null ? clienteDetails.getComentarioCitas() : cliente.getComentarioCitas());
             cliente.setObservacion(clienteDetails.getObservacion() != null ? clienteDetails.getObservacion() : cliente.getObservacion());
             cliente.setAlergenos(clienteDetails.getAlergenos() != null ? clienteDetails.getAlergenos() : cliente.getAlergenos());
 
