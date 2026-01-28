@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "clientes")
 public class Cliente extends User {
 
-    @Column
+    @Column(length = 2000)
     private String comentarioCitas;
 
     @Size(max = 200)
