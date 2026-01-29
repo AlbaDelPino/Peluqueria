@@ -76,8 +76,9 @@ public class ClienteService {
             helper.setTo(cliente.getEmail());
             helper.setSubject("Activa tu cuenta - Bernat Experience");
 
+// Dentro de enviarCorreoVerificacion en ClienteService.java
+// En ClienteService.java
             String urlVerificacion = "http://localhost:8082/clientes/verificar?id=" + cliente.getId();
-
             String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
                     "<p>Pulsa el enlace para activar tu cuenta:</p>" +
                     "<a href='" + urlVerificacion + "'>ACTIVAR CUENTA</a>";
@@ -134,7 +135,7 @@ public class ClienteService {
 
         // 🔹 Atributos específicos (Cliente)
         if (user instanceof Cliente cliente) {
-            cliente.setComentarioCitas(clienteDetails.getComentarioCitas());
+
             cliente.setObservacion(clienteDetails.getObservacion());
             cliente.setAlergenos(clienteDetails.getAlergenos());
 
@@ -164,7 +165,6 @@ public class ClienteService {
 
         // 🔹 Atributos específicos de Cliente
         if (user instanceof Cliente cliente) {
-            cliente.setComentarioCitas(clienteDetails.getComentarioCitas() != null ? clienteDetails.getComentarioCitas() : cliente.getComentarioCitas());
             cliente.setObservacion(clienteDetails.getObservacion() != null ? clienteDetails.getObservacion() : cliente.getObservacion());
             cliente.setAlergenos(clienteDetails.getAlergenos() != null ? clienteDetails.getAlergenos() : cliente.getAlergenos());
 

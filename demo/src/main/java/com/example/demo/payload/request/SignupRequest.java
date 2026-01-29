@@ -36,7 +36,7 @@ public class SignupRequest {
     private String rol;
 
     // --- Campos específicos de Cliente ---
-    private String direccion;
+
     private String observacion;
     private String alergenos;
 
@@ -74,8 +74,7 @@ public class SignupRequest {
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+
 
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }
