@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -48,6 +50,18 @@ public class CitaController {
         return citaService.horasDisponibles(horarioId, fecha);
     }
 
+    // ⭐ Citas disponibles por horario y fecha
+    @GetMapping("/rango")
+    public List<Cita> citasDeRango(
+            @RequestParam String fechaInicio,
+            @RequestParam String fechaFin
+    ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaInicioFormato = LocalDate.parse(fechaInicio, formatter);
+        LocalDate fechaFinFormato = LocalDate.parse(fechaFin, formatter);
+        return citaService.citasDeRango(fechaInicioFormato, fechaFinFormato);
+    }
+
 
     // ⭐ Horas disponibles por bloques
     @GetMapping("/horas")
@@ -60,8 +74,10 @@ public class CitaController {
 
     // ⭐ Buscar por fecha
     @GetMapping("/fecha")
-    public List<Cita> findByFecha(@RequestParam LocalDate fecha) {
-        return citaService.findByFecha(fecha);
+    public List<Cita> findByFecha(@RequestParam String fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaFormato = LocalDate.parse(fecha, formatter);
+        return citaService.findByFecha(fechaFormato);
     }
 
     // ⭐ Buscar por estado

@@ -74,4 +74,12 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     // ⭐ Para limpieza automática
     List<Cita> findByEstadoAndFechaBefore(EstadoCita estado, LocalDate fecha);
+
+    @Query("""
+        SELECT c FROM Cita c WHERE c.fecha BETWEEN :fechaInicio AND :fechaFin
+    """)
+    List<Cita> findByRango(
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin
+    );
 }

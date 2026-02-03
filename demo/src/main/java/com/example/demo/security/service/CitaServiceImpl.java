@@ -169,6 +169,11 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
+    public List<Cita> citasDeRango(LocalDate fechaInicio, LocalDate fechaFin) {
+        return citaRepository.findByRango(fechaInicio, fechaFin);
+    }
+
+    @Override
     public List<Cita> findByFechaAndEstado(LocalDate fecha, EstadoCita estado) {
         return citaRepository.findByFechaAndEstado(fecha, estado);
     }

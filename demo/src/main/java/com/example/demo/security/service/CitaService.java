@@ -35,4 +35,6 @@ public interface CitaService {
 
     // ⭐ Cambiar estado con ENUM
     Cita cambiarEstado(long id, EstadoCita nuevoEstado);
+
+    List<Cita> citasDeRango(LocalDate fechaInicio, LocalDate fechaFin);
 }
