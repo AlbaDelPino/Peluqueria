@@ -15,9 +15,8 @@ public class ServicioImagen {
     @Column(name = "datos", columnDefinition = "LONGTEXT")
     private String datos;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_servicio")
-    @JsonBackReference
     private Servicio servicio;
 
     public ServicioImagen() {}
