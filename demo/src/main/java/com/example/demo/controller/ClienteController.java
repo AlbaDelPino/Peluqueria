@@ -48,23 +48,24 @@ public class ClienteController {
      * 1. ENDPOINT DE VERIFICACIÓN
      * Este es el método que se ejecuta cuando el cliente hace clic en el enlace del correo.
      */
+    // UserController.java
+
     @GetMapping("/verificar")
-    public ResponseEntity<String> verificarCuenta(@RequestParam Long id) {
+    public ResponseEntity<String> verificarCuenta(@RequestParam("id") Long id) {
         boolean verificado = clienteService.verificarCuenta(id);
 
         if (verificado) {
-            // Retornamos un HTML para que el navegador del usuario se vea profesional
+            // Retornamos un HTML sencillo para que el usuario vea algo bonito en el navegador
             return ResponseEntity.ok(
-                    "<html><body style='font-family: Arial, sans-serif; text-align: center; padding-top: 50px;'>" +
-                            "<div style='max-width: 400px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>" +
-                            "<h1 style='color: #FF6B00;'>¡Cuenta Activada!</h1>" +
-                            "<p style='color: #333;'>Tu cuenta en <strong>Bernat Experience</strong> ha sido verificada correctamente.</p>" +
-                            "<p>Ya puedes volver a la aplicación e iniciar sesión.</p>" +
-                            "</div></body></html>"
+                    "<html><body style='text-align:center; font-family:sans-serif; padding-top:50px;'>" +
+                            "<h1 style='color: #FF6B00;'>¡CUENTA ACTIVADA!</h1>" +
+                            "<p>Tu cuenta ha sido verificada correctamente.</p>" +
+                            "<p>Ya puedes volver a la App de <b>Bernat Experience</b> e iniciar sesión.</p>" +
+                            "</body></html>"
             );
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("<h1>Error de verificación</h1><p>El enlace ha expirado o el usuario no existe.</p>");
+                    .body("Error: No se pudo verificar la cuenta o el enlace es inválido.");
         }
     }
 

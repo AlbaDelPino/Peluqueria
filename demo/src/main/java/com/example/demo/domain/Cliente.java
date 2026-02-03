@@ -11,8 +11,7 @@ import java.util.List;
 @Table(name = "clientes")
 public class Cliente extends User {
 
-    @Column(length = 2000)
-    private String comentarioCitas;
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true) private List<ComentarioCita> comentarioCitas;
 
     @Size(max = 200)
     @Column(length = 200)
@@ -42,17 +41,9 @@ public class Cliente extends User {
 
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado,
-                   String comentarioCitas, String observacion, String alergenos, byte[] imagen) {
-        super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE);
-        this.comentarioCitas = comentarioCitas;
-        this.observacion = observacion;
-        this.alergenos = alergenos;
-        this.imagen = imagen;
-    }
+    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; this.alergenos = alergenos; this.imagen = imagen; }
 
-    public String getComentarioCitas() { return comentarioCitas; }
-    public void setComentarioCitas(String comentarioCitas) { this.comentarioCitas = comentarioCitas; }
+
 
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }

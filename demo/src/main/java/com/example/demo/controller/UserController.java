@@ -143,7 +143,6 @@ public class UserController {
                 signUpRequest.getTelefono(),
                 encodedPassword,
                 signUpRequest.isEstado(),
-                signUpRequest.getDireccion(),
                 signUpRequest.getObservacion(),
                 signUpRequest.getAlergenos(),
                 signUpRequest.getImagen()
@@ -164,8 +163,7 @@ public class UserController {
                     signUpRequest.getEmail(),
                     signUpRequest.getTelefono(),
                     signUpRequest.getContrasenya(), // Se pasará al service para cifrarla
-                    true, // estado activo
-                    signUpRequest.getDireccion(),
+                    true,// estado activo
                     signUpRequest.getObservacion(),
                     signUpRequest.getAlergenos(),
                     signUpRequest.getImagen()
