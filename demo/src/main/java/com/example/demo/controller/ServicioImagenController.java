@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.ServicioImagen;
 import com.example.demo.security.service.ServicioImagenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,11 +77,14 @@ public class ServicioImagenController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
-            // Nota: Debes añadir el método eliminar en tu Service si no lo tienes
-            // service.eliminar(id);
-            return ResponseEntity.ok().body("Imagen eliminada");
+            boolean eliminado = service.eliminar(id);
+            if (eliminado) {
+                return ResponseEntity.ok().body("Imagen con ID " + id + " eliminada correctamente.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró la imagen con ID: " + id);
+            }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al eliminar");
+            return ResponseEntity.internalServerError().body("Error al eliminar: " + e.getMessage());
         }
     }
 }

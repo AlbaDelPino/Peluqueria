@@ -12,5 +12,5 @@ public interface ServicioImagenService {
     // Para la Galería General (Menú inferior Flutter)
     List<ServicioImagen> listarTodas();
     // Para borrar
-    void eliminar(Long id);
+    boolean eliminar(Long id);
 }

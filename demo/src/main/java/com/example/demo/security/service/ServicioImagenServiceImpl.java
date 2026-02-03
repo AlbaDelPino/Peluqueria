@@ -43,8 +43,12 @@ public class ServicioImagenServiceImpl implements ServicioImagenService {
     }
 
     @Override
-    public void eliminar(Long id) {
-        repository.deleteById(id);
+    public boolean eliminar(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
