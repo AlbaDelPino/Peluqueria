@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "clientes")
@@ -43,7 +44,16 @@ public class Cliente extends User {
 
     public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; this.alergenos = alergenos; this.imagen = imagen; }
 
-
+    public Cliente(String username, String nombre, String email, String contrasenya, boolean estado, ERole role, List<ComentarioCita> comentarioCitas, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
+        super(username, nombre, email, contrasenya, estado, role);
+        this.comentarioCitas = comentarioCitas;
+        this.observacion = observacion;
+        this.alergenos = alergenos;
+        this.imagen = imagen;
+        this.citas = citas;
+        this.favoritos = favoritos;
+        this.verificado = verificado;
+    }
 
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }

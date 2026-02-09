@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
     @Column(nullable = false, length = 20)
     private String username;
 
@@ -33,14 +33,13 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 70)
     private String nombre;
 
-    @Size(max = 50)
+    @Size(max = 100)
     @Email
     @Column(unique = true)
     private String email;
 
-    @NotNull
-    @Min(100000000)          // mínimo 9 dígitos
-    @Max(999999999999999L)
+
+
     @Column(nullable = false, length = 15)
     private long telefono;
 
@@ -64,7 +63,16 @@ public class User implements UserDetails {
         this.username = username;
         this.nombre = nombre;
         this.email = email;
-        this.telefono = telefono;
+        setTelefono(telefono);
+        this.contrasenya = contrasenya;
+        this.estado = estado;
+        this.role = role;
+    }
+    public User(String username, String nombre, String email, String contrasenya,boolean estado, ERole role) {
+        this.username = username;
+        this.nombre = nombre;
+        this.email = email;
+
         this.contrasenya = contrasenya;
         this.estado = estado;
         this.role = role;
@@ -84,7 +92,14 @@ public class User implements UserDetails {
     public void setEmail(String email) { this.email = email; }
 
     public long getTelefono() {return telefono;}
-    public void setTelefono(long telefono) {this.telefono = telefono;}
+    public void setTelefono(long telefono) {
+        if (telefono != 0 && telefono != 111111111L) {
+            if (telefono < 100000000L || telefono > 999999999999999L) {
+                throw new IllegalArgumentException("El teléfono debe tener entre 9 y 15 dígitos.");
+            }
+        }
+        this.telefono = telefono;
+    }
 
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
