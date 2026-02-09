@@ -47,6 +47,10 @@ public class HorarioSemanal {
     @OneToMany(mappedBy = "horario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cita> citas;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_bloqueo", nullable = true)
+    private BloqueoHorario bloqueo;
+
     public HorarioSemanal() {
     }
 

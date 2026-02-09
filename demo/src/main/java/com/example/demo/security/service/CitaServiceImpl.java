@@ -143,7 +143,6 @@ public class CitaServiceImpl implements CitaService {
         // Solo se puede eliminar si está cancelada o completada
         if (cita.getEstado() != EstadoCita.CANCELADO &&
                 cita.getEstado() != EstadoCita.COMPLETADO) {
-
             throw new RuntimeException("Solo puedes eliminar citas canceladas o completadas.");
         }
 
@@ -171,6 +170,11 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public List<Cita> citasDeRango(LocalDate fechaInicio, LocalDate fechaFin) {
         return citaRepository.findByRango(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public List<Cita> citasACancelar(HorarioSemanal horario, LocalDate fecha) {
+        return citaRepository.citasACancelar(horario, fecha);
     }
 
     @Override
