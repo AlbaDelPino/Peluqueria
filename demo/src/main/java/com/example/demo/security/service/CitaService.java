@@ -37,4 +37,6 @@ public interface CitaService {
     Cita cambiarEstado(long id, EstadoCita nuevoEstado);
 
     List<Cita> citasDeRango(LocalDate fechaInicio, LocalDate fechaFin);
+
+    List<Cita> citasACancelar(HorarioSemanal horario,LocalDate fecha);
 }

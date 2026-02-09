@@ -17,7 +17,7 @@ public class Cita {
     private LocalDate fecha;
 
     @NotNull
-    private LocalTime horaInicio;   // ⭐ SOLO hora de comienzo
+    private LocalTime horaInicio;
 
     @NotNull
     @Enumerated(EnumType.STRING)

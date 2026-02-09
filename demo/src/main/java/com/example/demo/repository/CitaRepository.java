@@ -44,7 +44,7 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByHorario_ServicioAndFecha(Servicio servicio, LocalDate fecha);
 
 
-    // ⭐ Plazas ocupadas SOLO en ese bloque
+    // Plazas ocupadas SOLO en ese bloque
     @Query("""
         SELECT COUNT(c)
         FROM Cita c
@@ -81,5 +81,17 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByRango(
             @Param("fechaInicio") LocalDate fechaInicio,
             @Param("fechaFin") LocalDate fechaFin
+    );
+
+    @Query("""
+        SELECT c
+        FROM Cita c
+        WHERE c.horario = :horario
+        AND c.fecha = :fecha
+        AND c.estado = com.example.demo.domain.EstadoCita.CONFIRMADO
+    """)
+    List<Cita> citasACancelar(
+            @Param("horario") HorarioSemanal horario,
+            @Param("fecha") LocalDate fecha
     );
 }
