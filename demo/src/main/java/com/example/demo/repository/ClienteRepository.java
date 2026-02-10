@@ -18,6 +18,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     // Verificar si ya existe un email antes de registrar
     Boolean existsByEmail(String email);
+    Optional<User> findByTelefono(Long telefono);
 
     Boolean existsByUsername(String username);
 }

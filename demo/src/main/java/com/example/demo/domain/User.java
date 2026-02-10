@@ -40,8 +40,7 @@ public class User implements UserDetails {
 
 
 
-    @Column(nullable = false, length = 15)
-    private long telefono;
+
 
     @NotBlank
     @Size(max = 100)
@@ -59,15 +58,7 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String nombre, String email, long telefono, String contrasenya,boolean estado, ERole role) {
-        this.username = username;
-        this.nombre = nombre;
-        this.email = email;
-        setTelefono(telefono);
-        this.contrasenya = contrasenya;
-        this.estado = estado;
-        this.role = role;
-    }
+
     public User(String username, String nombre, String email, String contrasenya,boolean estado, ERole role) {
         this.username = username;
         this.nombre = nombre;
@@ -91,15 +82,7 @@ public class User implements UserDetails {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public long getTelefono() {return telefono;}
-    public void setTelefono(long telefono) {
-        if (telefono != 0 && telefono != 111111111L) {
-            if (telefono < 100000000L || telefono > 999999999999999L) {
-                throw new IllegalArgumentException("El teléfono debe tener entre 9 y 15 dígitos.");
-            }
-        }
-        this.telefono = telefono;
-    }
+
 
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }

@@ -40,9 +40,12 @@ public class Cliente extends User {
     @Column(nullable = false)
     private boolean verificado = false;
 
+    @Column(nullable = false, length = 15)
+    private long telefono;
+
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, telefono, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; this.alergenos = alergenos; this.imagen = imagen; }
+    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; setTelefono(telefono);this.alergenos = alergenos; this.imagen = imagen; }
 
     public Cliente(String username, String nombre, String email, String contrasenya, boolean estado, ERole role, List<ComentarioCita> comentarioCitas, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
         super(username, nombre, email, contrasenya, estado, role);
@@ -70,6 +73,15 @@ public class Cliente extends User {
         return favoritos;
     }
 
+    public long getTelefono() {return telefono;}
+    public void setTelefono(long telefono) {
+        if (telefono != 0 && telefono != 111111111L) {
+            if (telefono < 100000000L || telefono > 999999999999999L) {
+                throw new IllegalArgumentException("El teléfono debe tener entre 9 y 15 dígitos.");
+            }
+        }
+        this.telefono = telefono;
+    }
     public boolean isVerificado() {
         return verificado;
     }

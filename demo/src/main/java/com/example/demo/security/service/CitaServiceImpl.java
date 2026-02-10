@@ -149,7 +149,7 @@ public class CitaServiceImpl implements CitaService {
         citaRepository.deleteById(id);
     }
 
-    // ⭐⭐⭐ CAMBIAR ESTADO ⭐⭐⭐
+    //  CAMBIAR ESTADO
     @Override
     @Transactional
     public Cita cambiarEstado(long id, EstadoCita nuevoEstado) {
