@@ -291,4 +291,16 @@ public class CitaServiceImpl implements CitaService {
     public List<Cita> findCitasDeHoy() {
         return citaRepository.findByFecha(LocalDate.now());
     }
+
+
+    // En CitaService.java
+    public List<String> obtenerDiasPorServicio(Long servicioId) {
+        // Aquí buscas en tu repositorio de Horarios filtrando por el ID del servicio
+        // y mapeas para obtener solo los nombres de los días de la semana
+        return horarioRepository.findByServicio_IdServicio(servicioId)
+                .stream()
+                .map(horario -> horario.getDiaSemana().toString()) // O el formato que prefieras
+                .distinct()
+                .toList();
+    }
 }

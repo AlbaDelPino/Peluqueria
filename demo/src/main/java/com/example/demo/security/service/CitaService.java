@@ -39,4 +39,6 @@ public interface CitaService {
     List<Cita> citasDeRango(LocalDate fechaInicio, LocalDate fechaFin);
 
     List<Cita> citasACancelar(HorarioSemanal horario,LocalDate fecha);
+
+    List<String> obtenerDiasPorServicio(Long servicioId);
 }
