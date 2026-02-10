@@ -15,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;
     private String email;
-    private Long telefono;
+
     private boolean estado;
 
     @JsonIgnore
@@ -23,12 +23,11 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, long telefono, String password, boolean estado,
+    public UserDetailsImpl(Long id, String username, String email, String password, boolean estado,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.telefono = telefono;
         this.password = password;
         this.estado = estado;
         this.authorities = authorities;
@@ -39,7 +38,6 @@ public class UserDetailsImpl implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getTelefono(),
                 user.getContrasenya(),
                 user.isEstado(),
                 (Collection<? extends GrantedAuthority>) user.getAuthorities()
@@ -53,7 +51,6 @@ public class UserDetailsImpl implements UserDetails {
 
     public Long getId() { return id; }
     public String getEmail() { return email; }
-    public Long getTelefono() { return telefono; }
     public boolean isEstado() { return estado; }
 
     @Override

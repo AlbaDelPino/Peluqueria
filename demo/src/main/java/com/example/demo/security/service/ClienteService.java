@@ -78,7 +78,7 @@ public class ClienteService {
 
 // Dentro de enviarCorreoVerificacion en ClienteService.java
 // En ClienteService.java
-            String urlVerificacion = "http://localhost:8082/clientes/verificar?id=" + cliente.getId();
+            String urlVerificacion = "http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId();
             String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
                     "<p>Pulsa el enlace para activar tu cuenta:</p>" +
                     "<a href='" + urlVerificacion + "'>ACTIVAR CUENTA</a>";
@@ -92,7 +92,7 @@ public class ClienteService {
             System.err.println("❌ ERROR AL ENVIAR CORREO: " + e.getMessage());
             // PLAN B: Imprimimos el link en consola por si el mail falla
             System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR: ");
-            System.out.println("http://localhost:8082/clientes/verificar?id=" + cliente.getId());
+            System.out.println("http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId());
         }
     }
 
@@ -127,7 +127,7 @@ public class ClienteService {
         user.setNombre(clienteDetails.getNombre());
         user.setUsername(clienteDetails.getUsername());
         user.setEmail(clienteDetails.getEmail());
-        user.setTelefono(clienteDetails.getTelefono());
+
 
         if (clienteDetails.getContrasenya() != null && !clienteDetails.getContrasenya().isBlank()) {
             user.setContrasenya(passwordEncoder.encode(clienteDetails.getContrasenya()));
@@ -137,6 +137,7 @@ public class ClienteService {
         if (user instanceof Cliente cliente) {
 
             cliente.setObservacion(clienteDetails.getObservacion());
+            cliente.setTelefono(clienteDetails.getTelefono());
             cliente.setAlergenos(clienteDetails.getAlergenos());
 
             if (clienteDetails.getImagen() != null && clienteDetails.getImagen().length > 0) {

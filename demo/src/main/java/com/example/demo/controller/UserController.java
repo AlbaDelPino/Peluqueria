@@ -98,7 +98,6 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
-                signUpRequest.getTelefono(),
                 encodedPassword,
                 signUpRequest.isEstado(),
                 signUpRequest.getEspecialidad()
@@ -119,7 +118,6 @@ public class UserController {
                 signUpRequest.getUsername(),
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
-                signUpRequest.getTelefono(),
                 encodedPassword,
                 signUpRequest.isEstado(),
                 signUpRequest.getCurso(),
