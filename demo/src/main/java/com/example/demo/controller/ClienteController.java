@@ -50,24 +50,7 @@ public class ClienteController {
      */
     // UserController.java
 
-    @GetMapping("/verificar")
-    public ResponseEntity<String> verificarCuenta(@RequestParam("id") Long id) {
-        boolean verificado = clienteService.verificarCuenta(id);
 
-        if (verificado) {
-            // Retornamos un HTML sencillo para que el usuario vea algo bonito en el navegador
-            return ResponseEntity.ok(
-                    "<html><body style='text-align:center; font-family:sans-serif; padding-top:50px;'>" +
-                            "<h1 style='color: #FF6B00;'>¡CUENTA ACTIVADA!</h1>" +
-                            "<p>Tu cuenta ha sido verificada correctamente.</p>" +
-                            "<p>Ya puedes volver a la App de <b>Bernat Experience</b> e iniciar sesión.</p>" +
-                            "</body></html>"
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: No se pudo verificar la cuenta o el enlace es inválido.");
-        }
-    }
 
     /**
      * 2. REGISTRO DE CLIENTE

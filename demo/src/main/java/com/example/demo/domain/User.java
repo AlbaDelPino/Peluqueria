@@ -54,7 +54,7 @@ public class User implements UserDetails {
     @Column(length = 20, nullable = false)
     private ERole role;
 
-    private String codigoVerificacion; // Añade este atributo
+ // Añade este atributo
 
     public User() {}
 
@@ -135,11 +135,5 @@ public class User implements UserDetails {
         return true;
     }
 
-    public String getCodigoVerificacion() {
-        return codigoVerificacion;
-    }
 
-    public void setCodigoVerificacion(String codigoVerificacion) {
-        this.codigoVerificacion = codigoVerificacion;
-    }
 }

@@ -62,13 +62,8 @@ public class UserController {
         // ---------------------------------------------------------
         // 2. AÑADE ESTO AQUÍ (Control de verificación)
         // ---------------------------------------------------------
-        if (user instanceof Cliente) {
-            Cliente cliente = (Cliente) user;
-            if (!cliente.isVerificado()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new MessageResponse("Error: Debes activar tu cuenta mediante el correo enviado."));
-            }
-        }
+
+
         // ---------------------------------------------------------
 
         // 3. Validar contraseña (Esto ya lo tienes)
@@ -246,7 +241,7 @@ public class UserController {
                     nuevoCliente.setNombre(nombre);
                     nuevoCliente.setContrasenya(passwordEncoder.encode("GOOGLE_PWD_" + googleId));
                     nuevoCliente.setRole(ERole.ROLE_CLIENTE);
-                    nuevoCliente.setVerificado(true);
+
                     nuevoCliente.setEstado(true);
 
                     userRepository.save(nuevoCliente);

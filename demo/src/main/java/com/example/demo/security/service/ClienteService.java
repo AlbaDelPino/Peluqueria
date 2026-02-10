@@ -38,6 +38,7 @@ public class ClienteService {
         return userRepository.findByRole(ERole.ROLE_CLIENTE);
     }
 
+
     // Obtener cliente por ID
     public User getClienteById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -49,7 +50,7 @@ public class ClienteService {
     public Cliente createCliente(Cliente cliente) {
         // 1. Configuración básica
         cliente.setRole(ERole.ROLE_CLIENTE);
-        cliente.setVerificado(false); // Empieza sin verificar
+        // Empieza sin verificar
 
         // 2. Cifrar la contraseña
         if (cliente.getContrasenya() != null) {
@@ -97,15 +98,7 @@ public class ClienteService {
     }
 
     // --- NUEVO: MÉTODO DE VERIFICACIÓN ---
-    public boolean verificarCuenta(Long id) {
-        return clienteRepository.findById(id).map(cliente -> {
-            if (cliente.isVerificado()) return true;
 
-            cliente.setVerificado(true);
-            clienteRepository.save(cliente);
-            return true;
-        }).orElse(false);
-    }
 
 
 
@@ -190,28 +183,38 @@ public class ClienteService {
     }
     // En ClienteServiceImpl.java
     public void enviarCorreoRecuperacion(User user) {
-        // 1. Generar código
+        // 1. Generar código de 6 dígitos
         String codigo = String.valueOf((int)(Math.random() * 900000) + 100000);
 
-        // 2. Guardar código en el usuario
-        user.setCodigoVerificacion(codigo);
-        userRepository.save(user);
+        // 2. Verificar si es un Cliente y guardar el código
+        if (user instanceof Cliente cliente) {
+            cliente.setCodigoVerificacion(codigo); // Ahora sí reconoce el método
+            userRepository.save(cliente);
 
-        // 3. Enviar correo
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Recuperar Contraseña - Bernat Experience");
-        message.setText("Tu código de recuperación es: " + codigo);
-        mailSender.send(message);
+            // 3. Enviar correo
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(cliente.getEmail());
+            message.setSubject("Recuperar Contraseña - Bernat Experience");
+            message.setText("Tu código de recuperación es: " + codigo);
+            mailSender.send(message);
+
+            System.out.println("✅ Código de recuperación enviado a: " + cliente.getEmail());
+        } else {
+            System.err.println("❌ El usuario no es un Cliente, no tiene campo de código.");
+        }
     }
 
     public boolean validarCodigoRecuperacion(String email, String codigo) {
-        // Corregimos el error del Optional usando .orElse(null)
+        // Buscamos el usuario por email
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (user != null && user.getCodigoVerificacion() != null) {
-            return user.getCodigoVerificacion().equals(codigo);
+        // Verificamos que no sea nulo, que sea un Cliente y que el código coincida
+        if (user instanceof Cliente cliente) {
+            if (cliente.getCodigoVerificacion() != null) {
+                return cliente.getCodigoVerificacion().equals(codigo);
+            }
         }
+
         return false;
     }
 

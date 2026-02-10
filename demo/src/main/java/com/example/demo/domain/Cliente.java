@@ -37,11 +37,11 @@ public class Cliente extends User {
     )
     private java.util.Set<Servicio> favoritos = new java.util.HashSet<>();
 
-    @Column(nullable = false)
-    private boolean verificado = false;
+
 
     @Column(nullable = false, length = 15)
     private long telefono;
+    private String codigoVerificacion;
 
     public Cliente() {}
 
@@ -55,7 +55,7 @@ public class Cliente extends User {
         this.imagen = imagen;
         this.citas = citas;
         this.favoritos = favoritos;
-        this.verificado = verificado;
+
     }
 
     public String getObservacion() { return observacion; }
@@ -82,15 +82,17 @@ public class Cliente extends User {
         }
         this.telefono = telefono;
     }
-    public boolean isVerificado() {
-        return verificado;
-    }
-
-    public void setVerificado(boolean verificado) {
-        this.verificado = verificado;
-    }
 
     public void setFavoritos(java.util.Set<Servicio> favoritos) {
         this.favoritos = favoritos;
     }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
+    }
+
 }
