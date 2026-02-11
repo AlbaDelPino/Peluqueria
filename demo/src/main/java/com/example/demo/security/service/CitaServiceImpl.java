@@ -20,6 +20,7 @@ public class CitaServiceImpl implements CitaService {
     @Autowired private CitaRepository citaRepository;
     @Autowired private HorarioRepository horarioRepository;
     @Autowired private ClienteRepository clienteRepository;
+    @Autowired private BloqueoService bloqueoRepository;
     @Autowired private JavaMailSender mailSender;
 
     @Override
@@ -61,6 +62,13 @@ public class CitaServiceImpl implements CitaService {
         Long horarioId = cita.getHorario().getId();
         HorarioSemanal horario = horarioRepository.findById(horarioId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado con ID: " + horarioId));
+
+
+        BloqueoHorario bloqueo = bloqueoRepository.findByFecha(cita.getFecha());
+        boolean recurrente = bloqueoRepository.findByDiaRecurrente(cita.getFecha());
+        if (recurrente || bloqueo != null) {
+            throw new RuntimeException("No se puede crear una cita en una fecha bloqueada.");
+        }
 
         // Validar fecha pasada
         LocalDateTime fechaHoraCita = LocalDateTime.of(cita.getFecha(), cita.getHoraInicio());

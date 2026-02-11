@@ -50,9 +50,14 @@ public class BloqueoController {
         return bloqueoService.modifyHorariosEnBloqueo(id,newHorarios);
     }
 
-    @GetMapping("/dia")
-    public List<BloqueoHorario> findByFecha(LocalDate fecha) {
+    @GetMapping("/fecha")
+    public BloqueoHorario findByFecha(LocalDate fecha) {
         return bloqueoService.findByFecha(fecha);
+    }
+
+    @GetMapping("/dia")
+    public boolean findByDiaRecurrente(LocalDate fecha) {
+        return bloqueoService.findByDiaRecurrente(fecha);
     }
 
     @GetMapping("/horario")

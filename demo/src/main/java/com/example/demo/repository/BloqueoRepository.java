@@ -18,9 +18,8 @@ import java.util.Optional;
 public interface BloqueoRepository extends JpaRepository<BloqueoHorario, Long> {
 
     Optional<BloqueoHorario> findById(long id);
-    List<BloqueoHorario> findByFecha(LocalDate fecha);
+    BloqueoHorario findByFecha(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(HorarioSemanal horario);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
-
-
+    boolean findByDiaRecurrente(LocalDate fecha);
 }

@@ -36,8 +36,23 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
-    public List<BloqueoHorario> findByFecha(LocalDate fecha) {
+    public BloqueoHorario findByFecha(LocalDate fecha) {
         return bloqueoRepository.findByFecha(fecha);
+    }
+
+    @Override
+    public boolean findByDiaRecurrente(LocalDate fecha) {
+        boolean devolver = false;
+        List<BloqueoHorario> bloqueos = bloqueoRepository.findAll();
+        for(BloqueoHorario bloqueo : bloqueos) {
+            if (bloqueo != null && bloqueo.isRecurrente()) {
+                LocalDate fechaBloqueo = bloqueo.getFecha();
+                if (fechaBloqueo != null && fechaBloqueo.getMonthValue() == fecha.getMonthValue() && fechaBloqueo.getDayOfMonth() == fecha.getDayOfMonth()) {
+                    return true;
+                }
+            }
+        }
+        return devolver;
     }
 
     @Override
@@ -52,6 +67,17 @@ public class BloqueoServiceImpl implements BloqueoService {
 
     @Override
     public BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo) {
+
+        LocalDate fechaBloqueo = bloqueo.getFecha();
+        BloqueoHorario bloqueoAnterior = bloqueoRepository.findByFecha(fechaBloqueo);
+        boolean recurrente = bloqueoRepository.findByDiaRecurrente(fechaBloqueo);
+        if (fechaBloqueo.isBefore(LocalDate.now())) {
+            throw new RuntimeException("No puedes bloquear una fecha u hora pasada.");
+        } else if (recurrente || bloqueoAnterior != null) {
+            throw new RuntimeException("No puedes bloquear una fecha ya bloqueada.");
+        }
+
+
         List<HorarioSemanal> horarios = bloqueo.getHorarios();
         for(int i = 0; i < horarios.size(); i++){
             Long horarioId = horarios.get(i).getId();

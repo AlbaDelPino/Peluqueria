@@ -10,7 +10,8 @@ public interface BloqueoService {
 
     List<BloqueoHorario> findAll();
     Optional<BloqueoHorario> findById(long id);
-    List<BloqueoHorario> findByFecha(LocalDate fecha);
+    BloqueoHorario findByFecha(LocalDate fecha);
+    boolean findByDiaRecurrente(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(HorarioSemanal horario);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
 
