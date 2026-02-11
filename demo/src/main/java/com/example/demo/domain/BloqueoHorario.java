@@ -1,9 +1,12 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,14 +23,18 @@ public class BloqueoHorario {
     @NotNull
     private boolean recurrente;
 
-    @OneToMany(mappedBy = "bloqueo", cascade = CascadeType.DETACH)
-    private List<HorarioSemanal> horarios;
+    @ManyToMany
+    @JoinTable(
+            name = "bloqueo_horario_semanal",
+            joinColumns = @JoinColumn(name = "id_bloqueo"),
+            inverseJoinColumns = @JoinColumn(name = "id_horario")
+    )
+    private List<HorarioSemanal> horarios = new ArrayList<>();
 
     public BloqueoHorario() {
     }
 
-    public BloqueoHorario(Long id, LocalDate fecha, boolean recurrente, List<HorarioSemanal> horarios) {
-        this.id = id;
+    public BloqueoHorario( LocalDate fecha, boolean recurrente, List<HorarioSemanal> horarios) {
         this.fecha = fecha;
         this.recurrente = recurrente;
         this.horarios = horarios;

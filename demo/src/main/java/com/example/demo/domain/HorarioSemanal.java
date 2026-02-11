@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,11 +46,10 @@ public class HorarioSemanal {
     private Grupo grupo;
 
     @OneToMany(mappedBy = "horario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cita> citas;
+    private List<Cita> citas = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_bloqueo", nullable = true)
-    private BloqueoHorario bloqueo;
+    @ManyToMany(mappedBy = "horarios")
+    private List<BloqueoHorario> bloqueos = new ArrayList<>();
 
     public HorarioSemanal() {
     }

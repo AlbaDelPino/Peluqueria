@@ -21,5 +21,16 @@ public interface BloqueoRepository extends JpaRepository<BloqueoHorario, Long> {
     BloqueoHorario findByFecha(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(HorarioSemanal horario);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
-    boolean findByDiaRecurrente(LocalDate fecha);
+
+    // Plazas ocupadas SOLO en ese bloque
+    @Query("""
+        SELECT b
+        FROM BloqueoHorario b
+        WHERE b.recurrente = true
+        AND  MONTH(b.fecha) =  MONTH(:fecha)
+        AND  DAY(b.fecha) =  DAY(:fecha)
+    """)
+    BloqueoHorario findByDiaRecurrente(
+            @Param("fecha") LocalDate fecha
+    );
 }

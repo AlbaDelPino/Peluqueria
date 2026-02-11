@@ -1,6 +1,8 @@
 package com.example.demo.security.service;
 
 import com.example.demo.domain.*;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,7 +13,7 @@ public interface BloqueoService {
     List<BloqueoHorario> findAll();
     Optional<BloqueoHorario> findById(long id);
     BloqueoHorario findByFecha(LocalDate fecha);
-    boolean findByDiaRecurrente(LocalDate fecha);
+    BloqueoHorario findByDiaRecurrente(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(HorarioSemanal horario);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
 

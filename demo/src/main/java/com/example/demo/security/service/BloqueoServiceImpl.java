@@ -4,6 +4,9 @@ import com.example.demo.domain.*;
 import com.example.demo.repository.BloqueoRepository;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.HorarioRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,18 +44,8 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
-    public boolean findByDiaRecurrente(LocalDate fecha) {
-        boolean devolver = false;
-        List<BloqueoHorario> bloqueos = bloqueoRepository.findAll();
-        for(BloqueoHorario bloqueo : bloqueos) {
-            if (bloqueo != null && bloqueo.isRecurrente()) {
-                LocalDate fechaBloqueo = bloqueo.getFecha();
-                if (fechaBloqueo != null && fechaBloqueo.getMonthValue() == fecha.getMonthValue() && fechaBloqueo.getDayOfMonth() == fecha.getDayOfMonth()) {
-                    return true;
-                }
-            }
-        }
-        return devolver;
+    public BloqueoHorario findByDiaRecurrente(LocalDate fecha) {
+        return bloqueoRepository.findByDiaRecurrente(fecha);
     }
 
     @Override
@@ -69,12 +62,16 @@ public class BloqueoServiceImpl implements BloqueoService {
     public BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo) {
 
         LocalDate fechaBloqueo = bloqueo.getFecha();
-        BloqueoHorario bloqueoAnterior = bloqueoRepository.findByFecha(fechaBloqueo);
-        boolean recurrente = bloqueoRepository.findByDiaRecurrente(fechaBloqueo);
-        if (fechaBloqueo.isBefore(LocalDate.now())) {
-            throw new RuntimeException("No puedes bloquear una fecha u hora pasada.");
-        } else if (recurrente || bloqueoAnterior != null) {
-            throw new RuntimeException("No puedes bloquear una fecha ya bloqueada.");
+        if (fechaBloqueo != null) {
+            BloqueoHorario bloqueoAnterior = bloqueoRepository.findByFecha(fechaBloqueo);
+            BloqueoHorario recurrente = bloqueoRepository.findByDiaRecurrente(fechaBloqueo);
+            if (fechaBloqueo.isBefore(LocalDate.now())) {
+                throw new RuntimeException("No puedes bloquear una fecha u hora pasada.");
+            } else if (recurrente != null || bloqueoAnterior != null) {
+                throw new RuntimeException("No puedes bloquear una fecha ya bloqueada.");
+            }
+        }else {
+            throw new RuntimeException("No se ha leido nunguna fecha.");
         }
 
 

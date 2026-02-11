@@ -65,8 +65,8 @@ public class CitaServiceImpl implements CitaService {
 
 
         BloqueoHorario bloqueo = bloqueoRepository.findByFecha(cita.getFecha());
-        boolean recurrente = bloqueoRepository.findByDiaRecurrente(cita.getFecha());
-        if (recurrente || bloqueo != null) {
+        BloqueoHorario recurrente = bloqueoRepository.findByDiaRecurrente(cita.getFecha());
+        if (recurrente != null || bloqueo != null) {
             throw new RuntimeException("No se puede crear una cita en una fecha bloqueada.");
         }
 

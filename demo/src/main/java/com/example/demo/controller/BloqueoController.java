@@ -23,7 +23,7 @@ public class BloqueoController {
     @Autowired
     private BloqueoService bloqueoService;
 
-    @GetMapping
+    @GetMapping("/todos")
     public List<BloqueoHorario> findAll() {
         return bloqueoService.findAll();
     }
@@ -56,7 +56,7 @@ public class BloqueoController {
     }
 
     @GetMapping("/dia")
-    public boolean findByDiaRecurrente(LocalDate fecha) {
+    public BloqueoHorario findByDiaRecurrente(LocalDate fecha) {
         return bloqueoService.findByDiaRecurrente(fecha);
     }
 
