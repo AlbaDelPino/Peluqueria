@@ -45,9 +45,11 @@ public class CitaController {
     @GetMapping("/disponible")
     public Map<String, Integer> horasConPlazasDisponibles(
             @RequestParam Long horarioId,
-            @RequestParam LocalDate fecha
+            @RequestParam String fecha
     ) {
-        return citaService.horasDisponibles(horarioId, fecha);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaFormato = LocalDate.parse(fecha, formatter);
+        return citaService.horasDisponibles(horarioId, fechaFormato);
     }
 
     // ⭐ Citas disponibles por horario y fecha
@@ -67,9 +69,11 @@ public class CitaController {
     @GetMapping("/horas")
     public Map<String, Integer> horasDisponibles(
             @RequestParam Long horarioId,
-            @RequestParam LocalDate fecha
+            @RequestParam String fecha
     ) {
-        return citaService.horasDisponibles(horarioId, fecha);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaFormato = LocalDate.parse(fecha, formatter);
+        return citaService.horasDisponibles(horarioId, fechaFormato);
     }
 
     // ⭐ Buscar por fecha

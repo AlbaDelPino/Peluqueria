@@ -23,50 +23,54 @@ public class BloqueoController {
     @Autowired
     private BloqueoService bloqueoService;
 
-    @GetMapping("/todos")
+    @GetMapping
     public List<BloqueoHorario> findAll() {
         return bloqueoService.findAll();
     }
 
     @GetMapping("/{id}")
-    public BloqueoHorario findById(long id) {
+    public BloqueoHorario findById(@PathVariable long id) {
         return bloqueoService.findById(id).orElseThrow(() -> new RuntimeException("Cita no encontrada"));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo) {
+    public BloqueoHorario addBloqueoHorario(@RequestBody BloqueoHorario bloqueo) {
         return bloqueoService.addBloqueoHorario(bloqueo);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public void deleteBloqueoHorario(long id) {
+    public void deleteBloqueoHorario(@PathVariable long id) {
         bloqueoService.deleteBloqueoHorario(id);
     }
 
-    @PutMapping("/{id}")
-    public BloqueoHorario modifyHorariosEnBloqueo(long id, List<HorarioSemanal> newHorarios) {
-        return bloqueoService.modifyHorariosEnBloqueo(id,newHorarios);
+    @PutMapping
+    public BloqueoHorario modifyHorariosEnBloqueo(@RequestBody BloqueoHorario bloqueo) {
+        return bloqueoService.modifyHorariosEnBloqueo(bloqueo);
     }
 
     @GetMapping("/fecha")
-    public BloqueoHorario findByFecha(LocalDate fecha) {
-        return bloqueoService.findByFecha(fecha);
+    public BloqueoHorario findByFecha(@RequestParam String fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaFormato = LocalDate.parse(fecha, formatter);
+        return bloqueoService.findByFecha(fechaFormato);
     }
 
     @GetMapping("/dia")
-    public BloqueoHorario findByDiaRecurrente(LocalDate fecha) {
-        return bloqueoService.findByDiaRecurrente(fecha);
+    public BloqueoHorario findByDiaRecurrente(@RequestParam String fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaFormato = LocalDate.parse(fecha, formatter);
+        return bloqueoService.findByDiaRecurrente(fechaFormato);
     }
 
     @GetMapping("/horario")
-    public List<BloqueoHorario> findByHorarios(HorarioSemanal horario) {
-        return bloqueoService.findByHorarios(horario);
+    public List<BloqueoHorario> findByHorarios(@RequestParam Long horarioId) {
+        return bloqueoService.findByHorarios(horarioId);
     }
 
     @GetMapping("/recurrente")
-    public List<BloqueoHorario> findByRecurrente(boolean recurrente) {
+    public List<BloqueoHorario> findByRecurrente(@RequestParam boolean recurrente) {
         return bloqueoService.findByRecurrente(recurrente);
     }
 

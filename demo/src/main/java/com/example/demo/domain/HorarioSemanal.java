@@ -49,7 +49,7 @@ public class HorarioSemanal {
     private List<Cita> citas = new ArrayList<>();
 
     @ManyToMany(mappedBy = "horarios")
-    private List<BloqueoHorario> bloqueos = new ArrayList<>();
+    private List<BloqueoHorario> bloqueos;
 
     public HorarioSemanal() {
     }

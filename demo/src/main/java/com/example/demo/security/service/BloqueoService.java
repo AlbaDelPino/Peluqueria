@@ -14,12 +14,12 @@ public interface BloqueoService {
     Optional<BloqueoHorario> findById(long id);
     BloqueoHorario findByFecha(LocalDate fecha);
     BloqueoHorario findByDiaRecurrente(LocalDate fecha);
-    List<BloqueoHorario> findByHorarios(HorarioSemanal horario);
+    List<BloqueoHorario> findByHorarios(long id);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
 
 
 
     BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo);
-    BloqueoHorario modifyHorariosEnBloqueo(long id, List<HorarioSemanal> newHorarios);
+    BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario bloqueo);
     void deleteBloqueoHorario(long id);
 }

@@ -49,8 +49,8 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
-    public List<BloqueoHorario> findByHorarios(HorarioSemanal horario) {
-        return bloqueoRepository.findByHorarios(horario);
+    public List<BloqueoHorario> findByHorarios(long id) {
+        return bloqueoRepository.findByHorarios(horarioRepository.findById(id));
     }
 
     @Override
@@ -97,17 +97,17 @@ public class BloqueoServiceImpl implements BloqueoService {
             if (citasACancelar.size()>0) {
                 throw new RuntimeException("El cliente ya tiene una cita en esta hora.");
             }
-            bloqueo.addHorario(horario);
         }
         return bloqueoRepository.save(bloqueo);
     }
 
     @Override
-    public BloqueoHorario modifyHorariosEnBloqueo(long id, List<HorarioSemanal> newHorarios) {
-        BloqueoHorario bloqueo = bloqueoRepository.findById(id).orElseThrow(() -> new RuntimeException("No se ha encontrado el bloqueo horario."));
+    public BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario newBloqueo){
+        BloqueoHorario bloqueo = bloqueoRepository.findById(newBloqueo.getId()).orElseThrow(() -> new RuntimeException("No se ha encontrado el bloqueo horario."));
+        bloqueo.setRecurrente(newBloqueo.isRecurrente());
         bloqueo.setHorarios(new ArrayList<HorarioSemanal>());
-        for(int i = 0; i < newHorarios.size(); i++){
-            Long horarioId = newHorarios.get(i).getId();
+        for(int i = 0; i < newBloqueo.getHorarios().size(); i++){
+            Long horarioId = newBloqueo.getHorarios().get(i).getId();
             HorarioSemanal horario = horarioRepository.findById(horarioId)
                     .orElseThrow(() -> new RuntimeException("Horario no encontrado con ID: " + horarioId));
 

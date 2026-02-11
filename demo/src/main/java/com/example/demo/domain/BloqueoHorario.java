@@ -23,13 +23,13 @@ public class BloqueoHorario {
     @NotNull
     private boolean recurrente;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "bloqueo_horario_semanal",
             joinColumns = @JoinColumn(name = "id_bloqueo"),
             inverseJoinColumns = @JoinColumn(name = "id_horario")
     )
-    private List<HorarioSemanal> horarios = new ArrayList<>();
+    private List<HorarioSemanal> horarios;
 
     public BloqueoHorario() {
     }
