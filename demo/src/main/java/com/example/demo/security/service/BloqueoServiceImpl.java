@@ -125,7 +125,7 @@ public class BloqueoServiceImpl implements BloqueoService {
 
             List<Cita> citasACancelar = citaRepository.citasACancelar(horario,bloqueo.getFecha());
             if (citasACancelar.size()>0) {
-                throw new RuntimeException("El cliente ya tiene una cita en esta hora.");
+                throw new RuntimeException("Hay citas activas en esta fecha, cancelalas antes de bloquearlas.");
             }
             bloqueo.addHorario(horario);
         }
