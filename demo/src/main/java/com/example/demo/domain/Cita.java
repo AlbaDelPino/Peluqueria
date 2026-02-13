@@ -31,16 +31,26 @@ public class Cita {
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
+    @Column
+    private String tratamientos;
+
+    @Column
+    private String productos;
+
+    @Column
+    private String observaciones;
+
     public Cita() {}
 
-    public Cita(LocalDate fecha, LocalTime horaInicio,
-                HorarioSemanal horario, Cliente cliente) {
-
+    public Cita(LocalDate fecha, LocalTime horaInicio, HorarioSemanal horario, Cliente cliente, String tratamientos, String productos, String observaciones) {
         this.fecha = fecha;
         this.horaInicio = horaInicio;
-        this.estado = EstadoCita.CONFIRMADO;;
+        this.estado = EstadoCita.CONFIRMADO;
         this.horario = horario;
         this.cliente = cliente;
+        this.tratamientos = tratamientos;
+        this.productos = productos;
+        this.observaciones = observaciones;
     }
 
     // Getters y Setters
@@ -61,4 +71,28 @@ public class Cita {
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public String getTratamientos() {
+        return tratamientos;
+    }
+
+    public void setTratamientos(String tratamientos) {
+        this.tratamientos = tratamientos;
+    }
+
+    public String getProductos() {
+        return productos;
+    }
+
+    public void setProductos(String productos) {
+        this.productos = productos;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
 }

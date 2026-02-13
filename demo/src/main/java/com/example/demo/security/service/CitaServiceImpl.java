@@ -66,7 +66,10 @@ public class CitaServiceImpl implements CitaService {
 
         BloqueoHorario bloqueo = bloqueoRepository.findByFecha(cita.getFecha());
         BloqueoHorario recurrente = bloqueoRepository.findByDiaRecurrente(cita.getFecha());
-        if (recurrente != null || bloqueo != null) {
+        if (bloqueo != null && bloqueo.getHorarios().contains(horario)) {
+            throw new RuntimeException("No se puede crear una cita en una fecha bloqueada.");
+        }
+        if (recurrente != null && recurrente.getHorarios().contains(horario)){
             throw new RuntimeException("No se puede crear una cita en una fecha bloqueada.");
         }
 
@@ -170,7 +173,29 @@ public class CitaServiceImpl implements CitaService {
             throw new RuntimeException("Estado no permitido. Solo se puede cancelar o completar la cita.");
         }
 
+        LocalDateTime fechaHoraCita = LocalDateTime.of(cita.getFecha(), cita.getHoraInicio());
+        if (fechaHoraCita.isAfter(LocalDateTime.now())) {
+            throw new RuntimeException("No puedes completar una cita en una fecha u hora no pasada.");
+        }
+
         cita.setEstado(nuevoEstado);
+
+        return citaRepository.save(cita);
+    }
+
+    @Override
+    public Cita cambiarFicha(long id, String tratamientos, String productos, String observaciones) {
+
+        Cita cita = citaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No existe la cita"));
+
+        if (cita.getEstado()!=EstadoCita.COMPLETADO) {
+            throw new RuntimeException("No se puede comentar una cita no completada");
+        }
+
+        cita.setTratamientos(tratamientos);
+        cita.setProductos(productos);
+        cita.setObservaciones(observaciones);
 
         return citaRepository.save(cita);
     }

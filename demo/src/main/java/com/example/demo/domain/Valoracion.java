@@ -16,18 +16,51 @@ public class Valoracion {
     @Column(name = "comentario", nullable = false)
     private String comentario;
 
-    @Column(name = "puntuacion", nullable = false)
+    @Column
     @Min(0)
     @Max(5)
-    private long puntuacion;
+    private int puntuacion;
+
+    @Column
+    @Min(0)
+    @Max(5)
+    private int trato;
+
+    @Column
+    @Min(0)
+    @Max(5)
+    private int desarrollo;
+
+    @Column
+    @Min(0)
+    @Max(5)
+    private int comunicacion;
+
+    @Column
+    @Min(0)
+    @Max(5)
+    private int organizacion;
 
     @Lob
     private byte[] imagen;
 
-    // ⭐ Relación 1:1 con Cita
     @OneToOne
     @JoinColumn(name = "id_cita", nullable = false, unique = true)
     private Cita cita;
+
+    public Valoracion() {
+    }
+
+    public Valoracion(String comentario, int puntuacion, int trato, int desarrollo, int comunicacion, int organizacion, byte[] imagen, Cita cita) {
+        this.comentario = comentario;
+        this.puntuacion = puntuacion;
+        this.trato = trato;
+        this.desarrollo = desarrollo;
+        this.comunicacion = comunicacion;
+        this.organizacion = organizacion;
+        this.imagen = imagen;
+        this.cita = cita;
+    }
 
     // Getters y setters
     public Long getIdValoracion() { return idValoracion; }
@@ -36,8 +69,36 @@ public class Valoracion {
     public String getComentario() { return comentario; }
     public void setComentario(String comentario) { this.comentario = comentario; }
 
-    public long getPuntuacion() { return puntuacion; }
-    public void setPuntuacion(long puntuacion) { this.puntuacion = puntuacion; }
+    public int getPuntuacion() { return puntuacion; }
+    public void setPuntuacion(@Min(0) @Max(5) int puntuacion) { this.puntuacion = puntuacion; }
+
+    public int getTrato() {
+        return trato;
+    }
+    public void setTrato(@Min(0) @Max(5) int trato) {
+        this.trato = trato;
+    }
+
+    public int getDesarrollo() {
+        return desarrollo;
+    }
+    public void setDesarrollo(@Min(0) @Max(5) int desarrollo) {
+        this.desarrollo = desarrollo;
+    }
+
+    public int getComunicacion() {
+        return comunicacion;
+    }
+    public void setComunicacion(@Min(0) @Max(5) int comunicacion) {
+        this.comunicacion = comunicacion;
+    }
+
+    public int getOrganizacion() {
+        return organizacion;
+    }
+    public void setOrganizacion(@Min(0) @Max(5) int organizacion) {
+        this.organizacion = organizacion;
+    }
 
     public byte[] getImagen() { return imagen; }
     public void setImagen(byte[] imagen) { this.imagen = imagen; }

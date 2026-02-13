@@ -18,15 +18,13 @@ public class ValoracionController {
     @Autowired
     private ValoracionService valoracionService;
 
-    // ⭐ Crear valoración
     @PreAuthorize("hasAnyRole('CLIENTE')")
-    @PostMapping
-    public ResponseEntity<Valoracion> crearValoracion(@RequestBody Valoracion valoracion) {
-        Valoracion nueva = valoracionService.crearValoracion(valoracion);
-        return ResponseEntity.ok(nueva);
+    @PostMapping("/{idCliente}")
+    public ResponseEntity<Valoracion> crearValoracion(@RequestBody Valoracion valoracion, @PathVariable Long idCliente ) {
+        Valoracion nueva=valoracionService.crearValoracion(valoracion, idCliente);
+        return ResponseEntity.ok(valoracion);
     }
 
-    // ⭐ Obtener valoración por ID
     @GetMapping("/{id}")
     public ResponseEntity<Valoracion> obtenerValoracion(@PathVariable Long id) {
         Valoracion valoracion = valoracionService.findById(id);
@@ -56,9 +54,10 @@ public class ValoracionController {
     @PreAuthorize("hasAnyRole('CLIENTE')")
     public ResponseEntity<Valoracion> actualizarValoracion(
             @PathVariable Long id,
-            @RequestBody Valoracion valoracion
+            @RequestBody Valoracion valoracion,
+            @RequestParam Long idCliente
     ) {
-        Valoracion actualizada = valoracionService.actualizarValoracion(id, valoracion);
+        Valoracion actualizada = valoracionService.actualizarValoracion(id, valoracion, idCliente);
         return ResponseEntity.ok(actualizada);
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ValoracionService {
 
-    Valoracion crearValoracion(Valoracion valoracion);
+    Valoracion crearValoracion(Valoracion valoracion,Long idCliente);
 
     Valoracion findById(Long id);
 
@@ -17,6 +17,6 @@ public interface ValoracionService {
 
     List<Valoracion> findValoracionesByCliente(Long clienteId);
 
-    Valoracion actualizarValoracion(Long id, Valoracion valoracion);
+    Valoracion actualizarValoracion(Long id, Valoracion valoracion, Long idCliente);
 
 }
