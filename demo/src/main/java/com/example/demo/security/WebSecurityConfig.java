@@ -57,7 +57,8 @@ public class WebSecurityConfig {
                                 "/clientes/verificar",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/citas/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll()
                         .anyRequest().authenticated()
