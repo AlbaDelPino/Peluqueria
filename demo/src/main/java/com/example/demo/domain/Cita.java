@@ -39,7 +39,8 @@ public class Cita {
 
     @Column
     private String observaciones;
-
+    @OneToOne(mappedBy = "cita", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Valoracion valoracion;
     public Cita() {}
 
     public Cita(LocalDate fecha, LocalTime horaInicio, HorarioSemanal horario, Cliente cliente, String tratamientos, String productos, String observaciones) {
@@ -94,5 +95,13 @@ public class Cita {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public Valoracion getValoracion() {
+        return valoracion;
+    }
+
+    public void setValoracion(Valoracion valoracion) {
+        this.valoracion = valoracion;
     }
 }
