@@ -40,9 +40,13 @@ public class ValoracionServiceImpl implements ValoracionService {
         }
 
         // 2. Validar que la cita existe
+        if (valoracion.getCita() == null || valoracion.getCita().getId() == null) {
+            throw new RuntimeException("El objeto cita o su ID no han sido enviados correctamente.");
+        }
+
         Long idCita = valoracion.getCita().getId();
         Cita cita = citaRepository.findById(idCita)
-                .orElseThrow(() -> new RuntimeException("La cita no existe."));
+                .orElseThrow(() -> new RuntimeException("La cita con ID " + idCita + " no existe."));
         if (cita.getEstado() != EstadoCita.COMPLETADO){
             throw new RuntimeException("La cita no está completada.");
         }

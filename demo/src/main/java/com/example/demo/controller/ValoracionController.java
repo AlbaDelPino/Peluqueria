@@ -21,10 +21,11 @@ public class ValoracionController {
     @PreAuthorize("hasAnyRole('CLIENTE')")
     @PostMapping("/{idCliente}")
     public ResponseEntity<Valoracion> crearValoracion(@RequestBody Valoracion valoracion, @PathVariable Long idCliente ) {
-        Valoracion nueva=valoracionService.crearValoracion(valoracion, idCliente);
-        return ResponseEntity.ok(valoracion);
+        // Guarda el resultado de la operación
+        Valoracion nueva = valoracionService.crearValoracion(valoracion, idCliente);
+        // Devuelve la 'nueva', no la que entró
+        return ResponseEntity.ok(nueva);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Valoracion> obtenerValoracion(@PathVariable Long id) {
         Valoracion valoracion = valoracionService.findById(id);

@@ -46,7 +46,7 @@ public class Valoracion {
 
     @OneToOne
     @JoinColumn(name = "id_cita", nullable = false, unique = true)
-    @com.fasterxml.jackson.annotation.JsonIgnore // <--- Añade esto
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     private Cita cita;
 
     public Valoracion() {
