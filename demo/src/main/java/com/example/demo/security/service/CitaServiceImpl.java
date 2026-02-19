@@ -184,7 +184,7 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public Cita cambiarFicha(long id, String tratamientos, String productos, String observaciones) {
+    public Cita cambiarFicha(long id, Cita fichaCita) {
 
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No existe la cita"));
@@ -193,9 +193,9 @@ public class CitaServiceImpl implements CitaService {
             throw new RuntimeException("No se puede comentar una cita no completada");
         }
 
-        cita.setTratamientos(tratamientos);
-        cita.setProductos(productos);
-        cita.setObservaciones(observaciones);
+        cita.setTratamientos(fichaCita.getTratamientos());
+        cita.setProductos(fichaCita.getProductos());
+        cita.setObservaciones(fichaCita.getObservaciones());
 
         return citaRepository.save(cita);
     }

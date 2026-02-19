@@ -41,6 +41,14 @@ public class CitaController {
         return citaService.cambiarEstado(id, estado);
     }
 
+    @PutMapping("/{id}/ficha")
+    public Cita completarFicha(
+            @PathVariable long id,
+            @RequestBody Cita cita
+    ) {
+        return citaService.cambiarFicha(id, cita);
+    }
+
     // ⭐ Citas disponibles por horario y fecha
     @GetMapping("/disponible")
     public Map<String, Integer> horasConPlazasDisponibles(

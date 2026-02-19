@@ -54,6 +54,12 @@ public class Cita {
         this.observaciones = observaciones;
     }
 
+    public Cita(String observaciones, String productos, String tratamientos) {
+        this.observaciones = observaciones;
+        this.productos = productos;
+        this.tratamientos = tratamientos;
+    }
+
     // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
