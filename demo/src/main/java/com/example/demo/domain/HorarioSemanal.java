@@ -3,7 +3,7 @@ package com.example.demo.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +128,7 @@ public class HorarioSemanal {
                 ", horaInicio=" + horaInicio +
                 ", horaFin=" + horaFin +
                 ", plazas=" + plazas +
-                ", idServicio=" + servicio +
+                ", servicio=" + (servicio != null ? servicio.getNombre() : "SIN SERVICIO") +
                 ", idGrupo=" + grupo +
                 '}';
     }
