@@ -16,10 +16,11 @@ public interface BloqueoService {
     BloqueoHorario findByDiaRecurrente(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(long id);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
+    List<BloqueoHorario> findByMotivo(String  motivo);
 
 
 
     BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo);
-    BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario bloqueo);
+    BloqueoHorario modifyHorariosEnBloqueo(long id,BloqueoHorario bloqueo);
     void deleteBloqueoHorario(long id);
 }

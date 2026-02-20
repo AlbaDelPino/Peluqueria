@@ -18,6 +18,7 @@ public interface BloqueoRepository extends JpaRepository<BloqueoHorario, Long> {
     BloqueoHorario findByFecha(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(Optional<HorarioSemanal> horario);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
+    List<BloqueoHorario> findByMotivo(String  motivo);
 
     // Plazas ocupadas SOLO en ese bloque
     @Query("""

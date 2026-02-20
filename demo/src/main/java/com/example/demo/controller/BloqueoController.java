@@ -45,9 +45,11 @@ public class BloqueoController {
         bloqueoService.deleteBloqueoHorario(id);
     }
 
-    @PutMapping
-    public BloqueoHorario modifyHorariosEnBloqueo(@RequestBody BloqueoHorario bloqueo) {
-        return bloqueoService.modifyHorariosEnBloqueo(bloqueo);
+    @PutMapping("/{id}")
+    public BloqueoHorario modifyHorariosEnBloqueo(
+            @PathVariable long id,
+            @RequestBody BloqueoHorario bloqueo) {
+        return bloqueoService.modifyHorariosEnBloqueo(id,bloqueo);
     }
 
     @GetMapping("/fecha")
@@ -72,6 +74,11 @@ public class BloqueoController {
     @GetMapping("/recurrente")
     public List<BloqueoHorario> findByRecurrente(@RequestParam boolean recurrente) {
         return bloqueoService.findByRecurrente(recurrente);
+    }
+
+    @GetMapping("/motivo")
+    public List<BloqueoHorario> findByMotivo(@RequestParam String motivo) {
+        return bloqueoService.findByMotivo(motivo);
     }
 
 }

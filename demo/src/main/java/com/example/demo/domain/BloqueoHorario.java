@@ -21,6 +21,8 @@ public class BloqueoHorario {
     @NotNull
     private boolean recurrente;
 
+    private String motivo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "bloqueo_horario_semanal",
@@ -32,9 +34,10 @@ public class BloqueoHorario {
     public BloqueoHorario() {
     }
 
-    public BloqueoHorario( LocalDate fecha, boolean recurrente, List<HorarioSemanal> horarios) {
+    public BloqueoHorario(LocalDate fecha, boolean recurrente, String motivo, List<HorarioSemanal> horarios) {
         this.fecha = fecha;
         this.recurrente = recurrente;
+        this.motivo = motivo;
         this.horarios = horarios;
     }
 
@@ -74,4 +77,11 @@ public class BloqueoHorario {
         this.horarios.add(horario);
     }
 
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 }
