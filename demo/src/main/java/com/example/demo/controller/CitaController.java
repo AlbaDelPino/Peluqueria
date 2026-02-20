@@ -4,6 +4,7 @@ import com.example.demo.domain.Cita;
 import com.example.demo.domain.EstadoCita;
 import com.example.demo.security.service.CitaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,9 +22,17 @@ public class CitaController {
     private CitaService citaService;
 
     // ⭐ Crear cita
+    // Cambia 'public Cita' por 'public ResponseEntity<?>'
     @PostMapping("/reservar")
-    public Cita addCita(@RequestBody Cita cita) {
-        return citaService.addCita(cita);
+    public ResponseEntity<?> addCita(@RequestBody Cita cita) {
+        try {
+            Cita nuevaCita = citaService.addCita(cita);
+            // Devolvemos la cita envuelta en un 200 OK
+            return ResponseEntity.ok(nuevaCita);
+        } catch (RuntimeException e) {
+            // Devolvemos el error envuelto en un 400 Bad Request
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     // ⭐ Eliminar cita (solo si está CANCELADA o COMPLETADA)

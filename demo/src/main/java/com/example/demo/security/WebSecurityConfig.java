@@ -54,7 +54,8 @@ public class WebSecurityConfig {
                                 "/api/auth/google",
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
-                                "/clientes/verificar",
+
+
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",

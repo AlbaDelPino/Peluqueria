@@ -61,43 +61,10 @@ public class ClienteService {
         Cliente nuevoCliente = clienteRepository.save(cliente);
 
         // 4. Enviar Correo de Verificación
-        try {
-            enviarCorreoVerificacion(nuevoCliente);
-        } catch (Exception e) {
-            System.err.println("Error enviando correo: " + e.getMessage());
-        }
+
 
         return nuevoCliente;
     }
-    private void enviarCorreoVerificacion(Cliente cliente) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setTo(cliente.getEmail());
-            helper.setSubject("Activa tu cuenta - Bernat Experience");
-
-// Dentro de enviarCorreoVerificacion en ClienteService.java
-// En ClienteService.java
-            String urlVerificacion = "http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId();
-            String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
-                    "<p>Pulsa el enlace para activar tu cuenta:</p>" +
-                    "<a href='" + urlVerificacion + "'>ACTIVAR CUENTA</a>";
-
-            helper.setText(htmlContent, true);
-
-            mailSender.send(message);
-            System.out.println("✅ CORREO ENVIADO CON ÉXITO A: " + cliente.getEmail());
-
-        } catch (Exception e) {
-            System.err.println("❌ ERROR AL ENVIAR CORREO: " + e.getMessage());
-            // PLAN B: Imprimimos el link en consola por si el mail falla
-            System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR: ");
-            System.out.println("http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId());
-        }
-    }
-
-    // --- NUEVO: MÉTODO DE VERIFICACIÓN ---
 
 
 
