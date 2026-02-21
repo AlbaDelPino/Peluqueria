@@ -17,14 +17,11 @@ public class FCMService {
 
     // --- NUEVO MÉTODO: BUSCA Y ENVÍA ---
     public void enviarANombreDeCliente(Long clienteId, String titulo, String cuerpo) {
-        // Buscamos el último token registrado para ese cliente
         Optional<FcmToken> fcmTokenOpt = fcmTokenRepository.findTopByClienteIdOrderByIdDesc(clienteId);
-
         if (fcmTokenOpt.isPresent()) {
             String token = fcmTokenOpt.get().getToken();
+            System.out.println("DEBUG: Enviando al token: " + token); // <--- AÑADE ESTO
             enviarNotificacion(token, titulo, cuerpo);
-        } else {
-            System.err.println("❌ No hay token en la BD para el cliente: " + clienteId);
         }
     }
 

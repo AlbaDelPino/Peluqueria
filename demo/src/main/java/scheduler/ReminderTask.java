@@ -21,8 +21,8 @@ public class ReminderTask {
     @Autowired
     private FCMService fcmService;
 
-    // Se ejecuta cada día a las 9 AM
-    @Scheduled(cron = "0 0 9 * * *")
+    // Se ejecutará cada 30 segundos para que no tengas que esperar
+    @Scheduled(cron = "*/30 * * * * *")
     @Transactional(readOnly = true)
     public void enviarRecordatorios() {
         System.out.println("⏰ Revisando citas para mañana...");

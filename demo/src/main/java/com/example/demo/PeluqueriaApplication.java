@@ -3,12 +3,13 @@ package com.example.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-
 @EntityScan(basePackages = "com.example.demo.domain")
+@ComponentScan(basePackages = {"com.example.demo", "scheduler"})
 public class PeluqueriaApplication { 
 
 	public static void main(String[] args) {

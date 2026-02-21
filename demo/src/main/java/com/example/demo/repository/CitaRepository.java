@@ -94,6 +94,8 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
             @Param("horario") HorarioSemanal horario,
             @Param("fecha") LocalDate fecha
     );
-    @Query(value = "SELECT * FROM citas WHERE DATE(fecha_cita) = CURDATE() + INTERVAL 1 DAY", nativeQuery = true)
+
+
+    @Query(value = "SELECT * FROM cita WHERE DATE(fecha) = CURDATE() + INTERVAL 1 DAY", nativeQuery = true)
     List<Cita> buscarCitasParaManana();
 }
