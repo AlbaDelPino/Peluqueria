@@ -44,6 +44,7 @@ public class Cliente extends User {
     private long telefono;
     private String codigoVerificacion;
 
+    @JsonIgnore // <--- AÑADE ESTA LÍNEA
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FcmToken> tokens = new ArrayList<>();
 

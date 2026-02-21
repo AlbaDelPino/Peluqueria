@@ -54,8 +54,8 @@ public class WebSecurityConfig {
                                 "/api/auth/google",
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
-
-
+                                "/api/fcm/**",
+                                "/api/test-fcm/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",

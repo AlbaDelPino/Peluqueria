@@ -9,4 +9,4 @@ import java.util.List;
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
     Optional<FcmToken> findByToken(String token);
     List<FcmToken> findByCliente(Cliente cliente);
-}
+    Optional<FcmToken> findTopByClienteIdOrderByIdDesc(Long clienteId);}
