@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +43,9 @@ public class Cliente extends User {
     @Column(nullable = false, length = 15)
     private long telefono;
     private String codigoVerificacion;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FcmToken> tokens = new ArrayList<>();
 
     public Cliente() {}
 
@@ -95,4 +99,13 @@ public class Cliente extends User {
         this.codigoVerificacion = codigoVerificacion;
     }
 
+    public void setTokens(List<FcmToken> tokens) {
+        this.tokens = tokens;
+    }
+
+    // Método de ayuda para añadir tokens fácilmente
+
+    public List<FcmToken> getTokens() {
+        return tokens;
+    }
 }

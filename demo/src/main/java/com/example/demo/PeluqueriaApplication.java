@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
+
 @EntityScan(basePackages = "com.example.demo.domain")
 public class PeluqueriaApplication { 
 
