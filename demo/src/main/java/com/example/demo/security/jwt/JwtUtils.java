@@ -12,7 +12,7 @@ import java.util.List;
 public class JwtUtils {
 
   private final String jwtSecret = "miClaveSuperSecretaDeAlMenos32Caracteres123456";
-  private final long jwtExpirationMs = 3153600000000L; // 24h
+  private final int jwtExpirationMs = 86400000; // 24h
 
   private final Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 

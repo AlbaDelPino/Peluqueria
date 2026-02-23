@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "clientes")
 public class Cliente extends User {
 
- 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true) private List<ComentarioCita> comentarioCitas;
 
     @Size(max = 200)
     @Column(length = 200)
@@ -52,9 +52,9 @@ public class Cliente extends User {
 
     public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; setTelefono(telefono);this.alergenos = alergenos; this.imagen = imagen; }
 
-    public Cliente(String username, String nombre, String email, String contrasenya, boolean estado, ERole role, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
+    public Cliente(String username, String nombre, String email, String contrasenya, boolean estado, ERole role, List<ComentarioCita> comentarioCitas, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
         super(username, nombre, email, contrasenya, estado, role);
-
+        this.comentarioCitas = comentarioCitas;
         this.observacion = observacion;
         this.alergenos = alergenos;
         this.imagen = imagen;

@@ -126,7 +126,6 @@ public class CitaServiceImpl implements CitaService {
         // Estado inicial
         cita.setEstado(EstadoCita.CONFIRMADO);
 
-        cita.setHorario(horario);
         // Guardar
         Cita guardada = citaRepository.save(cita);
 
@@ -134,9 +133,6 @@ public class CitaServiceImpl implements CitaService {
         try {
             Cliente clienteCompleto = clienteRepository.findById(cita.getCliente().getId())
                     .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
-            guardada.setHorario(horario);
-            guardada.setCliente(clienteCompleto);
 
             enviarCorreoConfirmacion(clienteCompleto, guardada);
 
@@ -309,42 +305,19 @@ public class CitaServiceImpl implements CitaService {
 
 
     private void enviarCorreoConfirmacion(Cliente cliente, Cita cita) {
-        try {
-            // 1. Verificación de seguridad (ya la tienes, ¡bien!)
-            if (cita.getHorario() == null || cita.getHorario().getServicio() == null) {
-                System.err.println("❌ No se puede enviar correo: Datos de servicio incompletos.");
-                return;
-            }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(cliente.getEmail());
+        message.setSubject("Reserva Confirmada - Bernat Experience");
 
-            SimpleMailMessage message = new SimpleMailMessage();
+        String texto = "Hola " + cliente.getNombre() + ",\n\n" +
+                "Tu cita ha sido confirmada:\n" +
+                "- Servicio: " + cita.getHorario().getServicio().getNombre() + "\n" +
+                "- Fecha: " + cita.getFecha() + "\n" +
+                "- Hora: " + cita.getHoraInicio() + "\n\n" +
+                "¡Gracias por confiar en nosotros!";
 
-            // 2. IMPORTANTE: Especificar el remitente (tu cuenta de gmail)
-            message.setFrom("albadelpino1@gmail.com");
-
-            message.setTo(cliente.getEmail());
-            message.setSubject("Reserva Confirmada - Bernat Experience");
-
-            // 3. Extraer datos del objeto que vimos en Postman
-            String nombreServicio = cita.getHorario().getServicio().getNombre();
-            String nombreCliente = (cliente.getNombre() != null) ? cliente.getNombre() : "Cliente";
-
-            String texto = "Hola " + nombreCliente + ",\n\n" +
-                    "Tu reserva para '" + nombreServicio + "' ha sido confirmada con éxito.\n" +
-                    "Fecha: " + cita.getFecha() + "\n" +
-                    "Hora: " + cita.getHoraInicio() + "\n\n" +
-                    "¡Gracias por confiar en nosotros!";
-
-            message.setText(texto);
-
-            // 4. Intento de envío
-            mailSender.send(message);
-            System.out.println("✅ Correo enviado correctamente a: " + cliente.getEmail());
-
-        } catch (Exception e) {
-            // Esto imprimirá el error exacto en la consola de Spring si Gmail rechaza algo
-            System.err.println("⚠️ Error en el servidor de correo: " + e.getMessage());
-            // e.printStackTrace(); // Descomenta esta línea si necesitas ver el rastro completo del error
-        }
+        message.setText(texto);
+        mailSender.send(message);
     }
 
     @Override
