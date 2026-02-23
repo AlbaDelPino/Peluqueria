@@ -59,11 +59,6 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
-    public List<BloqueoHorario> findByMotivo(String motivo) {
-        return bloqueoRepository.findByMotivo(motivo);
-    }
-
-    @Override
     public BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo) {
 
         LocalDate fechaBloqueo = bloqueo.getFecha();
@@ -107,10 +102,9 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
-    public BloqueoHorario modifyHorariosEnBloqueo(long id,BloqueoHorario newBloqueo){
-        BloqueoHorario bloqueo = bloqueoRepository.findById(id).orElseThrow(() -> new RuntimeException("No se ha encontrado el bloqueo horario."));
+    public BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario newBloqueo){
+        BloqueoHorario bloqueo = bloqueoRepository.findById(newBloqueo.getId()).orElseThrow(() -> new RuntimeException("No se ha encontrado el bloqueo horario."));
         bloqueo.setRecurrente(newBloqueo.isRecurrente());
-        bloqueo.setMotivo(newBloqueo.getMotivo());
         bloqueo.setHorarios(new ArrayList<HorarioSemanal>());
         for(int i = 0; i < newBloqueo.getHorarios().size(); i++){
             Long horarioId = newBloqueo.getHorarios().get(i).getId();
