@@ -53,17 +53,9 @@ public class WebSecurityConfig {
                                 "/api/auth/signup/cliente/public",
                                 "/api/auth/google",
                                 "/api/auth/forgot-password",
-                                "/api/auth/reset-password",
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                "/api/fcm/**",
-                                "/api/test-fcm/**",
-=======
+
                                 "/clientes/verificar",
->>>>>>> parent of 43a58cd (Merge branch 'main' of https://github.com/AlbaDelPino/Peluqueria)
-=======
-                                "/clientes/verificar",
->>>>>>> parent of 43a58cd (Merge branch 'main' of https://github.com/AlbaDelPino/Peluqueria)
+
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
