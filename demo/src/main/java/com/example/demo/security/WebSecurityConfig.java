@@ -32,7 +32,7 @@ public class WebSecurityConfig {
     }
 
     // 🔑 Aquí añades el PasswordEncoder
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,9 +53,7 @@ public class WebSecurityConfig {
                                 "/api/auth/signup/cliente/public",
                                 "/api/auth/google",
                                 "/api/auth/forgot-password",
-
-                                "/clientes/verificar",
-
+                                "/api/auth/reset-password",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -76,5 +74,3 @@ public class WebSecurityConfig {
         return http.build();
     }
 }
-
-
