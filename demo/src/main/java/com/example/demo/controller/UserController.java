@@ -273,7 +273,7 @@ public class UserController {
                 .map(user -> {
                     try {
                         // 2. Usamos el servicio para generar código y enviar
-                        clienteService.enviarCorreoRecuperacion(user);
+                        userService.enviarCorreoRecuperacion(user);
                         return ResponseEntity.ok(new MessageResponse("Correo de recuperación enviado con éxito."));
                     } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -298,7 +298,7 @@ public class UserController {
                     .body(new MessageResponse("Usuario no encontrado."));
         }
 
-        boolean codigoValido = clienteService.validarCodigoRecuperacion(email, codigo);
+        boolean codigoValido = userService.validarCodigoRecuperacion(email, codigo);
 
         if (!codigoValido) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

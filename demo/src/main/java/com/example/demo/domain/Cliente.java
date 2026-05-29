@@ -42,7 +42,7 @@ public class Cliente extends User {
 
     @Column(nullable = false, length = 15)
     private long telefono;
-    private String codigoVerificacion;
+
 
 
 
@@ -90,13 +90,7 @@ public class Cliente extends User {
         this.favoritos = favoritos;
     }
 
-    public String getCodigoVerificacion() {
-        return codigoVerificacion;
-    }
 
-    public void setCodigoVerificacion(String codigoVerificacion) {
-        this.codigoVerificacion = codigoVerificacion;
-    }
 
 
 }

@@ -46,7 +46,7 @@ public class User implements UserDetails {
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     private String contrasenya;
-
+    private String codigoVerificacion;
 
 
     @Enumerated(EnumType.STRING)
@@ -95,6 +95,14 @@ public class User implements UserDetails {
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
     }
 
     @Override
