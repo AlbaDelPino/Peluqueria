@@ -48,10 +48,10 @@ public class Cliente extends User {
 
     public Cliente() {}
 
-    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, boolean estado, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, contrasenya, estado, ERole.ROLE_CLIENTE); this.observacion = observacion; setTelefono(telefono);this.alergenos = alergenos; this.imagen = imagen; }
+    public Cliente(String username, String nombre, String email, long telefono, String contrasenya, String observacion, String alergenos, byte[] imagen) { super(username, nombre, email, contrasenya, ERole.ROLE_CLIENTE); this.observacion = observacion; setTelefono(telefono);this.alergenos = alergenos; this.imagen = imagen; }
 
-    public Cliente(String username, String nombre, String email, String contrasenya, boolean estado, ERole role, List<ComentarioCita> comentarioCitas, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
-        super(username, nombre, email, contrasenya, estado, role);
+    public Cliente(String username, String nombre, String email, String contrasenya, ERole role, List<ComentarioCita> comentarioCitas, String observacion, String alergenos, byte[] imagen, List<Cita> citas, Set<Servicio> favoritos, boolean verificado) {
+        super(username, nombre, email, contrasenya, role);
         this.comentarioCitas = comentarioCitas;
         this.observacion = observacion;
         this.alergenos = alergenos;

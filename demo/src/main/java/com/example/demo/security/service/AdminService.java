@@ -53,7 +53,7 @@ public class AdminService {
         admin.setNombre(adminDetails.getNombre() != null ? adminDetails.getNombre() : admin.getNombre());
         admin.setUsername(adminDetails.getUsername() != null ? adminDetails.getUsername() : admin.getUsername());
         admin.setEmail(adminDetails.getEmail() != null ? adminDetails.getEmail() : admin.getEmail());
-        admin.setEstado(adminDetails.isEstado());
+
         if (adminDetails.getContrasenya() != null && !adminDetails.getContrasenya().isEmpty()) {
             admin.setContrasenya(passwordEncoder.encode(adminDetails.getContrasenya()));
         }

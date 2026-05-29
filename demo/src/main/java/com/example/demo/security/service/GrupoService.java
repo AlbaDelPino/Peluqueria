@@ -55,7 +55,7 @@ public class GrupoService {
         grupo.setUsername(grupoDetails.getUsername() != null ? grupoDetails.getUsername() : grupo.getUsername());
         grupo.setEmail(grupoDetails.getEmail() != null ? grupoDetails.getEmail() : grupo.getEmail());
 
-        grupo.setEstado(grupoDetails.isEstado());
+
         if (grupoDetails.getContrasenya() != null && !grupoDetails.getContrasenya().isEmpty()) {
             grupo.setContrasenya(passwordEncoder.encode(grupoDetails.getContrasenya()));
         }

@@ -23,13 +23,13 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password, boolean estado,
+    public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.estado = estado;
+      ;
         this.authorities = authorities;
     }
 
@@ -39,7 +39,6 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getContrasenya(),
-                user.isEstado(),
                 (Collection<? extends GrantedAuthority>) user.getAuthorities()
         );
     }

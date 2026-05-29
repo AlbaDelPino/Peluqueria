@@ -94,7 +94,6 @@ public class UserController {
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
                 encodedPassword,
-                signUpRequest.isEstado(),
                 signUpRequest.getEspecialidad()
         );
         admin.setRole(ERole.ROLE_ADMIN);
@@ -114,7 +113,7 @@ public class UserController {
                 signUpRequest.getNombre(),
                 signUpRequest.getEmail(),
                 encodedPassword,
-                signUpRequest.isEstado(),
+
                 signUpRequest.getCurso(),
                 signUpRequest.getTurno()
         );
@@ -135,7 +134,6 @@ public class UserController {
                 signUpRequest.getEmail(),
                 signUpRequest.getTelefono(),
                 encodedPassword,
-                signUpRequest.isEstado(),
                 signUpRequest.getObservacion(),
                 signUpRequest.getAlergenos(),
                 signUpRequest.getImagen()
@@ -156,7 +154,7 @@ public class UserController {
                     signUpRequest.getEmail(),
                     signUpRequest.getTelefono(),
                     signUpRequest.getContrasenya(), // Se pasará al service para cifrarla
-                    true,// estado activo
+
                     signUpRequest.getObservacion(),
                     signUpRequest.getAlergenos(),
                     signUpRequest.getImagen()
@@ -242,7 +240,7 @@ public class UserController {
                     nuevoCliente.setContrasenya(passwordEncoder.encode("GOOGLE_PWD_" + googleId));
                     nuevoCliente.setRole(ERole.ROLE_CLIENTE);
 
-                    nuevoCliente.setEstado(true);
+
 
                     userRepository.save(nuevoCliente);
                     user = nuevoCliente;

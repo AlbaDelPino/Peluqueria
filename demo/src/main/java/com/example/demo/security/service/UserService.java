@@ -43,7 +43,7 @@ public class UserService {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
             user.setContrasenya(updatedUser.getContrasenya());
-            user.setEstado(updatedUser.isEstado());
+
             user.setRole(updatedUser.getRole());
             return userRepository.save(user);
         });
@@ -59,9 +59,7 @@ public class UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }
-    public List<User> getUsersByEstado(boolean estado) {
-        return userRepository.findByEstado(estado);
-    }
+
 
 
 }

@@ -47,8 +47,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 100)
     private String contrasenya;
 
-    @NotNull
-    private boolean estado;
+
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
@@ -59,13 +58,13 @@ public class User implements UserDetails {
     public User() {}
 
 
-    public User(String username, String nombre, String email, String contrasenya,boolean estado, ERole role) {
+    public User(String username, String nombre, String email, String contrasenya, ERole role) {
         this.username = username;
         this.nombre = nombre;
         this.email = email;
 
         this.contrasenya = contrasenya;
-        this.estado = estado;
+
         this.role = role;
     }
 
@@ -87,13 +86,6 @@ public class User implements UserDetails {
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
 
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
 
     public ERole getRole() { return role; }
     public void setRole(ERole role) { this.role = role; }
