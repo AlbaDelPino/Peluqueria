@@ -182,40 +182,6 @@ public class ClienteService {
         return true;
     }
     // En ClienteServiceImpl.java
-    public void enviarCorreoRecuperacion(User user) {
-        // 1. Generar código de 6 dígitos
-        String codigo = String.valueOf((int)(Math.random() * 900000) + 100000);
 
-        // 2. Verificar si es un Cliente y guardar el código
-        if (user instanceof Cliente cliente) {
-            cliente.setCodigoVerificacion(codigo); // Ahora sí reconoce el método
-            userRepository.save(cliente);
-
-            // 3. Enviar correo
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(cliente.getEmail());
-            message.setSubject("Recuperar Contraseña - Bernat Experience");
-            message.setText("Tu código de recuperación es: " + codigo);
-            mailSender.send(message);
-
-            System.out.println("✅ Código de recuperación enviado a: " + cliente.getEmail());
-        } else {
-            System.err.println("❌ El usuario no es un Cliente, no tiene campo de código.");
-        }
-    }
-
-    public boolean validarCodigoRecuperacion(String email, String codigo) {
-        // Buscamos el usuario por email
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        // Verificamos que no sea nulo, que sea un Cliente y que el código coincida
-        if (user instanceof Cliente cliente) {
-            if (cliente.getCodigoVerificacion() != null) {
-                return cliente.getCodigoVerificacion().equals(codigo);
-            }
-        }
-
-        return false;
-    }
 
 }
