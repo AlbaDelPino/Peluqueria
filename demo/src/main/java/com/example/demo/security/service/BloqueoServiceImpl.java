@@ -105,6 +105,7 @@ public class BloqueoServiceImpl implements BloqueoService {
     public BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario newBloqueo){
         BloqueoHorario bloqueo = bloqueoRepository.findById(newBloqueo.getId()).orElseThrow(() -> new RuntimeException("No se ha encontrado el bloqueo horario."));
         bloqueo.setRecurrente(newBloqueo.isRecurrente());
+        bloqueo.setMotivo(newBloqueo.getMotivo());
         bloqueo.setHorarios(new ArrayList<HorarioSemanal>());
         for(int i = 0; i < newBloqueo.getHorarios().size(); i++){
             Long horarioId = newBloqueo.getHorarios().get(i).getId();
