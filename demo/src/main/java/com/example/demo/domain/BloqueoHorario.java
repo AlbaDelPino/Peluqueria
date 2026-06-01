@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,6 +23,10 @@ public class BloqueoHorario {
     @NotNull
     private boolean recurrente;
 
+    @Size(max = 100)
+    private String motivo;
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "bloqueo_horario_semanal",
@@ -32,10 +38,11 @@ public class BloqueoHorario {
     public BloqueoHorario() {
     }
 
-    public BloqueoHorario( LocalDate fecha, boolean recurrente, List<HorarioSemanal> horarios) {
+    public BloqueoHorario( LocalDate fecha, boolean recurrente, List<HorarioSemanal> horarios,String motivo) {
         this.fecha = fecha;
         this.recurrente = recurrente;
         this.horarios = horarios;
+        this.motivo = motivo;
     }
 
     public Long getId() {
@@ -74,4 +81,11 @@ public class BloqueoHorario {
         this.horarios.add(horario);
     }
 
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 }

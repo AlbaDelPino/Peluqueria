@@ -16,8 +16,6 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     private String email;
 
-    private boolean estado;
-
     @JsonIgnore
     private String password;
 
@@ -50,7 +48,6 @@ public class UserDetailsImpl implements UserDetails {
 
     public Long getId() { return id; }
     public String getEmail() { return email; }
-    public boolean isEstado() { return estado; }
 
     @Override
     public String getPassword() { return password; }

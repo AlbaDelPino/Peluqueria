@@ -23,7 +23,6 @@ public class SignupRequest {
     @Size(max = 100)
     private String contrasenya;
 
-    private boolean estado;
 
     // --- Campos específicos de Admin ---
     private String especialidad;
@@ -59,8 +58,6 @@ public class SignupRequest {
     public String getContrasenya() { return contrasenya; }
     public void setContrasenya(String contrasenya) { this.contrasenya = contrasenya; }
 
-    public boolean isEstado() { return estado; }
-    public void setEstado(boolean estado) { this.estado = estado; }
 
     public String getEspecialidad() { return especialidad; }
     public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
