@@ -15,6 +15,10 @@ public class Cliente extends User {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true) private List<ComentarioCita> comentarioCitas;
 
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Diagnostico diagnostico;
+
     @Size(max = 200)
     @Column(length = 200)
     private String observacion;
@@ -90,7 +94,11 @@ public class Cliente extends User {
         this.favoritos = favoritos;
     }
 
+    public Diagnostico getDiagnostico() {
+        return diagnostico;
+    }
 
-
-
+    public void setDiagnostico(Diagnostico diagnostico) {
+        this.diagnostico = diagnostico;
+    }
 }
