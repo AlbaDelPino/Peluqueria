@@ -44,7 +44,7 @@ public class DiagnosticoController {
 
     // --- CREATE OR UPDATE FOR CLIENTE ---
     @PostMapping("/cliente/{clienteId}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> saveOrUpdate(@PathVariable Long clienteId, @RequestBody Diagnostico diagnostico) {
         Diagnostico saved = diagnosticoService.saveOrUpdateDiagnostico(clienteId, diagnostico);
         return ResponseEntity.ok(new MessageResponse("Diagnóstico guardado con ID " + saved.getId()));
@@ -52,7 +52,7 @@ public class DiagnosticoController {
 
     // --- DELETE BY ID ---
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> delete(@PathVariable Long id) {
         diagnosticoService.deleteDiagnostico(id);
         return ResponseEntity.ok(new MessageResponse("Diagnóstico eliminado"));

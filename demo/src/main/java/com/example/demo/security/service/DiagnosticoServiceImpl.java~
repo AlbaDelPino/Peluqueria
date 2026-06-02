@@ -4,7 +4,6 @@ import com.example.demo.domain.Cliente;
 import com.example.demo.domain.Diagnostico;
 import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.DiagnosticoRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

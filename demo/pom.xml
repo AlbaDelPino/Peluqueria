@@ -16,7 +16,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>peluqueria</name>
 	<description>Proyecto Spring Boot para gestión de peluquería</description>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>17</java.version>

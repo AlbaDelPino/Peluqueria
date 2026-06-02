@@ -3,6 +3,8 @@ package com.example.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer; // <- Importante
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -10,12 +12,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EntityScan(basePackages = "com.example.demo.domain")
 @ComponentScan(basePackages = {"com.example.demo", "scheduler"})
-public class PeluqueriaApplication { 
+public class PeluqueriaApplication extends SpringBootServletInitializer { // <- Heredar de SpringBootServletInitializer
+
+	// <- Añadir este método para el despliegue en servidor externo
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(PeluqueriaApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(PeluqueriaApplication.class, args);
 	}
-
 }
 
 /*
