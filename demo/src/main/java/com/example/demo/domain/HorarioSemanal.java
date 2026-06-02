@@ -45,6 +45,10 @@ public class HorarioSemanal {
     @JoinColumn(name = "id_grupo", nullable = false)
     private Grupo grupo;
 
+    @NotNull
+    @Column(name = "curso_escolar")
+    private String curso;
+
     @OneToMany(mappedBy = "horario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cita> citas = new ArrayList<>();
 
@@ -54,7 +58,7 @@ public class HorarioSemanal {
     public HorarioSemanal() {
     }
 
-    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo) {
+    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo,String curso) {
         this.id = id;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
@@ -62,6 +66,7 @@ public class HorarioSemanal {
         this.plazas = plazas;
         this.servicio = servicio;
         this.grupo = grupo;
+        this.curso = curso;
     }
 
     public Long getId() {
@@ -74,6 +79,14 @@ public class HorarioSemanal {
 
     public String getDiaSemana() {
         return diaSemana;
+    }
+
+    public String getCurso() {
+        return curso;
+    }
+
+    public void setCurso(String curso) {
+        this.curso = curso;
     }
 
     public void setDiaSemana(String diaSemana) {

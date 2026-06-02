@@ -13,24 +13,26 @@ import java.util.List;
 public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
 
     // Buscar por servicio + horaInicio + día + grupo
-    List<HorarioSemanal> findByServicioAndHoraInicioAndDiaSemanaAndGrupo(
+    List<HorarioSemanal> findByServicioAndHoraInicioAndDiaSemanaAndGrupoAndCurso(
             Servicio servicio,
             LocalTime horaInicio,
             String diaSemana,
-            Grupo grupo
+            Grupo grupo,
+            String curso
     );
 
     // Opcionales si quieres búsquedas más simples
-    List<HorarioSemanal> findByServicioAndHoraInicioAndDiaSemana(
+    List<HorarioSemanal> findByServicioAndHoraInicioAndDiaSemanaAndCurso(
             Servicio servicio,
             LocalTime horaInicio,
-            String diaSemana
+            String diaSemana,
+            String curso
     );
 
-    List<HorarioSemanal> findByDiaSemana(String diaSemana);
-    List<HorarioSemanal> findByServicio_IdServicio(Long idServicio);
+    List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana,String curso);
+    List<HorarioSemanal> findByServicio_IdServicioAndCurso(Long idServicio,String curso);
 
-    List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
-    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicio(String diaSemana, Long idServicio);
+    List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso);
+    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso(String diaSemana, Long idServicio, String curso);
 
 }

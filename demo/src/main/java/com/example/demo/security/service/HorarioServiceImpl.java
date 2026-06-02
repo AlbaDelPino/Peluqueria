@@ -32,8 +32,10 @@ public class HorarioServiceImpl implements HorarioService {
     private CitaRepository citaRepository;
 
     @Override
-    public List<HorarioSemanal> findAll() {
-        return horarioRepository.findAll();
+    public List<HorarioSemanal> findAll(String curso) {
+        return horarioRepository.findAll().stream()
+                .filter(h -> h.getCurso().equals(curso))
+                .toList();
     }
 
     @Override
@@ -42,45 +44,47 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public List<HorarioSemanal> findByServicio(Long idServicio) {
-        return horarioRepository.findByServicio_IdServicio(idServicio);
+    public List<HorarioSemanal> findByServicioAndCurso(Long idServicio, String curso) {
+        return horarioRepository.findByServicio_IdServicioAndCurso(idServicio,curso.toUpperCase());
     }
 
     @Override
-    public List<HorarioSemanal> findByDiaSemanaAndServicio(String diaSemana, Long idServicio) {
-        return horarioRepository.findByDiaSemanaAndServicio_IdServicio(diaSemana.toUpperCase(), idServicio);
+    public List<HorarioSemanal> findByDiaSemanaAndServicioAndCurso(String diaSemana, Long idServicio, String curso) {
+        return horarioRepository.findByDiaSemanaAndServicio_IdServicioAndCurso(diaSemana.toUpperCase(), idServicio, curso.toUpperCase());
     }
 
 
     @Override
-    public List<HorarioSemanal> findByGrupo(Grupo grupo) {
+    public List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo,String curso) {
         return horarioRepository.findAll()
                 .stream()
                 .filter(h -> h.getGrupo().equals(grupo))
+                .filter(h -> h.getCurso().equals(curso))
                 .toList();
     }
 
     @Override
-    public List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupo(
+    public List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupoAndCurso(
             Servicio servicio,
             LocalTime horaInicio,
             LocalTime horaFin,
             String diaSemana,
-            Grupo grupo
+            Grupo grupo,
+            String curso
     ) {
-        return horarioRepository.findByServicioAndHoraInicioAndDiaSemanaAndGrupo(
-                servicio, horaInicio, diaSemana, grupo
+        return horarioRepository.findByServicioAndHoraInicioAndDiaSemanaAndGrupoAndCurso(
+                servicio, horaInicio, diaSemana, grupo, curso.toUpperCase()
         );
     }
 
     @Override
-    public List<HorarioSemanal> findByDiaSemana(String diaSemana) {
-        return horarioRepository.findByDiaSemana(diaSemana);
+    public List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana, String curso) {
+        return horarioRepository.findByDiaSemanaAndCurso(diaSemana, curso.toUpperCase());
     }
 
     @Override
-    public List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio) {
-        return horarioRepository.findByHoraInicio(horaInicio);
+    public List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso) {
+        return horarioRepository.findByHoraInicioAndCurso(horaInicio, curso.toUpperCase());
     }
 
     @Override

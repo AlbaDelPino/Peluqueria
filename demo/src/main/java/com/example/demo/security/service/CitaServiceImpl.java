@@ -327,10 +327,10 @@ public class CitaServiceImpl implements CitaService {
 
 
     // En CitaService.java
-    public List<String> obtenerDiasPorServicio(Long servicioId) {
+    public List<String> obtenerDiasPorServicio(Long servicioId,String curso) {
         // Aquí buscas en tu repositorio de Horarios filtrando por el ID del servicio
         // y mapeas para obtener solo los nombres de los días de la semana
-        return horarioRepository.findByServicio_IdServicio(servicioId)
+        return horarioRepository.findByServicio_IdServicioAndCurso(servicioId,curso)
                 .stream()
                 .map(horario -> horario.getDiaSemana().toString()) // O el formato que prefieras
                 .distinct()

@@ -10,28 +10,29 @@ import java.util.Optional;
 
 public interface HorarioService {
 
-    List<HorarioSemanal> findAll();
+    List<HorarioSemanal> findAll(String curso);
     Optional<HorarioSemanal> findById(long id);
 
-    List<HorarioSemanal> findByServicio(Long idServicio);
-    List<HorarioSemanal> findByGrupo(Grupo grupo);
+    List<HorarioSemanal> findByServicioAndCurso(Long idServicio, String curso);
+    List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo, String curso);
 
     // 🔹 Buscar por todos los campos de la clave única
-    List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupo(
+    List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupoAndCurso(
             Servicio servicio,
             LocalTime horaInicio,
             LocalTime horaFin,
             String diaSemana,
-            Grupo grupo
+            Grupo grupo,
+            String curso
     );
-    List<HorarioSemanal> findByDiaSemanaAndServicio(String diaSemana, Long idServicio);
+    List<HorarioSemanal> findByDiaSemanaAndServicioAndCurso(String diaSemana, Long idServicio, String curso);
 
 
     // 🔹 Buscar por día de semana
-    List<HorarioSemanal> findByDiaSemana(String diaSemana);
+    List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana, String curso);
 
     // 🔹 Buscar por hora de inicio
-    List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio);
+    List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso);
 
     HorarioSemanal addHorario(HorarioSemanal horario);
     HorarioSemanal modifyHorario(long id, HorarioSemanal horario);
