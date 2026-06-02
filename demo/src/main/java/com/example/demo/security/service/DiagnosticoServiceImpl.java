@@ -1,7 +1,7 @@
 package com.example.demo.security.service;
 
 import com.example.demo.domain.Cliente;
-import com.example.demo.domain.Diagnostico;
+import com.example.demo.domain.DiagnosticoPeluqueria;
 import com.example.demo.repository.ClienteRepository;
 import com.example.demo.repository.DiagnosticoRepository;
 import jakarta.transaction.Transactional;
@@ -22,72 +22,86 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
     }
 
     @Override
-    public List<Diagnostico> getAllDiagnosticos() {
+    public List<DiagnosticoPeluqueria> getAllDiagnosticos() {
         return diagnosticoRepository.findAll();
     }
 
     @Override
-    public Optional<Diagnostico> getDiagnosticoByClienteId(Long clienteId) {
+    public Optional<DiagnosticoPeluqueria> getDiagnosticoByClienteId(Long clienteId) {
         return diagnosticoRepository.findByClienteId(clienteId);
     }
 
     @Override
-    public Optional<Diagnostico> getDiagnosticoById(Long id) {
+    public Optional<DiagnosticoPeluqueria> getDiagnosticoById(Long id) {
         return diagnosticoRepository.findById(id);
     }
 
     @Override
     @Transactional
-    public Diagnostico saveOrUpdateDiagnostico(Long clienteId, Diagnostico diagnostico) {
+    public DiagnosticoPeluqueria saveOrUpdateDiagnostico(Long clienteId, DiagnosticoPeluqueria diagnosticoPeluqueria) {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
         // Buscar si ya existe un diagnóstico para este cliente
-        Optional<Diagnostico> existente = diagnosticoRepository.findByClienteId(clienteId);
+        Optional<DiagnosticoPeluqueria> existente = diagnosticoRepository.findByClienteId(clienteId);
 
-        Diagnostico entity;
+        DiagnosticoPeluqueria entity;
         if (existente.isPresent()) {
             // Actualizar el existente conservando su ID
             entity = existente.get();
-            entity.setFrecuenciaLavado(diagnostico.getFrecuenciaLavado());
-            entity.setProductosUtilizados(diagnostico.getProductosUtilizados());
-            entity.setAlergenos(diagnostico.getAlergenos());
-            entity.setTipoPelo(diagnostico.getTipoPelo());
-            entity.setAnomalias(diagnostico.getAnomalias());
-            entity.setTexturaPelo(diagnostico.getTexturaPelo());
-            entity.setAlteraciones(diagnostico.getAlteraciones());
-            entity.setColorMatiz(diagnostico.getColorMatiz());
-            entity.setCanas(diagnostico.getCanas());
-            entity.setGrosor(diagnostico.getGrosor());
-            entity.setLongitud(diagnostico.getLongitud());
-            entity.setPalpacion(diagnostico.getPalpacion());
-            entity.setPresion(diagnostico.getPresion());
-            entity.setMovilizacion(diagnostico.getMovilizacion());
-            entity.setSignoJaquet(diagnostico.getSignoJaquet());
-            entity.setSignoSaboraud(diagnostico.getSignoSaboraud());
-            entity.setTestPapel(diagnostico.getTestPapel());
-            entity.setPullTest(diagnostico.getPullTest());
-            entity.setPuntas(diagnostico.getPuntas());
-            entity.setTextura(diagnostico.getTextura());
-            entity.setDeslizarArrastra(diagnostico.getDeslizarArrastra());
-            entity.setCorneometro(diagnostico.getCorneometro());
-            entity.setPh(diagnostico.getPh());
-            entity.setSebometro(diagnostico.getSebometro());
-            entity.setLuzWood(diagnostico.getLuzWood());
-            entity.setObservacionesAparato(diagnostico.getObservacionesAparato());
-            entity.setMicrocamara(diagnostico.getMicrocamara());
-            entity.setDanoEstructural(diagnostico.getDanoEstructural());
-            entity.setAnomaliasCongenitas(diagnostico.getAnomaliasCongenitas());
-            entity.setObservacionesMicro(diagnostico.getObservacionesMicro());
-            entity.setTricoFrontal(diagnostico.getTricoFrontal());
-            entity.setTricoTemporalIzquierdo(diagnostico.getTricoTemporalIzquierdo());
-            entity.setTricoTemporalDerecho(diagnostico.getTricoTemporalDerecho());
-            entity.setTricoParietal(diagnostico.getTricoParietal());
-            entity.setTricoOccipital(diagnostico.getTricoOccipital());
-            entity.setObservacionesTrico(diagnostico.getObservacionesTrico());
+            entity.setFrecuenciaLavado(diagnosticoPeluqueria.getFrecuenciaLavado());
+            entity.setProductosUtilizados(diagnosticoPeluqueria.getProductosUtilizados());
+            entity.setAlergenos(diagnosticoPeluqueria.getAlergenos());
+            entity.setTipoPelo(diagnosticoPeluqueria.getTipoPelo());
+            entity.setAnomalias(diagnosticoPeluqueria.getAnomalias());
+            entity.setTexturaPelo(diagnosticoPeluqueria.getTexturaPelo());
+            entity.setAlteraciones(diagnosticoPeluqueria.getAlteraciones());
+            entity.setColorMatiz(diagnosticoPeluqueria.getColorMatiz());
+            entity.setCanas(diagnosticoPeluqueria.getCanas());
+            entity.setGrosor(diagnosticoPeluqueria.getGrosor());
+            entity.setLongitud(diagnosticoPeluqueria.getLongitud());
+            entity.setPalpacion(diagnosticoPeluqueria.getPalpacion());
+            entity.setPresion(diagnosticoPeluqueria.getPresion());
+            entity.setMovilizacion(diagnosticoPeluqueria.getMovilizacion());
+            entity.setSignoJaquet(diagnosticoPeluqueria.getSignoJaquet());
+            entity.setSignoSaboraud(diagnosticoPeluqueria.getSignoSaboraud());
+            entity.setTestPapel(diagnosticoPeluqueria.getTestPapel());
+            entity.setPullTest(diagnosticoPeluqueria.getPullTest());
+            entity.setPuntas(diagnosticoPeluqueria.getPuntas());
+            entity.setTextura(diagnosticoPeluqueria.getTextura());
+            entity.setDeslizarArrastra(diagnosticoPeluqueria.getDeslizarArrastra());
+            entity.setCorneometro(diagnosticoPeluqueria.getCorneometro());
+            entity.setPh(diagnosticoPeluqueria.getPh());
+            entity.setSebometro(diagnosticoPeluqueria.getSebometro());
+            entity.setLuzWood(diagnosticoPeluqueria.getLuzWood());
+            entity.setObservacionesAparato(diagnosticoPeluqueria.getObservacionesAparato());
+            entity.setMicrocamara(diagnosticoPeluqueria.getMicrocamara());
+            entity.setDanoEstructural(diagnosticoPeluqueria.getDanoEstructural());
+            entity.setAnomaliasCongenitas(diagnosticoPeluqueria.getAnomaliasCongenitas());
+            entity.setObservacionesMicro(diagnosticoPeluqueria.getObservacionesMicro());
+            entity.setTricoFrontal_Anagena(diagnosticoPeluqueria.getTricoFrontal_Anagena());
+            entity.setTricoFrontal_Catagena(diagnosticoPeluqueria.getTricoFrontal_Catagena());
+            entity.setTricoFrontal_Telogena(diagnosticoPeluqueria.getTricoFrontal_Telogena());
+            entity.setTricoTemporalIzquierdo_Anagena(diagnosticoPeluqueria.getTricoTemporalIzquierdo_Anagena());
+            entity.setTricoTemporalIzquierdo_Catagena(diagnosticoPeluqueria.getTricoTemporalIzquierdo_Catagena());
+            entity.setTricoTemporalIzquierdo_Telogena(diagnosticoPeluqueria.getTricoTemporalIzquierdo_Telogena());
+            entity.setTricoTemporalDerecho_Anagena(diagnosticoPeluqueria.getTricoTemporalDerecho_Anagena());
+            entity.setTricoTemporalDerecho_Catagena(diagnosticoPeluqueria.getTricoTemporalDerecho_Catagena());
+            entity.setTricoTemporalDerecho_Telogena(diagnosticoPeluqueria.getTricoTemporalDerecho_Telogena());
+            entity.setTricoParietal_Anagena(diagnosticoPeluqueria.getTricoParietal_Anagena());
+            entity.setTricoParietal_Catagena(diagnosticoPeluqueria.getTricoParietal_Catagena());
+            entity.setTricoParietal_Telogena(diagnosticoPeluqueria.getTricoParietal_Telogena());
+            entity.setTricoOccipital_Anagena(diagnosticoPeluqueria.getTricoOccipital_Anagena());
+            entity.setTricoOccipital_Catagena(diagnosticoPeluqueria.getTricoOccipital_Catagena());
+            entity.setTricoOccipital_Telogena(diagnosticoPeluqueria.getTricoOccipital_Telogena());
+            entity.setObservacionesTrico(diagnosticoPeluqueria.getObservacionesTrico());
         } else {
             // Crear nuevo
-            entity = diagnostico;
+            entity = diagnosticoPeluqueria;
+            entity.setSignoJaquet(false);
+            entity.setSignoSaboraud(false);
+            entity.setTestPapel(false);
+            entity.setPullTest(false);
             entity.setCliente(cliente);
         }
 

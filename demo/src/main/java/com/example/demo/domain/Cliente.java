@@ -2,10 +2,8 @@ package com.example.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,9 +13,10 @@ public class Cliente extends User {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true) private List<ComentarioCita> comentarioCitas;
 
+
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Diagnostico diagnostico;
+    private DiagnosticoPeluqueria diagnosticoPeluqueria;
 
     @Size(max = 200)
     @Column(length = 200)
@@ -94,11 +93,12 @@ public class Cliente extends User {
         this.favoritos = favoritos;
     }
 
-    public Diagnostico getDiagnostico() {
-        return diagnostico;
+    @JsonIgnore
+    public DiagnosticoPeluqueria getDiagnostico() {
+        return diagnosticoPeluqueria;
     }
 
-    public void setDiagnostico(Diagnostico diagnostico) {
-        this.diagnostico = diagnostico;
+    public void setDiagnostico(DiagnosticoPeluqueria diagnosticoPeluqueria) {
+        this.diagnosticoPeluqueria = diagnosticoPeluqueria;
     }
 }

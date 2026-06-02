@@ -3,8 +3,8 @@ package com.example.demo.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "diagnostico")
-public class Diagnostico {
+@Table(name = "diagnostico_peluqueria")
+public class DiagnosticoPeluqueria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +33,12 @@ public class Diagnostico {
     private String palpacion;
     private String presion;
     private String movilizacion;
-    private String signoJaquet;
-    private String signoSaboraud;
-    private String testPapel;
+    private boolean signoJaquet;
+    private boolean signoSaboraud;
+    private boolean testPapel;
 
     // Exploración Manual de Tallo Capilar
-    private String pullTest;
+    private boolean pullTest;
     private String puntas;
     private String textura;
     private String deslizarArrastra;
@@ -61,19 +61,33 @@ public class Diagnostico {
     private String observacionesMicro;
 
     // Tricograma
-    private String tricoFrontal;
-    private String tricoTemporalIzquierdo;
-    private String tricoTemporalDerecho;
-    private String tricoParietal;
-    private String tricoOccipital;
+    private String tricoFrontal_Anagena;
+    private String tricoFrontal_Catagena;
+    private String tricoFrontal_Telogena;
+
+    private String tricoTemporalIzquierdo_Anagena;
+    private String tricoTemporalIzquierdo_Catagena;
+    private String tricoTemporalIzquierdo_Telogena;
+
+    private String tricoTemporalDerecho_Anagena;
+    private String tricoTemporalDerecho_Catagena;
+    private String tricoTemporalDerecho_Telogena;
+
+    private String tricoParietal_Anagena;
+    private String tricoParietal_Catagena;
+    private String tricoParietal_Telogena;
+
+    private String tricoOccipital_Anagena;
+    private String tricoOccipital_Catagena;
+    private String tricoOccipital_Telogena;
 
     @Column(length = 2000)
     private String observacionesTrico;
 
     // Constructores
-    public Diagnostico() {}
+    public DiagnosticoPeluqueria() {}
 
-    public Diagnostico(Cliente cliente) {
+    public DiagnosticoPeluqueria(Cliente cliente) {
         this.cliente = cliente;
     }
 
@@ -206,35 +220,35 @@ public class Diagnostico {
         this.movilizacion = movilizacion;
     }
 
-    public String getSignoJaquet() {
+    public boolean getSignoJaquet() {
         return signoJaquet;
     }
 
-    public void setSignoJaquet(String signoJaquet) {
+    public void setSignoJaquet(boolean signoJaquet) {
         this.signoJaquet = signoJaquet;
     }
 
-    public String getSignoSaboraud() {
+    public boolean getSignoSaboraud() {
         return signoSaboraud;
     }
 
-    public void setSignoSaboraud(String signoSaboraud) {
+    public void setSignoSaboraud(boolean signoSaboraud) {
         this.signoSaboraud = signoSaboraud;
     }
 
-    public String getTestPapel() {
+    public boolean getTestPapel() {
         return testPapel;
     }
 
-    public void setTestPapel(String testPapel) {
+    public void setTestPapel(boolean testPapel) {
         this.testPapel = testPapel;
     }
 
-    public String getPullTest() {
+    public boolean getPullTest() {
         return pullTest;
     }
 
-    public void setPullTest(String pullTest) {
+    public void setPullTest(boolean pullTest) {
         this.pullTest = pullTest;
     }
 
@@ -334,44 +348,124 @@ public class Diagnostico {
         this.observacionesMicro = observacionesMicro;
     }
 
-    public String getTricoFrontal() {
-        return tricoFrontal;
+    public String getTricoFrontal_Anagena() {
+        return tricoFrontal_Anagena;
     }
 
-    public void setTricoFrontal(String tricoFrontal) {
-        this.tricoFrontal = tricoFrontal;
+    public void setTricoFrontal_Anagena(String tricoFrontal_Anagena) {
+        this.tricoFrontal_Anagena = tricoFrontal_Anagena;
     }
 
-    public String getTricoTemporalIzquierdo() {
-        return tricoTemporalIzquierdo;
+    public String getTricoFrontal_Catagena() {
+        return tricoFrontal_Catagena;
     }
 
-    public void setTricoTemporalIzquierdo(String tricoTemporalIzquierdo) {
-        this.tricoTemporalIzquierdo = tricoTemporalIzquierdo;
+    public void setTricoFrontal_Catagena(String tricoFrontal_Catagena) {
+        this.tricoFrontal_Catagena = tricoFrontal_Catagena;
     }
 
-    public String getTricoTemporalDerecho() {
-        return tricoTemporalDerecho;
+    public String getTricoFrontal_Telogena() {
+        return tricoFrontal_Telogena;
     }
 
-    public void setTricoTemporalDerecho(String tricoTemporalDerecho) {
-        this.tricoTemporalDerecho = tricoTemporalDerecho;
+    public void setTricoFrontal_Telogena(String tricoFrontal_Telogena) {
+        this.tricoFrontal_Telogena = tricoFrontal_Telogena;
     }
 
-    public String getTricoParietal() {
-        return tricoParietal;
+    public String getTricoTemporalIzquierdo_Anagena() {
+        return tricoTemporalIzquierdo_Anagena;
     }
 
-    public void setTricoParietal(String tricoParietal) {
-        this.tricoParietal = tricoParietal;
+    public void setTricoTemporalIzquierdo_Anagena(String tricoTemporalIzquierdo_Anagena) {
+        this.tricoTemporalIzquierdo_Anagena = tricoTemporalIzquierdo_Anagena;
     }
 
-    public String getTricoOccipital() {
-        return tricoOccipital;
+    public String getTricoTemporalIzquierdo_Catagena() {
+        return tricoTemporalIzquierdo_Catagena;
     }
 
-    public void setTricoOccipital(String tricoOccipital) {
-        this.tricoOccipital = tricoOccipital;
+    public void setTricoTemporalIzquierdo_Catagena(String tricoTemporalIzquierdo_Catagena) {
+        this.tricoTemporalIzquierdo_Catagena = tricoTemporalIzquierdo_Catagena;
+    }
+
+    public String getTricoTemporalIzquierdo_Telogena() {
+        return tricoTemporalIzquierdo_Telogena;
+    }
+
+    public void setTricoTemporalIzquierdo_Telogena(String tricoTemporalIzquierdo_Telogena) {
+        this.tricoTemporalIzquierdo_Telogena = tricoTemporalIzquierdo_Telogena;
+    }
+
+    public String getTricoTemporalDerecho_Anagena() {
+        return tricoTemporalDerecho_Anagena;
+    }
+
+    public void setTricoTemporalDerecho_Anagena(String tricoTemporalDerecho_Anagena) {
+        this.tricoTemporalDerecho_Anagena = tricoTemporalDerecho_Anagena;
+    }
+
+    public String getTricoTemporalDerecho_Catagena() {
+        return tricoTemporalDerecho_Catagena;
+    }
+
+    public void setTricoTemporalDerecho_Catagena(String tricoTemporalDerecho_Catagena) {
+        this.tricoTemporalDerecho_Catagena = tricoTemporalDerecho_Catagena;
+    }
+
+    public String getTricoTemporalDerecho_Telogena() {
+        return tricoTemporalDerecho_Telogena;
+    }
+
+    public void setTricoTemporalDerecho_Telogena(String tricoTemporalDerecho_Telogena) {
+        this.tricoTemporalDerecho_Telogena = tricoTemporalDerecho_Telogena;
+    }
+
+    public String getTricoParietal_Anagena() {
+        return tricoParietal_Anagena;
+    }
+
+    public void setTricoParietal_Anagena(String tricoParietal_Anagena) {
+        this.tricoParietal_Anagena = tricoParietal_Anagena;
+    }
+
+    public String getTricoParietal_Catagena() {
+        return tricoParietal_Catagena;
+    }
+
+    public void setTricoParietal_Catagena(String tricoParietal_Catagena) {
+        this.tricoParietal_Catagena = tricoParietal_Catagena;
+    }
+
+    public String getTricoParietal_Telogena() {
+        return tricoParietal_Telogena;
+    }
+
+    public void setTricoParietal_Telogena(String tricoParietal_Telogena) {
+        this.tricoParietal_Telogena = tricoParietal_Telogena;
+    }
+
+    public String getTricoOccipital_Anagena() {
+        return tricoOccipital_Anagena;
+    }
+
+    public void setTricoOccipital_Anagena(String tricoOccipital_Anagena) {
+        this.tricoOccipital_Anagena = tricoOccipital_Anagena;
+    }
+
+    public String getTricoOccipital_Catagena() {
+        return tricoOccipital_Catagena;
+    }
+
+    public void setTricoOccipital_Catagena(String tricoOccipital_Catagena) {
+        this.tricoOccipital_Catagena = tricoOccipital_Catagena;
+    }
+
+    public String getTricoOccipital_Telogena() {
+        return tricoOccipital_Telogena;
+    }
+
+    public void setTricoOccipital_Telogena(String tricoOccipital_Telogena) {
+        this.tricoOccipital_Telogena = tricoOccipital_Telogena;
     }
 
     public String getObservacionesTrico() {

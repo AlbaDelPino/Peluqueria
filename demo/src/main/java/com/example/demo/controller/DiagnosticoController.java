@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Diagnostico;
+import com.example.demo.domain.DiagnosticoPeluqueria;
 import com.example.demo.payload.response.MessageResponse;
 import com.example.demo.security.service.DiagnosticoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class DiagnosticoController {
     // --- LIST ALL ---
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
-    public List<Diagnostico> getAll() {
+    public List<DiagnosticoPeluqueria> getAll() {
         return diagnosticoService.getAllDiagnosticos();
     }
 
@@ -32,7 +32,7 @@ public class DiagnosticoController {
     @GetMapping("/cliente/{clienteId}")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getByClienteId(@PathVariable Long clienteId) {
-        Optional<Diagnostico> opt = diagnosticoService.getDiagnosticoByClienteId(clienteId);
+        Optional<DiagnosticoPeluqueria> opt = diagnosticoService.getDiagnosticoByClienteId(clienteId);
 
         if (opt.isPresent()) {
             return ResponseEntity.ok(opt.get());
@@ -45,8 +45,8 @@ public class DiagnosticoController {
     // --- CREATE OR UPDATE FOR CLIENTE ---
     @PostMapping("/cliente/{clienteId}")
 
-    public ResponseEntity<?> saveOrUpdate(@PathVariable Long clienteId, @RequestBody Diagnostico diagnostico) {
-        Diagnostico saved = diagnosticoService.saveOrUpdateDiagnostico(clienteId, diagnostico);
+    public ResponseEntity<?> saveOrUpdate(@PathVariable Long clienteId, @RequestBody DiagnosticoPeluqueria diagnosticoPeluqueria) {
+        DiagnosticoPeluqueria saved = diagnosticoService.saveOrUpdateDiagnostico(clienteId, diagnosticoPeluqueria);
         return ResponseEntity.ok(new MessageResponse("Diagnóstico guardado con ID " + saved.getId()));
     }
 
