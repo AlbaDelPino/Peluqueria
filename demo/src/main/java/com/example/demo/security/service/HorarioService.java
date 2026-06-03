@@ -1,5 +1,6 @@
 package com.example.demo.security.service;
 
+import com.example.demo.domain.CursoEscolar;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
 import com.example.demo.domain.Grupo;
@@ -10,11 +11,11 @@ import java.util.Optional;
 
 public interface HorarioService {
 
-    List<HorarioSemanal> findAll(String curso);
+    List<HorarioSemanal> findAll(Long idCurso);
     Optional<HorarioSemanal> findById(long id);
 
-    List<HorarioSemanal> findByServicioAndCurso(Long idServicio, String curso);
-    List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo, String curso);
+    List<HorarioSemanal> findByServicio_IdServicioAndCurso_IdCurso(Long idServicio, Long idCurso);
+    List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo, CursoEscolar curso);
 
     // 🔹 Buscar por todos los campos de la clave única
     List<HorarioSemanal> findByServicioAndHoraInicioAndHoraFinAndDiaSemanaAndGrupoAndCurso(
@@ -23,18 +24,20 @@ public interface HorarioService {
             LocalTime horaFin,
             String diaSemana,
             Grupo grupo,
-            String curso
+            CursoEscolar curso
     );
-    List<HorarioSemanal> findByDiaSemanaAndServicioAndCurso(String diaSemana, Long idServicio, String curso);
+    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(String diaSemana, Long idServicio, Long idCurso);
 
 
     // 🔹 Buscar por día de semana
-    List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana, String curso);
+    List<HorarioSemanal> findByDiaSemanaAndCurso_IdCurso(String diaSemana, Long idCurso);
 
     // 🔹 Buscar por hora de inicio
-    List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso);
+    List<HorarioSemanal> findByHoraInicioAndCurso_IdCurso(LocalTime horaInicio, Long idCurso);
 
     HorarioSemanal addHorario(HorarioSemanal horario);
     HorarioSemanal modifyHorario(long id, HorarioSemanal horario);
     void deleteHorario(long id);
+
+    boolean importHorarios(List<HorarioSemanal> horarios);
 }

@@ -41,5 +41,5 @@ public interface CitaService {
 
     List<Cita> citasACancelar(HorarioSemanal horario,LocalDate fecha);
 
-    List<String> obtenerDiasPorServicio(Long servicioId, String curso);
+    List<String> obtenerDiasPorServicio(Long servicioId, Long idCurso);
 }

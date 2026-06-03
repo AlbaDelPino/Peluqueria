@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.domain.CursoEscolar;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
 import com.example.demo.domain.Grupo;
@@ -18,7 +19,7 @@ public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
             LocalTime horaInicio,
             String diaSemana,
             Grupo grupo,
-            String curso
+            CursoEscolar curso
     );
 
     // Opcionales si quieres búsquedas más simples
@@ -26,13 +27,13 @@ public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
             Servicio servicio,
             LocalTime horaInicio,
             String diaSemana,
-            String curso
+            CursoEscolar curso
     );
 
-    List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana,String curso);
-    List<HorarioSemanal> findByServicio_IdServicioAndCurso(Long idServicio,String curso);
+    List<HorarioSemanal> findByDiaSemanaAndCurso_IdCurso(String diaSemana, Long idCurso);
+    List<HorarioSemanal> findByServicio_IdServicioAndCurso_IdCurso(Long idServicio, Long idCurso);
 
-    List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso);
-    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso(String diaSemana, Long idServicio, String curso);
+    List<HorarioSemanal> findByHoraInicioAndCurso_IdCurso(LocalTime horaInicio, Long idCurso);
+    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(String diaSemana, Long idServicio, Long idCurso);
 
 }

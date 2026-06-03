@@ -1,13 +1,11 @@
 package com.example.demo.security.service;
 
+import com.example.demo.domain.CursoEscolar;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.domain.Servicio;
 import com.example.demo.domain.Grupo;
 import com.example.demo.exception.HorarioNotFoundException;
-import com.example.demo.repository.CitaRepository;
-import com.example.demo.repository.GrupoRepository;
-import com.example.demo.repository.HorarioRepository;
-import com.example.demo.repository.ServicioRepository;
+import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +29,13 @@ public class HorarioServiceImpl implements HorarioService {
     @Autowired
     private CitaRepository citaRepository;
 
+    @Autowired
+    private CursoRepository cursoRepository;
+
     @Override
-    public List<HorarioSemanal> findAll(String curso) {
+    public List<HorarioSemanal> findAll(Long idCurso) {
         return horarioRepository.findAll().stream()
-                .filter(h -> h.getCurso().equals(curso))
+                .filter(h -> h.getCurso().getIdCurso().equals(idCurso))
                 .toList();
     }
 
@@ -43,19 +44,17 @@ public class HorarioServiceImpl implements HorarioService {
         return horarioRepository.findById(id);
     }
 
-    @Override
-    public List<HorarioSemanal> findByServicioAndCurso(Long idServicio, String curso) {
-        return horarioRepository.findByServicio_IdServicioAndCurso(idServicio,curso.toUpperCase());
+    public List<HorarioSemanal> findByServicio_IdServicioAndCurso_IdCurso(Long idServicio, Long idCurso) {
+        return horarioRepository.findByServicio_IdServicioAndCurso_IdCurso(idServicio,idCurso);
     }
 
-    @Override
-    public List<HorarioSemanal> findByDiaSemanaAndServicioAndCurso(String diaSemana, Long idServicio, String curso) {
-        return horarioRepository.findByDiaSemanaAndServicio_IdServicioAndCurso(diaSemana.toUpperCase(), idServicio, curso.toUpperCase());
+    public List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(String diaSemana, Long idServicio, Long idCurso) {
+        return horarioRepository.findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(diaSemana.toUpperCase(), idServicio, idCurso);
     }
 
 
     @Override
-    public List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo,String curso) {
+    public List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo,CursoEscolar curso) {
         return horarioRepository.findAll()
                 .stream()
                 .filter(h -> h.getGrupo().equals(grupo))
@@ -70,21 +69,21 @@ public class HorarioServiceImpl implements HorarioService {
             LocalTime horaFin,
             String diaSemana,
             Grupo grupo,
-            String curso
+            CursoEscolar curso
     ) {
         return horarioRepository.findByServicioAndHoraInicioAndDiaSemanaAndGrupoAndCurso(
-                servicio, horaInicio, diaSemana, grupo, curso.toUpperCase()
+                servicio, horaInicio, diaSemana, grupo, curso
         );
     }
 
     @Override
-    public List<HorarioSemanal> findByDiaSemanaAndCurso(String diaSemana, String curso) {
-        return horarioRepository.findByDiaSemanaAndCurso(diaSemana, curso.toUpperCase());
+    public List<HorarioSemanal> findByDiaSemanaAndCurso_IdCurso(String diaSemana, Long idCurso) {
+        return horarioRepository.findByDiaSemanaAndCurso_IdCurso(diaSemana, idCurso);
     }
 
     @Override
-    public List<HorarioSemanal> findByHoraInicioAndCurso(LocalTime horaInicio, String curso) {
-        return horarioRepository.findByHoraInicioAndCurso(horaInicio, curso.toUpperCase());
+    public List<HorarioSemanal> findByHoraInicioAndCurso_IdCurso(LocalTime horaInicio, Long idCurso) {
+        return horarioRepository.findByHoraInicioAndCurso_IdCurso(horaInicio, idCurso);
     }
 
     @Override
@@ -104,6 +103,12 @@ public class HorarioServiceImpl implements HorarioService {
         Grupo grupo = grupoRepository.findById(horario.getGrupo().getId())
                 .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
         horario.setGrupo(grupo);
+
+        // Recuperar curso desde BD
+        CursoEscolar curso = cursoRepository.findById(horario.getCurso().getIdCurso())
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        horario.setCurso(curso);
+
         return horarioRepository.save(horario);
     }
     @Override
@@ -127,6 +132,11 @@ public class HorarioServiceImpl implements HorarioService {
                 .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
         newHorario.setGrupo(grupo);
 
+        // Recuperar curso desde BD
+        CursoEscolar curso = cursoRepository.findById(newHorario.getCurso().getIdCurso())
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        newHorario.setCurso(curso);
+
         newHorario.setId(horario.getId());
         return horarioRepository.save(newHorario);
     }
@@ -138,6 +148,31 @@ public class HorarioServiceImpl implements HorarioService {
         // ELIMINA cualquier "if" o "throw new RuntimeException" que tengas aquí
         // El "cascade = CascadeType.ALL" que pusimos arriba se encarga de todo
         horarioRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean importHorarios(List<HorarioSemanal> horarios) {
+        for(HorarioSemanal h : horarios) {
+            Servicio servicio = servicioRepository.findById(h.getServicio().getId_servicio())
+                    .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
+            long until = h.getHoraInicio().until(h.getHoraFin(), ChronoUnit.MINUTES);
+            if (servicio.getDuracion() > until) {
+                throw new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
+            }
+            h.setServicio(servicio);
+
+            Grupo grupo = grupoRepository.findById(h.getGrupo().getId())
+                    .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+            h.setGrupo(grupo);
+
+            CursoEscolar curso = cursoRepository.findById(h.getCurso().getIdCurso())
+                    .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+            h.setCurso(curso);
+
+            horarioRepository.save(h);
+        }
+        return true;
     }
 
    /* @Override

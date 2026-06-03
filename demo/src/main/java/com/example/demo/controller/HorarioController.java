@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.CursoEscolar;
 import com.example.demo.domain.HorarioSemanal;
-import com.example.demo.domain.Servicio;
 import com.example.demo.domain.Grupo;
 import com.example.demo.exception.HorarioNotFoundException;
 import com.example.demo.security.service.HorarioService;
@@ -22,8 +22,8 @@ public class HorarioController {
 
     // 🔹 Listar todos los horarios
     @GetMapping
-    public ResponseEntity<List<HorarioSemanal>> getHorarios(@RequestParam String curso) {
-        return ResponseEntity.ok(horarioService.findAll(curso));
+    public ResponseEntity<List<HorarioSemanal>> getHorarios(@RequestParam Long idCurso) {
+        return ResponseEntity.ok(horarioService.findAll(idCurso));
     }
 
     // 🔹 Obtener horario por ID
@@ -36,39 +36,41 @@ public class HorarioController {
 
     // 🔹 Buscar por día de semana
     @GetMapping("/dia")
-    public ResponseEntity<List<HorarioSemanal>> getByDia(@RequestParam String diaSemana,@RequestParam String curso) {
-        return ResponseEntity.ok(horarioService.findByDiaSemanaAndCurso(diaSemana.toUpperCase(),curso.toUpperCase()));
+    public ResponseEntity<List<HorarioSemanal>> getByDia(@RequestParam String diaSemana,@RequestParam Long idCurso) {
+        return ResponseEntity.ok(horarioService.findByDiaSemanaAndCurso_IdCurso(diaSemana.toUpperCase(),idCurso));
     }
 
     // 🔹 Buscar por hora inicio
     @GetMapping("/horaInicio")
-    public ResponseEntity<List<HorarioSemanal>> getByHoraInicio(@RequestParam LocalTime horaInicio,@RequestParam String curso) {
-        return ResponseEntity.ok(horarioService.findByHoraInicioAndCurso(horaInicio,curso.toUpperCase()));
+    public ResponseEntity<List<HorarioSemanal>> getByHoraInicio(@RequestParam LocalTime horaInicio,@RequestParam Long idCurso) {
+        return ResponseEntity.ok(horarioService.findByHoraInicioAndCurso_IdCurso(horaInicio,idCurso));
     }
 
     // 🔹 Buscar por servicio
     @GetMapping("/servicio/{id}")
-    public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id,@RequestParam String curso) {
-        return ResponseEntity.ok(horarioService.findByServicioAndCurso(id,curso.toUpperCase()));
+    public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id,@RequestParam Long idCurso) {
+        return ResponseEntity.ok(horarioService.findByServicio_IdServicioAndCurso_IdCurso(id,idCurso));
     }
 
     @GetMapping("/buscar")
     public ResponseEntity<List<HorarioSemanal>> getByDiaAndServicio(
             @RequestParam String diaSemana,
             @RequestParam Long idServicio,
-            @RequestParam String curso
+            @RequestParam Long idCurso
     ) {
-        List<HorarioSemanal> horarios = horarioService.findByDiaSemanaAndServicioAndCurso(diaSemana, idServicio,curso.toUpperCase());
+        List<HorarioSemanal> horarios = horarioService.findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(diaSemana, idServicio,idCurso);
         return ResponseEntity.ok(horarios);
     }
 
 
     // 🔹 Buscar por grupo
     @GetMapping("/grupo/{id}")
-    public ResponseEntity<List<HorarioSemanal>> getByGrupo(@PathVariable Long id,@RequestParam String curso) {
+    public ResponseEntity<List<HorarioSemanal>> getByGrupo(@PathVariable Long idGrupo,@RequestParam Long idCurso) {
         Grupo grupo = new Grupo();
-        grupo.setId(id);
-        return ResponseEntity.ok(horarioService.findByGrupoAndCurso(grupo,curso.toUpperCase()));
+        grupo.setId(idGrupo);
+        CursoEscolar curso = new CursoEscolar();
+        curso.setIdCurso(idCurso);
+        return ResponseEntity.ok(horarioService.findByGrupoAndCurso(grupo,curso));
     }
 
     // 🔹 Crear horario
@@ -76,6 +78,12 @@ public class HorarioController {
     public ResponseEntity<HorarioSemanal> addHorario(@RequestBody HorarioSemanal horario) {
         HorarioSemanal added = horarioService.addHorario(horario);
         return new ResponseEntity<>(added, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/importar")
+    public ResponseEntity<Boolean> importHorarios(@RequestBody List<HorarioSemanal> horarios) {
+        boolean success = horarioService.importHorarios(horarios);
+        return new ResponseEntity<>(success, HttpStatus.CREATED);
     }
 
     // 🔹 Modificar horario
