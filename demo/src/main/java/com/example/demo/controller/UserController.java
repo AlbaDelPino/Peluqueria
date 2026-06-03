@@ -311,6 +311,4 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Contraseña actualizada correctamente."));
     }
 
-
-
 }

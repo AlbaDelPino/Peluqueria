@@ -42,6 +42,7 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -51,7 +52,6 @@ public class WebSecurityConfig {
                                 "/api/auth/signin",
                                 "/api/auth/signup/cliente/public",
                                 "/api/auth/google",
-                                "/clientes/verificar", // 👈 Volvemos a dejarlo sin /api porque en tus propiedades no hay context-path
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/v3/api-docs/**",
@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll()
                         .anyRequest().authenticated()
-                ) // 👈 Tenías un ") )" aquí que rompía la compilación
+                )
                 .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
