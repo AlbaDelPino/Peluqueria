@@ -53,7 +53,7 @@ public class CursoController {
         return new ResponseEntity<>(curso, HttpStatus.OK);
     }
 
-    @PutMapping("/selecionar")
+    @PutMapping("/selecionar/{id}")
     public ResponseEntity<CursoEscolar> selecionarCurso(@PathVariable long id) {
         CursoEscolar curso = cursoService.selecionarCurso(id);
         return new ResponseEntity<>(curso, HttpStatus.OK);

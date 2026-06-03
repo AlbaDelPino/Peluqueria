@@ -32,11 +32,10 @@ public class HorarioServiceImpl implements HorarioService {
     @Autowired
     private CursoRepository cursoRepository;
 
+
     @Override
-    public List<HorarioSemanal> findAll(Long idCurso) {
-        return horarioRepository.findAll().stream()
-                .filter(h -> h.getCurso().getIdCurso().equals(idCurso))
-                .toList();
+    public List<HorarioSemanal> findAll() {
+        return horarioRepository.findByCurso_Seleccionado(true);
     }
 
     @Override
@@ -44,21 +43,20 @@ public class HorarioServiceImpl implements HorarioService {
         return horarioRepository.findById(id);
     }
 
-    public List<HorarioSemanal> findByServicio_IdServicioAndCurso_IdCurso(Long idServicio, Long idCurso) {
-        return horarioRepository.findByServicio_IdServicioAndCurso_IdCurso(idServicio,idCurso);
+    public List<HorarioSemanal> findByServicio_IdServicio(Long idServicio) {
+        return horarioRepository.findByServicio_IdServicioAndCurso_Seleccionado(idServicio, true);
     }
 
-    public List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(String diaSemana, Long idServicio, Long idCurso) {
-        return horarioRepository.findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(diaSemana.toUpperCase(), idServicio, idCurso);
+    public List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicio(String diaSemana, Long idServicio) {
+        return horarioRepository.findByDiaSemanaAndServicio_IdServicioAndCurso_Seleccionado(diaSemana.toUpperCase(), idServicio,true);
     }
 
 
     @Override
-    public List<HorarioSemanal> findByGrupoAndCurso(Grupo grupo,CursoEscolar curso) {
-        return horarioRepository.findAll()
+    public List<HorarioSemanal> findByGrupo(Grupo grupo) {
+        return horarioRepository.findByCurso_Seleccionado(true)
                 .stream()
                 .filter(h -> h.getGrupo().equals(grupo))
-                .filter(h -> h.getCurso().equals(curso))
                 .toList();
     }
 
@@ -77,13 +75,13 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public List<HorarioSemanal> findByDiaSemanaAndCurso_IdCurso(String diaSemana, Long idCurso) {
-        return horarioRepository.findByDiaSemanaAndCurso_IdCurso(diaSemana, idCurso);
+    public List<HorarioSemanal> findByDiaSemana(String diaSemana) {
+        return horarioRepository.findByDiaSemanaAndCurso_Seleccionado(diaSemana,true);
     }
 
     @Override
-    public List<HorarioSemanal> findByHoraInicioAndCurso_IdCurso(LocalTime horaInicio, Long idCurso) {
-        return horarioRepository.findByHoraInicioAndCurso_IdCurso(horaInicio, idCurso);
+    public List<HorarioSemanal> findByHoraInicio(LocalTime horaInicio) {
+        return horarioRepository.findByHoraInicioAndCurso_Seleccionado(horaInicio,true);
     }
 
     @Override
@@ -105,8 +103,9 @@ public class HorarioServiceImpl implements HorarioService {
         horario.setGrupo(grupo);
 
         // Recuperar curso desde BD
-        CursoEscolar curso = cursoRepository.findById(horario.getCurso().getIdCurso())
-                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+        Long cursoId = horario.getCurso().getIdCurso();
+        CursoEscolar curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado con ID: " + cursoId));
         horario.setCurso(curso);
 
         return horarioRepository.save(horario);

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -123,8 +122,8 @@ public class CitaController {
 
     // ⭐ Obtener días disponibles por ID de servicio
     @GetMapping("/servicio/{servicioId}/dias")
-    public Map<String, List<String>> getDiasDisponiblesPorServicio(@PathVariable Long servicioId, @PathVariable Long idCurso) {
-        List<String> dias = citaService.obtenerDiasPorServicio(servicioId, idCurso);
+    public Map<String, List<String>> getDiasDisponiblesPorServicio(@PathVariable Long servicioId) {
+        List<String> dias = citaService.obtenerDiasPorServicio(servicioId);
         return Map.of("diasSemana", dias);
     }
 

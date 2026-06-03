@@ -30,10 +30,11 @@ public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
             CursoEscolar curso
     );
 
-    List<HorarioSemanal> findByDiaSemanaAndCurso_IdCurso(String diaSemana, Long idCurso);
-    List<HorarioSemanal> findByServicio_IdServicioAndCurso_IdCurso(Long idServicio, Long idCurso);
+    List<HorarioSemanal> findByDiaSemanaAndCurso_Seleccionado(String diaSemana,boolean selecionado);
+    List<HorarioSemanal> findByServicio_IdServicioAndCurso_Seleccionado(Long idServicio, boolean selecionado);
 
-    List<HorarioSemanal> findByHoraInicioAndCurso_IdCurso(LocalTime horaInicio, Long idCurso);
-    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(String diaSemana, Long idServicio, Long idCurso);
+    List<HorarioSemanal> findByHoraInicioAndCurso_Seleccionado(LocalTime horaInicio, boolean selecionado);
+    List<HorarioSemanal> findByDiaSemanaAndServicio_IdServicioAndCurso_Seleccionado(String diaSemana, Long idServicio, boolean selecionado);
 
+    List<HorarioSemanal> findByCurso_Seleccionado(boolean selecionado);
 }

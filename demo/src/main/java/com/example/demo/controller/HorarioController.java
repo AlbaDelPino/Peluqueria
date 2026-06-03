@@ -22,8 +22,8 @@ public class HorarioController {
 
     // 🔹 Listar todos los horarios
     @GetMapping
-    public ResponseEntity<List<HorarioSemanal>> getHorarios(@RequestParam Long idCurso) {
-        return ResponseEntity.ok(horarioService.findAll(idCurso));
+    public ResponseEntity<List<HorarioSemanal>> getHorarios() {
+        return ResponseEntity.ok(horarioService.findAll());
     }
 
     // 🔹 Obtener horario por ID
@@ -36,41 +36,38 @@ public class HorarioController {
 
     // 🔹 Buscar por día de semana
     @GetMapping("/dia")
-    public ResponseEntity<List<HorarioSemanal>> getByDia(@RequestParam String diaSemana,@RequestParam Long idCurso) {
-        return ResponseEntity.ok(horarioService.findByDiaSemanaAndCurso_IdCurso(diaSemana.toUpperCase(),idCurso));
+    public ResponseEntity<List<HorarioSemanal>> getByDia(@RequestParam String diaSemana) {
+        return ResponseEntity.ok(horarioService.findByDiaSemana(diaSemana.toUpperCase()));
     }
 
     // 🔹 Buscar por hora inicio
     @GetMapping("/horaInicio")
-    public ResponseEntity<List<HorarioSemanal>> getByHoraInicio(@RequestParam LocalTime horaInicio,@RequestParam Long idCurso) {
-        return ResponseEntity.ok(horarioService.findByHoraInicioAndCurso_IdCurso(horaInicio,idCurso));
+    public ResponseEntity<List<HorarioSemanal>> getByHoraInicio(@RequestParam LocalTime horaInicio) {
+        return ResponseEntity.ok(horarioService.findByHoraInicio(horaInicio));
     }
 
     // 🔹 Buscar por servicio
     @GetMapping("/servicio/{id}")
-    public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id,@RequestParam Long idCurso) {
-        return ResponseEntity.ok(horarioService.findByServicio_IdServicioAndCurso_IdCurso(id,idCurso));
+    public ResponseEntity<List<HorarioSemanal>> getByServicio(@PathVariable Long id) {
+        return ResponseEntity.ok(horarioService.findByServicio_IdServicio(id));
     }
 
     @GetMapping("/buscar")
     public ResponseEntity<List<HorarioSemanal>> getByDiaAndServicio(
             @RequestParam String diaSemana,
-            @RequestParam Long idServicio,
-            @RequestParam Long idCurso
+            @RequestParam Long idServicio
     ) {
-        List<HorarioSemanal> horarios = horarioService.findByDiaSemanaAndServicio_IdServicioAndCurso_IdCurso(diaSemana, idServicio,idCurso);
+        List<HorarioSemanal> horarios = horarioService.findByDiaSemanaAndServicio_IdServicio(diaSemana, idServicio);
         return ResponseEntity.ok(horarios);
     }
 
 
     // 🔹 Buscar por grupo
     @GetMapping("/grupo/{id}")
-    public ResponseEntity<List<HorarioSemanal>> getByGrupo(@PathVariable Long idGrupo,@RequestParam Long idCurso) {
+    public ResponseEntity<List<HorarioSemanal>> getByGrupo(@PathVariable Long idGrupo) {
         Grupo grupo = new Grupo();
         grupo.setId(idGrupo);
-        CursoEscolar curso = new CursoEscolar();
-        curso.setIdCurso(idCurso);
-        return ResponseEntity.ok(horarioService.findByGrupoAndCurso(grupo,curso));
+        return ResponseEntity.ok(horarioService.findByGrupo(grupo));
     }
 
     // 🔹 Crear horario

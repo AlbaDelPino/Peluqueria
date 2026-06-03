@@ -58,7 +58,7 @@ public class HorarioSemanal {
     public HorarioSemanal() {
     }
 
-    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo,CursoEscolar curso) {
+    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo, CursoEscolar curso) {
         this.id = id;
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;

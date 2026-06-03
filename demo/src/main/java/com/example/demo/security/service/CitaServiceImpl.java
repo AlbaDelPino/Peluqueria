@@ -3,6 +3,7 @@ package com.example.demo.security.service;
 import com.example.demo.domain.*;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.ClienteRepository;
+import com.example.demo.repository.CursoRepository;
 import com.example.demo.repository.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,6 +23,8 @@ public class CitaServiceImpl implements CitaService {
     @Autowired private ClienteRepository clienteRepository;
     @Autowired private BloqueoService bloqueoRepository;
     @Autowired private JavaMailSender mailSender;
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @Override
     public List<Cita> findAll() {
@@ -327,11 +330,13 @@ public class CitaServiceImpl implements CitaService {
 
 
     // En CitaService.java
-    public List<String> obtenerDiasPorServicio(Long servicioId,Long idCurso) {
+    public List<String> obtenerDiasPorServicio(Long servicioId) {
         // Aquí buscas en tu repositorio de Horarios filtrando por el ID del servicio
         // y mapeas para obtener solo los nombres de los días de la semana
-        return horarioRepository.findByServicio_IdServicioAndCurso_IdCurso(servicioId,idCurso)
+        CursoEscolar curso = cursoRepository.findBySeleccionado(true);
+        return horarioRepository.findByServicio_IdServicioAndCurso_Seleccionado(servicioId, true)
                 .stream()
+                .filter(h -> h.getCurso().equals(curso))
                 .map(horario -> horario.getDiaSemana().toString()) // O el formato que prefieras
                 .distinct()
                 .toList();
