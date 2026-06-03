@@ -65,6 +65,22 @@ public class ClienteController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/verificar")
+    public ResponseEntity<String> verificarCuenta(@RequestParam Long id) {
+        boolean verificado = clienteService.verificarCliente(id);
+
+        if (verificado) {
+            return ResponseEntity.ok(
+                    "<html><body>" +
+                            "<h1>¡Cuenta activada con éxito!</h1>" +
+                            "<p>Ya puedes iniciar sesión en la aplicación de la Peluquería.</p>" +
+                            "</body></html>"
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("<h1>Error</h1><p>No se pudo verificar la cuenta. El usuario no existe.</p>");
+        }
+    }
 
 }
 
