@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/v3/api-docs/**",
-
+                                "/horarios/buscar",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/citas/**"
