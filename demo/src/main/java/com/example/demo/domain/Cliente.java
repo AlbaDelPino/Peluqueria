@@ -47,6 +47,9 @@ public class Cliente extends User {
     private long telefono;
 
 
+    @JsonIgnore
+    private boolean verificado = false;
+
 
 
     public Cliente() {}
@@ -62,6 +65,14 @@ public class Cliente extends User {
         this.citas = citas;
         this.favoritos = favoritos;
 
+    }
+
+    public boolean isVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
     }
 
     public String getObservacion() { return observacion; }

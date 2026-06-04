@@ -49,7 +49,23 @@ public class ClienteController {
      * Este es el método que se ejecuta cuando el cliente hace clic en el enlace del correo.
      */
     // UserController.java
+    @GetMapping("/verificar")
+    public ResponseEntity<String> verificarCliente(@RequestParam("id") Long id) {
+        boolean verificado = clienteService.verificarCliente(id);
 
+        if (verificado) {
+            // Devolvemos una respuesta HTML sencilla y limpia para que el usuario la vea en su navegador
+            return ResponseEntity.ok()
+                    .header("Content-Type", "text/html; charset=UTF-8")
+                    .body("<h1>¡Cuenta Activada con éxito!</h1>" +
+                            "<p>Tu cuenta en Bernat Experience ha sido verificada. Ya puedes regresar a la aplicación e iniciar sesión.</p>");
+        } else {
+            return ResponseEntity.badRequest()
+                    .header("Content-Type", "text/html; charset=UTF-8")
+                    .body("<h1>Error de Verificación</h1>" +
+                            "<p>El enlace no es válido, ya ha expirado o el usuario no existe.</p>");
+        }
+    }
 
 
     /**

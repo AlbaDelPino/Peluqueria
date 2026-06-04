@@ -72,34 +72,59 @@ public class ClienteService {
     private void enviarCorreoVerificacion(Cliente cliente) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
+            // Configuramos el helper para permitir contenido HTML y codificación UTF-8
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            // 1. Configuración de cabeceras (Obligatorio para Gmail)
+            helper.setFrom("albadelpino1@gmail.com"); // 👈 Evita que Google lo bloquee por remitente anónimo
             helper.setTo(cliente.getEmail());
             helper.setSubject("Activa tu cuenta - Bernat Experience");
 
-// Dentro de enviarCorreoVerificacion en ClienteService.java
-// En ClienteService.java
-            String urlVerificacion = "http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId();
-            String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
-                    "<p>Pulsa el enlace para activar tu cuenta:</p>" +
-                    "<a href='" + urlVerificacion + "'>ACTIVAR CUENTA</a>";
+            // 2. Construcción del enlace y contenido HTML con tu IP actual
+            String urlVerificacion = "http://217.154.179.135:8080/peluqueriaia/clientes/verificar?id=" + cliente.getId();
 
+            String htmlContent = "<h3>¡Hola " + cliente.getNombre() + "!</h3>" +
+                    "<p>Gracias por registrarte en Bernat Experience. Pulsa el siguiente enlace para activar tu cuenta:</p>" +
+                    "<br>" +
+                    "<a href='" + urlVerificacion + "' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>ACTIVAR CUENTA</a>" +
+                    "<br><br>" +
+                    "<p>Si el botón no funciona, puedes copiar y pegar este enlace en tu navegador:</p>" +
+                    "<p>" + urlVerificacion + "</p>";
+
+            // El segundo parámetro 'true' indica que el texto contiene código HTML
             helper.setText(htmlContent, true);
 
+            // 3. Envío del correo electrónico
             mailSender.send(message);
             System.out.println("✅ CORREO ENVIADO CON ÉXITO A: " + cliente.getEmail());
 
         } catch (Exception e) {
             System.err.println("❌ ERROR AL ENVIAR CORREO: " + e.getMessage());
-            // PLAN B: Imprimimos el link en consola por si el mail falla
-            System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR: ");
-            System.out.println("http://10.48.100.95:8082/clientes/verificar?id=" + cliente.getId());
+
+            // PLAN B: Si el servidor SMTP o Gmail fallan, imprimimos el link en consola
+            System.out.println("⚠️ USA ESTE LINK MANUALMENTE PARA VERIFICAR AL USUARIO: ");
+            System.out.println("http://217.154.179.135:8080/peluqueriaia/clientes/verificar?id=" + cliente.getId());
         }
     }
 
     // --- NUEVO: MÉTODO DE VERIFICACIÓN ---
 
+    public boolean verificarCliente(Long id) {
+        // Buscamos al usuario en la base de datos
+        Optional<User> optionalUser = userRepository.findById(id);
 
+        if (optionalUser.isPresent() && optionalUser.get() instanceof Cliente cliente) {
+            // Cambiamos el estado a true
+            cliente.setVerificado(true);
+            // Guardamos los cambios
+            userRepository.save(cliente);
+            System.out.println("✅ Cliente con ID " + id + " verificado con éxito.");
+            return true;
+        }
+
+        System.err.println("❌ No se pudo verificar: No existe el cliente con ID " + id);
+        return false;
+    }
 
 
     // Obtener cliente por username
