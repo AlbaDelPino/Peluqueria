@@ -55,11 +55,14 @@ public class WebSecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
                                 "/v3/api-docs/**",
+
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/citas/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/imagenes/**",
+                                    "/horarios/buscar/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class)
