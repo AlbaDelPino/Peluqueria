@@ -5,7 +5,7 @@ import com.example.demo.domain.DiagnosticoPeluqueria;
 import java.util.List;
 import java.util.Optional;
 
-public interface DiagnosticoService {
+public interface DiagnosticoPeluqueriaService {
     List<DiagnosticoPeluqueria> getAllDiagnosticos();
     Optional<DiagnosticoPeluqueria> getDiagnosticoByClienteId(Long clienteId);
     Optional<DiagnosticoPeluqueria> getDiagnosticoById(Long id);

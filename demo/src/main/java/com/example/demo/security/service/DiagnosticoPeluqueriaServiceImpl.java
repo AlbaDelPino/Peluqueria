@@ -3,7 +3,7 @@ package com.example.demo.security.service;
 import com.example.demo.domain.Cliente;
 import com.example.demo.domain.DiagnosticoPeluqueria;
 import com.example.demo.repository.ClienteRepository;
-import com.example.demo.repository.DiagnosticoRepository;
+import com.example.demo.repository.DiagnosticoPeluqueriaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -11,29 +11,29 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DiagnosticoServiceImpl implements DiagnosticoService {
+public class DiagnosticoPeluqueriaServiceImpl implements DiagnosticoPeluqueriaService {
 
-    private final DiagnosticoRepository diagnosticoRepository;
+    private final DiagnosticoPeluqueriaRepository diagnosticoPeluqueriaRepository;
     private final ClienteRepository clienteRepository;
 
-    public DiagnosticoServiceImpl(DiagnosticoRepository diagnosticoRepository, ClienteRepository clienteRepository) {
-        this.diagnosticoRepository = diagnosticoRepository;
+    public DiagnosticoPeluqueriaServiceImpl(DiagnosticoPeluqueriaRepository diagnosticoPeluqueriaRepository, ClienteRepository clienteRepository) {
+        this.diagnosticoPeluqueriaRepository = diagnosticoPeluqueriaRepository;
         this.clienteRepository = clienteRepository;
     }
 
     @Override
     public List<DiagnosticoPeluqueria> getAllDiagnosticos() {
-        return diagnosticoRepository.findAll();
+        return diagnosticoPeluqueriaRepository.findAll();
     }
 
     @Override
     public Optional<DiagnosticoPeluqueria> getDiagnosticoByClienteId(Long clienteId) {
-        return diagnosticoRepository.findByClienteId(clienteId);
+        return diagnosticoPeluqueriaRepository.findByClienteId(clienteId);
     }
 
     @Override
     public Optional<DiagnosticoPeluqueria> getDiagnosticoById(Long id) {
-        return diagnosticoRepository.findById(id);
+        return diagnosticoPeluqueriaRepository.findById(id);
     }
 
     @Override
@@ -42,8 +42,11 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
+        cliente.setAlergenos(diagnosticoPeluqueria.getAlergenos());
+        clienteRepository.save(cliente);
+
         // Buscar si ya existe un diagnóstico para este cliente
-        Optional<DiagnosticoPeluqueria> existente = diagnosticoRepository.findByClienteId(clienteId);
+        Optional<DiagnosticoPeluqueria> existente = diagnosticoPeluqueriaRepository.findByClienteId(clienteId);
 
         DiagnosticoPeluqueria entity;
         if (existente.isPresent()) {
@@ -105,11 +108,11 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
             entity.setCliente(cliente);
         }
 
-        return diagnosticoRepository.save(entity);
+        return diagnosticoPeluqueriaRepository.save(entity);
     }
 
     @Override
     public void deleteDiagnostico(Long id) {
-        diagnosticoRepository.deleteById(id);
+        diagnosticoPeluqueriaRepository.deleteById(id);
     }
 }

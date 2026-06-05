@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DiagnosticoPeluqueria;
+import com.example.demo.domain.DiagnosticoEstetica;
 import com.example.demo.payload.response.MessageResponse;
-import com.example.demo.security.service.DiagnosticoService;
+import com.example.demo.security.service.DiagnosticoEsteticaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/diagnosticos")
+@RequestMapping("/api/diagnosticos/estetica")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class DiagnosticoController {
+public class DiagnosticoEsteticaController {
 
     @Autowired
-    private DiagnosticoService diagnosticoService;
+    private DiagnosticoEsteticaService diagnosticoEsteticaService;
 
     // --- LIST ALL ---
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
-    public List<DiagnosticoPeluqueria> getAll() {
-        return diagnosticoService.getAllDiagnosticos();
+    public List<DiagnosticoEstetica> getAll() {
+        return diagnosticoEsteticaService.getAllDiagnosticos();
     }
 
     // --- GET BY CLIENTE ID ---
@@ -32,7 +32,7 @@ public class DiagnosticoController {
     @GetMapping("/cliente/{clienteId}")
     @PreAuthorize("hasAnyRole('ADMIN','GRUPO','CLIENTE')")
     public ResponseEntity<?> getByClienteId(@PathVariable Long clienteId) {
-        Optional<DiagnosticoPeluqueria> opt = diagnosticoService.getDiagnosticoByClienteId(clienteId);
+        Optional<DiagnosticoEstetica> opt = diagnosticoEsteticaService.getDiagnosticoByClienteId(clienteId);
 
         if (opt.isPresent()) {
             return ResponseEntity.ok(opt.get());
@@ -45,8 +45,8 @@ public class DiagnosticoController {
     // --- CREATE OR UPDATE FOR CLIENTE ---
     @PostMapping("/cliente/{clienteId}")
 
-    public ResponseEntity<?> saveOrUpdate(@PathVariable Long clienteId, @RequestBody DiagnosticoPeluqueria diagnosticoPeluqueria) {
-        DiagnosticoPeluqueria saved = diagnosticoService.saveOrUpdateDiagnostico(clienteId, diagnosticoPeluqueria);
+    public ResponseEntity<?> saveOrUpdate(@PathVariable Long clienteId, @RequestBody DiagnosticoEstetica diagnosticoEstetica) {
+        DiagnosticoEstetica saved = diagnosticoEsteticaService.saveOrUpdateDiagnostico(clienteId, diagnosticoEstetica);
         return ResponseEntity.ok(new MessageResponse("Diagnóstico guardado con ID " + saved.getId()));
     }
 
@@ -54,7 +54,7 @@ public class DiagnosticoController {
     @DeleteMapping("/{id}")
 
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        diagnosticoService.deleteDiagnostico(id);
+        diagnosticoEsteticaService.deleteDiagnostico(id);
         return ResponseEntity.ok(new MessageResponse("Diagnóstico eliminado"));
     }
 }

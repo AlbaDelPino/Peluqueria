@@ -4,9 +4,9 @@ import com.example.demo.domain.Cliente;
 import com.example.demo.domain.ERole;
 import com.example.demo.domain.User;
 import com.example.demo.repository.ClienteRepository;
+import com.example.demo.repository.DiagnosticoPeluqueriaRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +20,17 @@ public class ClienteService {
 
     private final UserRepository userRepository;
     private final ClienteRepository clienteRepository;
+    private final DiagnosticoPeluqueriaRepository diagnosticoPeluqueriaRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
     public ClienteService(UserRepository userRepository,
                           ClienteRepository clienteRepository,
+                          DiagnosticoPeluqueriaRepository diagnosticoPeluqueriaRepository,
                           PasswordEncoder passwordEncoder,
                           JavaMailSender mailSender) {
         this.userRepository = userRepository;
+        this.diagnosticoPeluqueriaRepository = diagnosticoPeluqueriaRepository;
         this.clienteRepository = clienteRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
@@ -66,6 +69,11 @@ public class ClienteService {
         } catch (Exception e) {
             System.err.println("Error enviando correo: " + e.getMessage());
         }
+
+        diagnosticoPeluqueriaRepository.findByClienteId(cliente.getId()).ifPresent(diagnostico -> {
+            diagnostico.setAlergenos(cliente.getAlergenos());
+            diagnosticoPeluqueriaRepository.save(diagnostico);
+        });
 
         return nuevoCliente;
     }
@@ -163,6 +171,11 @@ public class ClienteService {
             }
         }
 
+        diagnosticoPeluqueriaRepository.findByClienteId(id).ifPresent(diagnostico -> {
+            diagnostico.setAlergenos(clienteDetails.getAlergenos());
+            diagnosticoPeluqueriaRepository.save(diagnostico);
+        });
+
         return userRepository.save(user);
     }
 
@@ -191,6 +204,11 @@ public class ClienteService {
                 cliente.setImagen(clienteDetails.getImagen()); // 👈 añadimos imagen
             }
         }
+
+        diagnosticoPeluqueriaRepository.findByClienteId(clienteDetails.getId()).ifPresent(diagnostico -> {
+            diagnostico.setAlergenos(clienteDetails.getAlergenos());
+            diagnosticoPeluqueriaRepository.save(diagnostico);
+        });
 
         return userRepository.save(user);
     }
