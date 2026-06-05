@@ -14,4 +14,5 @@ public interface CursoRepository extends JpaRepository<CursoEscolar, Long> {
     List<CursoEscolar> findAll();
     Optional<CursoEscolar> findById(long id);
     CursoEscolar findBySeleccionado(boolean seleccionado);
+    Optional<CursoEscolar> findByNombre(String nombre);
 }

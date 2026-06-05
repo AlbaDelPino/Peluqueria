@@ -49,39 +49,84 @@ public class UserController {
     // --- SIGNIN ---
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        // 1. Buscamos al usuario (Esto ya lo tienes)
-        User user = userService.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals(loginRequest.getUsername()))
-                .findFirst()
-                .orElse(null);
+    // If an idToken is provided, attempt Google sign‑in
+    if (loginRequest.getIdToken() != null && !loginRequest.getIdToken().isEmpty()) {
+        try {
+            NetHttpTransport transport = new NetHttpTransport();
+            JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    .setAudience(Collections.singletonList("1008130346590-9ilfj26ft3s8n2ki85gf5tmaspehn8mk.apps.googleusercontent.com"))
+                    .build();
+            GoogleIdToken idToken = verifier.verify(loginRequest.getIdToken());
+            if (idToken != null) {
+                Payload payload = idToken.getPayload();
+                String email = payload.getEmail();
+                String nombre = (String) payload.get("name");
+                String googleId = payload.getSubject();
 
-        if (user == null) {
-            return ResponseEntity.status(401).body(new MessageResponse("Error: Usuario no encontrado"));
+                // Find existing user or create a new Cliente record
+                User user = userRepository.findByEmail(email).orElse(null);
+                if (user == null) {
+                    Cliente nuevoCliente = new Cliente();
+                    nuevoCliente.setUsername(email);
+                    nuevoCliente.setEmail(email);
+                    nuevoCliente.setNombre(nombre);
+                    nuevoCliente.setContrasenya(passwordEncoder.encode("GOOGLE_PWD_" + googleId));
+                    nuevoCliente.setRole(ERole.ROLE_CLIENTE);
+                    nuevoCliente.setVerificado(true); // Automatically verify Google users
+                    userRepository.save(nuevoCliente);
+                    user = nuevoCliente;
+                }
+
+                // Generate JWT for the user
+                String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
+                return ResponseEntity.ok(new JwtResponse(
+                        token,
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        List.of(user.getRole().name())
+                ));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Token de Google inválido"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error en la autenticación: " + e.getMessage()));
         }
-
-        // ---------------------------------------------------------
-        // 2. AÑADE ESTO AQUÍ (Control de verificación)
-        // ---------------------------------------------------------
-
-
-        // ---------------------------------------------------------
-
-        // 3. Validar contraseña (Esto ya lo tienes)
-        if (!passwordEncoder.matches(loginRequest.getContrasenya(), user.getContrasenya())) {
-            return ResponseEntity.status(401).body(new MessageResponse("Error: Contraseña incorrecta"));
-        }
-
-        // 4. Generar Token (Esto ya lo tienes)
-        String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
-
-        return ResponseEntity.ok(new JwtResponse(
-                token,
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                List.of(user.getRole().name())
-        ));
     }
+
+    // Existing username/password flow (supports email as username too)
+    String loginKey = loginRequest.getUsername();
+    if (loginKey == null || loginKey.trim().isEmpty()) {
+        loginKey = loginRequest.getEmail();
+    }
+
+    if (loginKey == null || loginKey.trim().isEmpty()) {
+        return ResponseEntity.status(400).body(new MessageResponse("Error: Nombre de usuario o correo requerido"));
+    }
+
+    String searchKey = loginKey.trim();
+    User user = userRepository.findByUsername(searchKey)
+            .orElseGet(() -> userRepository.findByEmail(searchKey).orElse(null));
+
+    if (user == null) {
+        return ResponseEntity.status(401).body(new MessageResponse("Error: Usuario no encontrado"));
+    }
+
+    if (!passwordEncoder.matches(loginRequest.getContrasenya(), user.getContrasenya())) {
+        return ResponseEntity.status(401).body(new MessageResponse("Error: Contraseña incorrecta"));
+    }
+
+    String token = jwtUtils.generateJwtToken(user.getUsername(), List.of(user.getRole().name()));
+    return ResponseEntity.ok(new JwtResponse(
+            token,
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            List.of(user.getRole().name())
+    ));
+}
+// duplicate logic removed
 
     // --- SIGNUP ADMIN (solo otro admin puede crear) ---
     @PostMapping("/signup/admin")
@@ -239,8 +284,7 @@ public class UserController {
                     nuevoCliente.setNombre(nombre);
                     nuevoCliente.setContrasenya(passwordEncoder.encode("GOOGLE_PWD_" + googleId));
                     nuevoCliente.setRole(ERole.ROLE_CLIENTE);
-
-
+                    nuevoCliente.setVerificado(true); // Automatically verify Google users
 
                     userRepository.save(nuevoCliente);
                     user = nuevoCliente;
