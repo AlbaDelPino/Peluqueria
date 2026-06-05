@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "horario_semanal",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"horaInicio", "horaFin","diaSemana","id_servicio","id_grupo"})
+                @UniqueConstraint(columnNames = {"horaInicio", "horaFin","diaSemana","id_servicio","id_grupo","id_curso"})
         }
 )
 public class HorarioSemanal {
