@@ -21,6 +21,11 @@ public interface HorarioRepository extends JpaRepository<HorarioSemanal, Long> {
             Grupo grupo,
             CursoEscolar curso
     );
+    boolean existsByDiaSemanaAndHoraInicioAndHoraFinAndServicioAndGrupoAndCurso(
+                String diaSemana, LocalTime horaInicio, LocalTime horaFin,
+                Servicio servicio, Grupo grupo, CursoEscolar curso
+        );
+
 
     // Opcionales si quieres búsquedas más simples
     List<HorarioSemanal> findByServicioAndHoraInicioAndDiaSemanaAndCurso(

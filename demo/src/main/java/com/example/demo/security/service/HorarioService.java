@@ -7,6 +7,7 @@ import com.example.demo.domain.Grupo;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface HorarioService {
@@ -39,5 +40,5 @@ public interface HorarioService {
     HorarioSemanal modifyHorario(long id, HorarioSemanal horario);
     void deleteHorario(long id);
 
-    boolean importHorarios(List<HorarioSemanal> horarios);
+    Map<String,Integer> importHorarios(List<HorarioSemanal> horarios);
 }

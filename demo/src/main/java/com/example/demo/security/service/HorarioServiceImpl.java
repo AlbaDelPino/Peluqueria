@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class HorarioServiceImpl implements HorarioService {
@@ -150,28 +149,133 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
-    public boolean importHorarios(List<HorarioSemanal> horarios) {
-        for(HorarioSemanal h : horarios) {
-            Servicio servicio = servicioRepository.findById(h.getServicio().getId_servicio())
-                    .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+    public Map<String, Integer> importHorarios(List<HorarioSemanal> horarios) {
 
-            long until = h.getHoraInicio().until(h.getHoraFin(), ChronoUnit.MINUTES);
-            if (servicio.getDuracion() > until) {
-                throw new RuntimeException("El horario no es lo suficientemente largo para ofrecer este servicio");
+        Integer insertados = 0;
+        Integer omitidos = 0;
+
+        // Detectar duplicados dentro del propio Excel
+        Set<String> clavesImportadas = new HashSet<>();
+
+        CursoEscolar cursoSeleccionado = cursoRepository.findBySeleccionado(true);
+
+        for (HorarioSemanal h : horarios) {
+
+            try {
+
+                // ==========================
+                // SERVICIO
+                // ==========================
+                Servicio servicio = servicioRepository
+                        .findById(h.getServicio().getId_servicio())
+                        .orElseThrow(() ->
+                                new RuntimeException("Servicio no encontrado"));
+
+                h.setServicio(servicio);
+
+                // ==========================
+                // VALIDAR DURACIÓN
+                // ==========================
+                long minutos = h.getHoraInicio()
+                        .until(h.getHoraFin(), ChronoUnit.MINUTES);
+
+                if (servicio.getDuracion() > minutos) {
+                    System.out.println(
+                            "Horario omitido. Duración insuficiente: "
+                                    + h.getDiaSemana()
+                                    + " "
+                                    + h.getHoraInicio()
+                    );
+                    omitidos++;
+                    continue;
+                }
+
+                // ==========================
+                // GRUPO
+                // ==========================
+                Grupo grupo = grupoRepository
+                        .findById(h.getGrupo().getId())
+                        .orElseThrow(() ->
+                                new RuntimeException("Grupo no encontrado"));
+
+                h.setGrupo(grupo);
+
+                // ==========================
+                // CURSO
+                // ==========================
+                h.setCurso(cursoSeleccionado);
+
+                // ==========================
+                // CLAVE ÚNICA EN MEMORIA
+                // ==========================
+                String clave = String.join("|",
+                        h.getDiaSemana(),
+                        h.getHoraInicio().toString(),
+                        h.getHoraFin().toString(),
+                        String.valueOf(servicio.getId_servicio()),
+                        String.valueOf(grupo.getId()),
+                        String.valueOf(cursoSeleccionado.getIdCurso())
+                );
+
+                // Duplicado dentro del Excel
+                if (!clavesImportadas.add(clave)) {
+                    System.out.println(
+                            "Duplicado en Excel omitido: " + clave
+                    );
+                    omitidos++;
+                    continue;
+                }
+
+                // ==========================
+                // EXISTE EN BD
+                // ==========================
+                boolean existe = horarioRepository
+                        .existsByDiaSemanaAndHoraInicioAndHoraFinAndServicioAndGrupoAndCurso(
+                                h.getDiaSemana(),
+                                h.getHoraInicio(),
+                                h.getHoraFin(),
+                                servicio,
+                                grupo,
+                                cursoSeleccionado
+                        );
+
+                if (existe) {
+                    System.out.println(
+                            "Duplicado en BD omitido: " + clave
+                    );
+                    omitidos++;
+                    continue;
+                }
+
+                // ==========================
+                // GUARDAR
+                // ==========================
+                horarioRepository.saveAndFlush(h);
+
+                insertados++;
+
+            } catch (Exception e) {
+
+                omitidos++;
+
+                System.err.println(
+                        "Error en horario: " + e.getMessage()
+                );
             }
-            h.setServicio(servicio);
-
-            Grupo grupo = grupoRepository.findById(h.getGrupo().getId())
-                    .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
-            h.setGrupo(grupo);
-
-            CursoEscolar curso = cursoRepository.findById(h.getCurso().getIdCurso())
-                    .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
-            h.setCurso(curso);
-
-            horarioRepository.save(h);
         }
-        return true;
+
+        System.out.println(
+                "Importación completada - Insertados: "
+                        + insertados
+                        + ", Omitidos: "
+                        + omitidos
+        );
+
+        Map<String, Integer> resultado = new HashMap<>();
+        resultado.put("insertados", insertados);
+        resultado.put("omitidos", omitidos);
+
+        return resultado;
     }
 
    /* @Override

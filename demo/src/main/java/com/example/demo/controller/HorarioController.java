@@ -78,8 +78,8 @@ public class HorarioController {
     }
 
     @PostMapping("/importar")
-    public ResponseEntity<Boolean> importHorarios(@RequestBody List<HorarioSemanal> horarios) {
-        boolean success = horarioService.importHorarios(horarios);
+    public ResponseEntity<Map<String,Integer>> importHorarios(@RequestBody List<HorarioSemanal> horarios) {
+        Map<String,Integer> success = horarioService.importHorarios(horarios);
         return new ResponseEntity<>(success, HttpStatus.CREATED);
     }
 

@@ -8,9 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "horario_semanal",
+@Table(
+        name = "horario_semanal",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"horaInicio", "horaFin","diaSemana","id_servicio","id_grupo","id_curso"})
+                @UniqueConstraint(
+                        columnNames = {
+                                "hora_inicio",
+                                "hora_fin",
+                                "dia_semana",
+                                "id_grupo",
+                                "id_servicio",
+                                "id_curso"
+                        }
+                )
         }
 )
 public class HorarioSemanal {
@@ -58,8 +68,7 @@ public class HorarioSemanal {
     public HorarioSemanal() {
     }
 
-    public HorarioSemanal(Long id, String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo, CursoEscolar curso) {
-        this.id = id;
+    public HorarioSemanal(String diaSemana, LocalTime horaInicio, LocalTime horaFin, long plazas, Servicio servicio, Grupo grupo, CursoEscolar curso) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
