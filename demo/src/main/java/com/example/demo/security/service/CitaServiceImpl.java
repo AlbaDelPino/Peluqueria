@@ -240,6 +240,18 @@ public class CitaServiceImpl implements CitaService {
 
     @Override
     public Long citasDisponibles(Long horarioId, LocalDate fecha) {
+        BloqueoHorario bloqueo = bloqueoRepository.findByFecha(fecha);
+        BloqueoHorario recurrente = bloqueoRepository.findByDiaRecurrente(fecha);
+        Optional<HorarioSemanal> horario = horarioRepository.findById(horarioId);
+        if (bloqueo != null && bloqueo.getHorarios().contains(horario)) {
+            Long l = 0L;
+            return l;
+        }
+        if (recurrente != null && recurrente.getHorarios().contains(horario)){
+            Long l = 0L;
+            return l;
+        }
+
         HorarioSemanal hor = horarioRepository.findById(horarioId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 

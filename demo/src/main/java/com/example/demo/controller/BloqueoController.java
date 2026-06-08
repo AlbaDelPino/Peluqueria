@@ -73,6 +73,10 @@ public class BloqueoController {
     public List<BloqueoHorario> findByRecurrente(@RequestParam boolean recurrente) {
         return bloqueoService.findByRecurrente(recurrente);
     }
+    @GetMapping("/recurrenteycurso")
+    public List<BloqueoHorario> findNoRecurrentesByCursoSeleccionadoOrRecurrente() {
+        return bloqueoService.findNoRecurrentesByCursoSeleccionadoOrRecurrente(true);
+    }
 
 }
 

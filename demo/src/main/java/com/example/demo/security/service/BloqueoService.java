@@ -13,11 +13,12 @@ public interface BloqueoService {
     List<BloqueoHorario> findAll();
     Optional<BloqueoHorario> findById(long id);
     BloqueoHorario findByFecha(LocalDate fecha);
-    BloqueoHorario findByDiaRecurrente(LocalDate fecha);
     List<BloqueoHorario> findByHorarios(long id);
     List<BloqueoHorario> findByRecurrente(boolean recurrente);
 
-
+    BloqueoHorario findByDiaRecurrente(LocalDate fecha);
+    List<BloqueoHorario> findNoRecurrentesByCursoSeleccionado();
+    List<BloqueoHorario> findNoRecurrentesByCursoSeleccionadoOrRecurrente(boolean recurrente);
 
     BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo);
     BloqueoHorario modifyHorariosEnBloqueo(BloqueoHorario bloqueo);

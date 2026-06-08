@@ -3,6 +3,7 @@ package com.example.demo.security.service;
 import com.example.demo.domain.CursoEscolar;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.exception.CursoNotFoundException;
+import com.example.demo.repository.BloqueoRepository;
 import com.example.demo.repository.CursoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class CursoServiceImpl implements CursoService {
 
     @Autowired
     private CursoRepository cursoRepository;
+    @Autowired
+    private BloqueoRepository bloqueoRepository;
 
     @Override
     public List<CursoEscolar> findAll() {

@@ -1,6 +1,7 @@
 package com.example.demo.security.service;
 
 import com.example.demo.domain.*;
+import com.example.demo.exception.HorarioNotFoundException;
 import com.example.demo.repository.BloqueoRepository;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.HorarioRepository;
@@ -59,6 +60,26 @@ public class BloqueoServiceImpl implements BloqueoService {
     }
 
     @Override
+    public List<BloqueoHorario> findNoRecurrentesByCursoSeleccionado() {
+        return bloqueoRepository.findNoRecurrentesByCursoSeleccionado();
+    }
+
+    @Override
+    public List<BloqueoHorario> findNoRecurrentesByCursoSeleccionadoOrRecurrente(boolean recurrente) {
+        List<BloqueoHorario> resultado = new ArrayList<>();
+
+        List<BloqueoHorario> noRecurrentes = bloqueoRepository.findNoRecurrentesByCursoSeleccionado();
+        resultado.addAll(noRecurrentes);
+
+        if (recurrente) {
+            List<BloqueoHorario> recurrentes = bloqueoRepository.findByRecurrente(recurrente);
+            resultado.addAll(recurrentes);
+        }
+
+        return resultado;
+    }
+
+    @Override
     public BloqueoHorario addBloqueoHorario(BloqueoHorario bloqueo) {
 
         LocalDate fechaBloqueo = bloqueo.getFecha();
@@ -68,10 +89,10 @@ public class BloqueoServiceImpl implements BloqueoService {
             if (fechaBloqueo.isBefore(LocalDate.now())) {
                 throw new RuntimeException("No puedes bloquear una fecha u hora pasada.");
             } else if (recurrente != null || bloqueoAnterior != null) {
-                throw new RuntimeException("No puedes bloquear una fecha ya bloqueada.");
+                throw new HorarioNotFoundException("No puedes bloquear una fecha ya bloqueada.");
             }
         }else {
-            throw new RuntimeException("No se ha leido nunguna fecha.");
+            throw new RuntimeException("No se ha leido niunguna fecha.");
         }
 
 

@@ -30,4 +30,14 @@ public interface BloqueoRepository extends JpaRepository<BloqueoHorario, Long> {
     BloqueoHorario findByDiaRecurrente(
             @Param("fecha") LocalDate fecha
     );
+
+    @Query("""
+        SELECT DISTINCT b
+        FROM BloqueoHorario b
+        JOIN b.horarios h
+        JOIN h.curso c
+        WHERE c.seleccionado = true
+        AND b.recurrente = false
+    """)
+    List<BloqueoHorario> findNoRecurrentesByCursoSeleccionado();
 }

@@ -163,22 +163,14 @@ public class HorarioServiceImpl implements HorarioService {
 
             try {
 
-                // ==========================
-                // SERVICIO
-                // ==========================
                 Servicio servicio = servicioRepository
                         .findById(h.getServicio().getId_servicio())
                         .orElseThrow(() ->
                                 new RuntimeException("Servicio no encontrado"));
-
                 h.setServicio(servicio);
 
-                // ==========================
-                // VALIDAR DURACIÓN
-                // ==========================
                 long minutos = h.getHoraInicio()
                         .until(h.getHoraFin(), ChronoUnit.MINUTES);
-
                 if (servicio.getDuracion() > minutos) {
                     System.out.println(
                             "Horario omitido. Duración insuficiente: "
@@ -190,24 +182,16 @@ public class HorarioServiceImpl implements HorarioService {
                     continue;
                 }
 
-                // ==========================
-                // GRUPO
-                // ==========================
                 Grupo grupo = grupoRepository
                         .findById(h.getGrupo().getId())
                         .orElseThrow(() ->
                                 new RuntimeException("Grupo no encontrado"));
-
                 h.setGrupo(grupo);
 
-                // ==========================
-                // CURSO
-                // ==========================
+
                 h.setCurso(cursoSeleccionado);
 
-                // ==========================
-                // CLAVE ÚNICA EN MEMORIA
-                // ==========================
+
                 String clave = String.join("|",
                         h.getDiaSemana(),
                         h.getHoraInicio().toString(),
@@ -217,7 +201,6 @@ public class HorarioServiceImpl implements HorarioService {
                         String.valueOf(cursoSeleccionado.getIdCurso())
                 );
 
-                // Duplicado dentro del Excel
                 if (!clavesImportadas.add(clave)) {
                     System.out.println(
                             "Duplicado en Excel omitido: " + clave
@@ -226,9 +209,6 @@ public class HorarioServiceImpl implements HorarioService {
                     continue;
                 }
 
-                // ==========================
-                // EXISTE EN BD
-                // ==========================
                 boolean existe = horarioRepository
                         .existsByDiaSemanaAndHoraInicioAndHoraFinAndServicioAndGrupoAndCurso(
                                 h.getDiaSemana(),
@@ -247,9 +227,8 @@ public class HorarioServiceImpl implements HorarioService {
                     continue;
                 }
 
-                // ==========================
-                // GUARDAR
-                // ==========================
+
+
                 horarioRepository.saveAndFlush(h);
 
                 insertados++;
