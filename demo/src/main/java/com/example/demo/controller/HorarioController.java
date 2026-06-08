@@ -70,11 +70,19 @@ public class HorarioController {
         return ResponseEntity.ok(horarioService.findByGrupo(grupo));
     }
 
-    // 🔹 Crear horario
     @PostMapping
-    public ResponseEntity<HorarioSemanal> addHorario(@RequestBody HorarioSemanal horario) {
-        HorarioSemanal added = horarioService.addHorario(horario);
-        return new ResponseEntity<>(added, HttpStatus.CREATED);
+    public ResponseEntity<?> addHorario(@RequestBody HorarioSemanal horario) {
+        try {
+            HorarioSemanal added = horarioService.addHorario(horario);
+            return new ResponseEntity<>(added, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            // Creamos el mapa con la estructura que quieres
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+
+            // Devolvemos el JSON con un código 400 (Bad Request)
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/importar")
