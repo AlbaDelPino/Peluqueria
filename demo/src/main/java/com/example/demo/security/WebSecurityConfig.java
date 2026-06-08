@@ -50,6 +50,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/signin",
+                                "/error",
                                 "/api/auth/signup/cliente/public",
                                 "/api/auth/google",
                                 "/clientes/verificar",
@@ -57,6 +58,7 @@ public class WebSecurityConfig {
                                 "/api/auth/reset-password",
                                 "/v3/api-docs/**",
                                 "/horarios/buscar",
+                                "/horarios",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/citas/**"
