@@ -89,7 +89,7 @@ public class BloqueoServiceImpl implements BloqueoService {
             if (fechaBloqueo.isBefore(LocalDate.now())) {
                 throw new RuntimeException("No puedes bloquear una fecha u hora pasada.");
             } else if (recurrente != null || bloqueoAnterior != null) {
-                throw new HorarioNotFoundException("No puedes bloquear una fecha ya bloqueada.");
+                throw new RuntimeException("No puedes bloquear una fecha ya bloqueada.");
             }
         }else {
             throw new RuntimeException("No se ha leido niunguna fecha.");

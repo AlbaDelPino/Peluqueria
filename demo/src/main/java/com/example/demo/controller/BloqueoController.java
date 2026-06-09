@@ -6,11 +6,14 @@ import com.example.demo.domain.EstadoCita;
 import com.example.demo.domain.HorarioSemanal;
 import com.example.demo.security.service.BloqueoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +38,18 @@ public class BloqueoController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public BloqueoHorario addBloqueoHorario(@RequestBody BloqueoHorario bloqueo) {
-        return bloqueoService.addBloqueoHorario(bloqueo);
+    public ResponseEntity<?> addBloqueoHorario(@RequestBody BloqueoHorario bloqueo) {
+        try{
+            BloqueoHorario added = bloqueoService.addBloqueoHorario(bloqueo);
+            return new ResponseEntity<>(added, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            // Creamos el mapa con la estructura que quieres
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+
+            // Devolvemos el JSON con un código 400 (Bad Request)
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")
